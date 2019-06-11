@@ -64,13 +64,13 @@ Verify Added Node present in Node List
 	Should Be Equal As Strings  ${status}    True
 
 
-Create 100 sites over platina server
-	[Tags]    Node    smoke_test
-	Create Session    platina    https://172.17.2.46:9999    verify=False
-	&{headers}=    Create Dictionary   Authorization=${sec_token}
-	:FOR    ${index}    IN RANGE    1  101
-	\    &{data}    Create Dictionary  Id=${index}    Name=Site_${Index}    Description=Site_${Index}
-	\    ${resp}  Post Request    platina   /pccserver/site/add/    json=${data}     headers=${headers}
-	\    Log    \n Status code = ${resp.status_code}    console=yes
-	\    Log    \n Response = ${resp.json()}    console=yes
-	\    Should Be Equal As Strings  ${resp.status_code}    200
+#Create 100 sites over platina server
+#	[Tags]    Node    smoke_test
+#	Create Session    platina    https://172.17.2.46:9999    verify=False
+#	&{headers}=    Create Dictionary   Authorization=${sec_token}
+#	:FOR    ${index}    IN RANGE    1  101
+#	\    &{data}    Create Dictionary  Id=${index}    Name=Site_${Index}    Description=Site_${Index}
+#	\    ${resp}  Post Request    platina   /pccserver/site/add/    json=${data}     headers=${headers}
+#	\    Log    \n Status code = ${resp.status_code}    console=yes
+#	\    Log    \n Response = ${resp.json()}    console=yes
+#	\    Should Be Equal As Strings  ${resp.status_code}    200
