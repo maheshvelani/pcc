@@ -50,10 +50,3 @@ class Request(RequestsLibrary):
 	            timeout)
             dataStr = self._format_data_to_log_string_according_to_header(data, headers)
             return response
-	
-        def validate_node(self, resp, node_name):
-            for data in eval(str(resp))['Data']:
-               if str(data['Name']) == str(node_name):
-                   return True
-            return False
-
