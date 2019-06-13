@@ -14,10 +14,10 @@ node2_host_addr = "172.17.2.29"
 node2_bmc = "172.17.3.29"
 node2_bmc_user = "ADMIN"
 
-node3_name = "i31"
+node3_name = "i32"
 node3_host_addr = "172.17.2.29"
 node3_bmc = "172.17.3.29"
-node1_bmc_pwd = "ADMIN"
+node3_bmc_pwd = "ADMIN"
 
 group1_name = "Test_Group"
 group1_desc = "Test_Group"

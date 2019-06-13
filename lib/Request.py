@@ -37,6 +37,10 @@ class Request(RequestsLibrary):
             if data:
         	import json; data = json.loads(data)
 
+            if json:
+                if type(json) == list:
+                    json = [ int(x) for x in json ]
+    
             response = self._body_request(
 	            "post",
 	            session,

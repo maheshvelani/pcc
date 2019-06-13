@@ -30,8 +30,8 @@ class Data_Parser:
         """ Get Expected Role from the group list
         """
         for data in eval(str(resp_data))['Data']:
-            if str(data['Name']) == str(expect_role):
-                    return True, str(data['Id'])
+            if str(data['name']) == str(expect_role):
+                    return True, str(data['id'])
         return False, None
 
     def validate_sites(self, resp_data, expect_site):
