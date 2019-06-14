@@ -34,3 +34,8 @@ site3_name = "@#%$@"
 site3_desc = "@#%$@"
 site4_name = "updated_site"
 site4_desc = "updated_site"
+
+
+tenant1_name = "test01_tenant"
+tenant1_desc = "test01_tenant"
+

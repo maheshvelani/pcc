@@ -1,7 +1,7 @@
 
 class Data_Parser:
     
-    def Validate_Node(self, resp_data, node_name):
+    def validate_node(self, resp_data, node_name):
         """ find added node from node list
         """
         for data in eval(str(resp_data))['Data']:
@@ -50,4 +50,20 @@ class Data_Parser:
                 return True, str(data['Id'])
         return False, None
 
+    def validate_node_site(self, resp_data, node_name, site_id):
+        """ validated updated site in node
+        """
+        for data in eval(str(resp_data))['Data']:
+            if str(data['Name']) == str(node_name):
+                if int(data['Site_Id']) == int(site_id):
+                    return True, str(data['Id'])
+        return False, None
+
+    def get_tenant_id(self, response, tenant_name):
+        """get tenant id from tenant list
+        """
+        for tenant in response:
+            if str(tenant['name']) == str(tenant_name):
+                return str(tenant['id'])
+        return None
 

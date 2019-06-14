@@ -54,3 +54,54 @@ class Request(RequestsLibrary):
 	            timeout)
             dataStr = self._format_data_to_log_string_according_to_header(data, headers)
             return response
+
+        def put_request(
+            self,
+            alias,
+            uri,
+            data=None,
+            json=None,
+            params=None,
+            files=None,
+            headers=None,
+            allow_redirects=None,
+            timeout=None):
+            """ Send a PUT request on the session object found using the
+            given `alias`
+            ``alias`` that will be used to identify the Session object in the cache
+            ``uri`` to send the PUT request to
+            ``data`` a dictionary of key-value pairs that will be urlencoded
+               and sent as PUT data
+               or binary data that is sent as the raw body content
+            ``json`` a value that will be json encoded
+               and sent as PUT data if data is not specified
+            ``headers`` a dictionary of headers to use with the request
+            ``allow_redirects`` Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.
+            ``params`` url parameters to append to the uri
+            ``timeout`` connection timeout
+            """
+            session = self._cache.switch(alias)
+            data = self._format_data_according_to_header(session, data, headers)
+            redir = True if allow_redirects is None else allow_redirects
+
+            if json:
+                json = { str(key):int(val) for key, val in json.items()}
+
+            response = self._body_request(
+            "put",
+            session,
+            uri,
+            data,
+            json,
+            params,
+            files,
+            headers,
+            redir,
+            timeout)
+
+            if isinstance(data, bytes):
+                data = data.decode('utf-8')
+            print('Put Request using : alias=%s, uri=%s, data=%s, \
+                    headers=%s, allow_redirects=%s ' % (alias, uri, data, headers, redir))
+
+            return response
