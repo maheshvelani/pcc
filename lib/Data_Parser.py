@@ -67,3 +67,20 @@ class Data_Parser:
                 return str(tenant['id'])
         return None
 
+    def validate_node_group(self, resp_data, node_name, group_id):
+        """ validated Assigned Group in node
+        """
+        for data in eval(str(resp_data))['Data']:
+            if str(data['Name']) == str(node_name):
+                if int(data['ClusterId']) == int(group_id):
+                    return True, str(data['Id'])
+        return False, None
+
+    def validate_node_roles(self, resp_data, node_name, role_id):
+        """ validated Assigned Roles in node
+        """
+        for data in eval(str(resp_data))['Data']:
+            if str(data['Name']) == str(node_name):
+                if int(role_id) in list(data['roles']):
+                    return True, str(data['Id'])
+        return False, None
