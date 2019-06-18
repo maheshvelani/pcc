@@ -3,7 +3,7 @@ Library  	OperatingSystem
 Library  	Collections
 Library  	String
 
-Library    	    ${CURDIR}/../lib/Request.py
+Library    	${CURDIR}/../lib/Request.py
 Variables       ${CURDIR}/../test_data/Test_Data.py
 Variables       ${CURDIR}/../test_data/Url_Paths.py
 Library         ${CURDIR}/../lib/Data_Parser.py
@@ -15,12 +15,101 @@ Suite Teardown    Delete All Sessions
 
 *** test cases ***
 
+PCC-Tenant-Creation
+	[Tags]    Tenant Mgmt    regression_test
+	[Documentation]    Adding a new Tenant
+	
+	# Create Tenant
+	&{data}    Create Dictionary    name=${tenant2_name}   description=${tenant2_desc}
+ 	${resp}    Post Request    platina    ${add_tenant}    json=${data}     headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        # Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings  ${resp.status_code}    200 
+        Sleep    10s
+
+	# Get Tenant Id
+	${resp}  Get Request    platina   ${tenant_list}    params=${data}  headers=${headers}
+	Log    \n Status code = ${resp.status_code}    console=yes
+	Log    \n Response = ${resp.json()}    console=yes
+	Should Be Equal As Strings  ${resp.status_code}    200
+        ${status}    ${tenant_id}    Get Tenant Id    ${resp.json()}    ${tenant2_name}
+	Should Be Equal As Strings    ${status}    True    msg=Tenant ${tenant2_name} is not present in node list
+	Set Suite Variable    ${tenant2_id}    ${tenant_id}
+        Log    \n tenant ID = ${tenant2_id}    console=yes
+
+
+PCC-Sub-Tenant-Creation
+        [Tags]    Tenant Mgmt    regression_test
+        [Documentation]    Adding a New Sub-Tenant
+		
+	# Create Tenant
+	&{data}    Create Dictionary    name=${tenant3_name}   description=${tenant3_desc}    parent=${tenant2_id}
+ 	${resp}    Post Request    platina    ${add_tenant}    json=${data}     headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        # Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings  ${resp.status_code}    200
+        Sleep    10s
+	
+	# Get Tenant Id
+	${resp}  Get Request    platina   ${tenant_list}    params=${data}  headers=${headers}
+	Log    \n Status code = ${resp.status_code}    console=yes
+	Log    \n Response = ${resp.json()}    console=yes
+	Should Be Equal As Strings  ${resp.status_code}    200
+        ${status}    ${tenant_id}    Get Tenant Id    ${resp.json()}    ${tenant3_name}
+	Should Be Equal As Strings    ${status}    True    msg=Tenant ${tenant3_name} is not present in node list
+	${status}    Verify Parent Tenant    ${resp.json()}    ${tenant3_name}    ${tenant2_id}
+	Set Suite Variable    ${tenant3_id}    ${tenant_id}
+        Log    \n tenant ID = ${tenant3_id}    console=yes
+
+
+PCC-Sub-Tenant-Deletion
+	[Tags]    Tenant Mgmt    regression_test
+	[Documentation]    Delete Existing Sub-Tenant
+	
+	# Create Tenant
+	&{data}    Create Dictionary    id=${tenant3_id}
+ 	${resp}    Post Request    platina    ${delete_tenant}    json=${data}     headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        # Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings  ${resp.status_code}    200 
+        Sleep    10s
+
+	# Get Tenant Id
+	${resp}  Get Request    platina   ${tenant_list}    params=${data}  headers=${headers}
+	Log    \n Status code = ${resp.status_code}    console=yes
+	Log    \n Response = ${resp.json()}    console=yes
+	Should Be Equal As Strings  ${resp.status_code}    200
+        ${status}    ${tenant_id}    Get Tenant Id    ${resp.json()}    ${tenant3_name}
+	Should Be Equal As Strings    ${status}    False    msg=Tenant ${tenant3_name} not deleted
+
+
+PCC-Tenant-Deletion
+	[Tags]    Tenant Mgmt    regression_test
+	[Documentation]    Delete Existing Tenant
+	
+	# Create Tenant
+	&{data}    Create Dictionary    id=${tenant2_id}
+ 	${resp}    Post Request    platina    ${delete_tenant}    json=${data}     headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        # Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings  ${resp.status_code}    200 
+        Sleep    10s
+
+	# Get Tenant Id
+	${resp}  Get Request    platina   ${tenant_list}    params=${data}  headers=${headers}
+	Log    \n Status code = ${resp.status_code}    console=yes
+	Log    \n Response = ${resp.json()}    console=yes
+	Should Be Equal As Strings  ${resp.status_code}    200
+        ${status}    ${tenant_id}    Get Tenant Id    ${resp.json()}    ${tenant2_name}
+	Should Be Equal As Strings    ${status}    False    msg=Tenant ${tenant3_name} not deleted
+
+
 Pcc-node-summary-add-node
-	[Tags]    Node Management    regression_test
+	[Tags]    Node Management    regression_test    
 	[Documentation]    Add node in the PCC
 
 	# Add Node
-	&{data}    Create Dictionary  	Name=${node1_name}  Host=${node1_host_addr}  
+	&{data}    Create Dictionary  	Name=${node1_name}  Host=${node1_host_addr}
 	...	bmc=${node1_bmc}  bmcUser=${node1_bmc_user}  bmcPassword=${node1_bmc_pwd}  bmcUsers=@{bmc_users}
 	${resp}    Post Request    platina    ${add_node}    json=${data}   headers=${headers}
 	Log    \n Status code = ${resp.status_code}    console=yes
@@ -32,6 +121,10 @@ Pcc-node-summary-add-node
 
 	# Validate Added Node
 	&{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
+	${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
+	Sleep    3s
+	${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
+	Sleep    3s
 	${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
     	Log    \n Status code = ${resp.status_code}    console=yes
     	Log    \n Response = ${resp.json()}    console=yes
@@ -72,7 +165,7 @@ Pcc-node-summary-add-node-without-BMC-password
 	Should Be Equal As Strings    ${status}    True    msg=node ${node2_name} is not present in node list
 
 
-Pcc-node-summary-add-node-managed-by-pcc
+Pcc-node-summary-add-node-managed-by-pcc    
 	[Tags]    Node Management    regression_test
 	[Documentation]    Add node – managed-by-pcc check box should be not be checked by default
 
@@ -88,10 +181,36 @@ Pcc-node-summary-add-node-managed-by-pcc
 
 
 Pcc-Node-summary-DeleteNode
-	[Tags]    Node Management    regression_test
+	[Tags]    Node Management    regression_test    
 	[Documentation]    We can delete the Node
 
-    	@{data}    Create List    ${node2_id}
+	# Add Node
+	&{data}    Create Dictionary  	Name=${node4_name}  Host=${node4_host_addr}
+	...	bmc=${node4_bmc}  bmcUser=${node4_bmc_user}  bmcPassword=${node4_bmc_pwd}  bmcUsers=@{bmc_users}
+	${resp}    Post Request    platina    ${add_node}    json=${data}   headers=${headers}
+	Log    \n Status code = ${resp.status_code}    console=yes
+	Log    \n Response = ${resp.json()}    console=yes
+	Should Be Equal As Strings    ${resp.status_code}    200
+	Should Be Equal As Strings    ${resp.json()['status']}    200
+
+	Sleep    60s
+
+	# Validate Added Node
+	&{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
+	${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
+	Sleep    3s
+	${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
+	Sleep    3s
+	${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
+    	Log    \n Status code = ${resp.status_code}    console=yes
+    	Log    \n Response = ${resp.json()}    console=yes
+    	Should Be Equal As Strings    ${resp.status_code}    200
+    	Should Be Equal As Strings    ${resp.json()['status']}    200
+ 	${status}    ${node_id}    Validate Node    ${resp.json()}    ${node4_name}
+ 	Log    \n Node ${node4_name} ID = ${node_id}   console=yes
+	Set Suite Variable    ${node4_id}    ${node_id}
+
+    	@{data}    Create List    ${node4_id}
 	${resp}    Post Request    platina    ${delete_node}    headers=${headers}    json=${data}
     	Log    \n Status code = ${resp.status_code}    console=yes
     	Log    \n Response = ${resp.json()}    console=yes
@@ -107,8 +226,8 @@ Pcc-Node-summary-DeleteNode
    	Log    \n Response = ${resp.json()}    console=yes
     	Should Be Equal As Strings    ${resp.status_code}    200
     	Should Be Equal As Strings    ${resp.json()['status']}    200
- 	${status}    ${node_id}    Validate Node    ${resp.json()}    ${node2_name}
-	Should Be Equal As Strings    ${status}    False    msg=node ${node2_name} is present in node list
+ 	${status}    ${node_id}    Validate Node    ${resp.json()}    ${node4_name}
+	Should Be Equal As Strings    ${status}    False    msg=node ${node4_name} is present in node list
 
 
 Pcc-node-summary-add-node-with-some-features
@@ -352,7 +471,7 @@ Pcc-sites-add-site
        Should Be Equal As Strings    ${status}    True    msg=Site ${site1_name} is not present in Site list
 
 
-Pcc-sites-add-site
+Pcc-sites-add-site-without-name
        [Tags]    Sites    regression_test
        [Documentation]    Add Site in the PCC without adding required name
 
@@ -430,7 +549,7 @@ Pcc-sites-delete-site
 
 
 Pcc-Node-Site-Assignment
-        [Tags]    Sites    regression_test
+        [Tags]    Node Management    regression_test
         [Documentation]    Assign a particular site to a Node
 
         # Update Site With Node
@@ -470,7 +589,7 @@ PCC-Node-Tenant-Assignment
 	Log    \n Status code = ${resp.status_code}    console=yes
 	Log    \n Response = ${resp.json()}    console=yes
 	Should Be Equal As Strings  ${resp.status_code}    200
-	${tenant1_id}    Get Tenant Id    ${resp.json()}    ${tenant1_name}
+	${status}    ${tenant1_id}    Get Tenant Id    ${resp.json()}    ${tenant1_name}
         Log    \n tenant ID = ${tenant1_id}    console=yes
 	
 	# Update Node With Tenants
@@ -622,7 +741,7 @@ Pcc-sites-delete-site
 	Should Be Equal As Strings    ${status}    False    msg=Deleted Site ${site2_name} is present in Site list
 
 
-Pcc-sites-delete-site
+Pcc-sites-delete-site-associated-with-node
 	[Tags]    Sites    regression_test
         [Documentation]    Delete Site in the PCC when site is associated with the Group
 

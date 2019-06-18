@@ -8,7 +8,6 @@ node1_bmc = "172.17.3.29"
 node1_bmc_user = "ADMIN"
 node1_bmc_pwd = "ADMIN"
 
-
 node2_name = "i31"
 node2_host_addr = "172.17.2.29"
 node2_bmc = "172.17.3.29"
@@ -18,6 +17,12 @@ node3_name = "i32"
 node3_host_addr = "172.17.2.29"
 node3_bmc = "172.17.3.29"
 node3_bmc_pwd = "ADMIN"
+
+node4_name = "i33"
+node4_host_addr = "172.17.2.29"
+node4_bmc = "172.17.3.29"
+node4_bmc_user = "ADMIN"
+node4_bmc_pwd = "ADMIN"
 
 group1_name = "Test_Group"
 group1_desc = "Test_Group"
@@ -49,5 +54,9 @@ site7_desc = "test_site7"
 
 tenant1_name = "test01_tenant"
 tenant1_desc = "test01_tenant"
+tenant2_name = "test02_tenant"
+tenant2_desc = "test02_tenant"
+tenant3_name = "test03_tenant"
+tenant3_desc = "test03_tenant"
 
 delete_site_err = """pq: update or delete on table "sites" violates foreign key constraint"""
