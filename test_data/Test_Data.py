@@ -24,6 +24,9 @@ node4_bmc = "172.17.3.29"
 node4_bmc_user = "ADMIN"
 node4_bmc_pwd = "ADMIN"
 
+node5_name = "i99"
+node5_host_addr = "172.17.4.29"
+
 group1_name = "Test_Group"
 group1_desc = "Test_Group"
 group2_name = "Test_Group_2"

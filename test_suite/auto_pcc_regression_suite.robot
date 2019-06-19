@@ -255,7 +255,6 @@ Pcc-node-summary-add-node-with-some-features
 	${status}    ${node_id}    Validate Node    ${resp.json()}    ${node3_name}
 	Should Be Equal As Strings    ${status}    True    msg=node ${node3_name} is not present in node list
 
-
 Pcc-Node-Group-Create
     	[Tags]    Node Attributes    regression_test
     	[Documentation]    Node Group Creation
@@ -483,7 +482,7 @@ Pcc-sites-add-site-without-name
        Should Not Be Equal As Strings  ${resp.status_code}    200    msg=Site Created without site name and with description only
 
 
-Pcc-sites-delete-site
+Pcc-sites-delete-multiple-site
        [Tags]    Sites    regression_test
        [Documentation]    Delete Multiple Sites 
 
@@ -759,6 +758,34 @@ Pcc-sites-delete-site-associated-with-node
         Should Be Equal As Strings    ${resp.status_code}    535
         Should Be Equal As Strings    ${resp.json()['status']}    535
 	Should Contain    ${resp.json()['error']}    ${delete_site_err}
+
+
+Pcc-Node-Advance-Setting
+	[Tags]    Node Management    regression_test    tmp
+	[Documentation]    In advance option user can modify Node related settings
+
+ 	# Update Node
+        &{data}    Create Dictionary  Id=${node1_id}    Name=${node5_name}    Host=${node5_host_addr}
+        ${resp}  Put Request    platina    ${add_group_to_node}    json=${data}     headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings  ${resp.status_code}    200
+
+	Sleep    60s
+
+       	# Validated Assigned Group
+       	&{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
+       	${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
+        Sleep    3s
+       	${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
+        Sleep    3s
+       	${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
+       	Log    \n Status code = ${resp.status_code}    console=yes
+       	Log    \n Response = ${resp.json()}    console=yes
+       	Should Be Equal As Strings    ${resp.status_code}    200
+       	Should Be Equal As Strings    ${resp.json()['status']}    200
+       	${status}    ${node1_id}    Validate Node    ${resp.json()}    ${node5_name}    ${node5_host_addr}
+	Should Be Equal As Strings    ${status}    True    msg=node ${node5_name} is not present in node list
 
 
 *** Variables ***

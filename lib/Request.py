@@ -91,6 +91,8 @@ class Request(RequestsLibrary):
                     json = { str(key):int(val) for key, val in json.items()}
                 except:
                     json= json
+		if json.has_key("Id"):
+                    json['Id'] = int(json['Id'])
 
             if json:
                 if json.has_key("roles"):

@@ -11,13 +11,16 @@
 
 class Data_Parser:
     
-    def validate_node(self, resp_data, node_name):
+    def validate_node(self, resp_data, node_name, host=None):
         """ find added node from node list
         """
         try:
             if resp_data['Data'] != None:
                 for data in eval(str(resp_data))['Data']:
                     if str(data['Name']) == str(node_name):
+                        if host:
+                            if str(data['Host']) == str(host):
+                                return True, str(data['Id'])
                         return True, str(data['Id'])
             return False, None
         except Exception:
