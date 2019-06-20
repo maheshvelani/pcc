@@ -761,7 +761,7 @@ Pcc-sites-delete-site-associated-with-node
 
 
 Pcc-Node-Advance-Setting
-	[Tags]    Node Management    regression_test    tmp
+	[Tags]    Node Management    regression_test
 	[Documentation]    In advance option user can modify Node related settings
 
  	# Update Node
