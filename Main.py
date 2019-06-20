@@ -10,6 +10,8 @@ import os
 import sys
 from time import gmtime, strftime
 
+test_suite = "auto_pcc_regression_suite.robot"
+
 class Main:
 
     def __init__(self):
@@ -27,7 +29,7 @@ class Main:
         """
         time_str = cls.get_current_time()
         os.system("robot -l ./logs/log_{0}.html -r ./logs/report_{0}.html -o ./logs/output_{0}.xml \
-                  ./test_suite/auto_pcc_regression_suite.robot".format(time_str))
+                  ./test_suite/{1}".format(time_str, test_suite))
 
 
 if __name__ == '__main__':
