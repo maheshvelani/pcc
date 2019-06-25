@@ -10,7 +10,7 @@ import os
 import sys
 from time import gmtime, strftime
 
-test_suite = "auto_pcc_regression_suite.robot"
+test_suite = "pcc_login_test.robot"
 
 class Main:
 
