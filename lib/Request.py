@@ -115,3 +115,16 @@ class Request(RequestsLibrary):
                     headers=%s, allow_redirects=%s ' % (alias, uri, data, headers, redir))
 
             return response
+
+
+#        def custom_post_request(self, url='', data=''):
+#            """
+#            Custom post request without session creation
+#            """
+#            import requests
+#            import sys, pdb; pdb.Pdb(stdout=sys.__stdout__).set_trace()
+#
+#            resp = requests.post(url, json=data, verify = False)
+#            print("resp.status_code")
+#            print("resp.jaon()")
+#            return {"status_code" : resp.status_code, "json" : resp.json()}
