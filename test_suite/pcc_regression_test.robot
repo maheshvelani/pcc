@@ -33,7 +33,7 @@ PCC-Tenant-Creation
 	Log    \n Response = ${resp.json()}    console=yes
 	Should Be Equal As Strings  ${resp.status_code}    200
         ${status}    ${tenant_id}    Get Tenant Id    ${resp.json()}    ${tenant2_name}
-	Should Be Equal As Strings    ${status}    True    msg=Tenant ${tenant2_name} is not present in node list
+	Should Be Equal As Strings    ${status}    True    msg=Tenant ${tenant2_name} is not present in tenant list
 	Set Suite Variable    ${tenant2_id}    ${tenant_id}
         Log    \n tenant ID = ${tenant2_id}    console=yes
 
@@ -56,7 +56,7 @@ PCC-Sub-Tenant-Creation
 	Log    \n Response = ${resp.json()}    console=yes
 	Should Be Equal As Strings  ${resp.status_code}    200
         ${status}    ${tenant_id}    Get Tenant Id    ${resp.json()}    ${tenant3_name}
-	Should Be Equal As Strings    ${status}    True    msg=Tenant ${tenant3_name} is not present in node list
+	Should Be Equal As Strings    ${status}    True    msg=Tenant ${tenant3_name} is not present in tenant list
 	${status}    Verify Parent Tenant    ${resp.json()}    ${tenant3_name}    ${tenant2_id}
 	Set Suite Variable    ${tenant3_id}    ${tenant_id}
         Log    \n tenant ID = ${tenant3_id}    console=yes
@@ -134,6 +134,8 @@ Pcc-node-summary-add-node
  	Log    \n Node ${node1_name} ID = ${node_id}   console=yes
 	Set Suite Variable    ${node1_id}    ${node_id}
 	Should Be Equal As Strings    ${status}    True    msg=node ${node1_name} is not present in node list
+ 	${status}    Validate Node Online Status    ${resp.json()}    ${node1_name}
+	Should Be Equal As Strings    ${status}    True    msg=node ${node1_name} added successfully but it is offline
 
 
 Pcc-node-summary-add-node-without-BMC-password
@@ -150,10 +152,14 @@ Pcc-node-summary-add-node-without-BMC-password
 	Should Be Equal As Strings    ${resp.status_code}    200
 	Should Be Equal As Strings    ${resp.json()['status']}    200
 
-	Sleep    40s
+	Sleep    60s
 
 	# Validate Added Node
 	&{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
+	${resp}  Get Request    platina   ${get_node_list}    params=${data}     headers=${headers}
+	Sleep    3s
+	${resp}  Get Request    platina   ${get_node_list}    params=${data}     headers=${headers}
+	Sleep    3s
 	${resp}  Get Request    platina   ${get_node_list}    params=${data}     headers=${headers}
     	Log    \n Status code = ${resp.status_code}    console=yes
    	Log    \n Response = ${resp.json()}    console=yes
@@ -163,9 +169,11 @@ Pcc-node-summary-add-node-without-BMC-password
  	Set Suite Variable    ${node2_id}    ${node_id}
  	Log    \n Node ${node2_name} ID = ${node2_id}   console=yes
 	Should Be Equal As Strings    ${status}    True    msg=node ${node2_name} is not present in node list
+ 	${status}    Validate Node Online Status    ${resp.json()}    ${node2_name}
+	Should Be Equal As Strings    ${status}    True    msg=node ${node2_name} added successfully but it is offline
 
 
-Pcc-node-summary-add-node-managed-by-pcc    
+Pcc-node-summary-add-node-managed-by-pcc
 	[Tags]    Node Management    regression_test
 	[Documentation]    Add node – managed-by-pcc check box should be not be checked by default
 
@@ -217,7 +225,7 @@ Pcc-Node-summary-DeleteNode
     	Should Be Equal As Strings    ${resp.status_code}    200
     	Should Be Equal As Strings    ${resp.json()['status']}    200
 
-	Sleep    40s
+	Sleep    60s
 
 	# Validate Deleted Node
 	&{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
@@ -243,10 +251,14 @@ Pcc-node-summary-add-node-with-some-features
 	Should Be Equal As Strings    ${resp.status_code}    200
 	Should Be Equal As Strings    ${resp.json()['status']}    200
 
-	Sleep    40s
+	Sleep    60s
 
 	# Validate Added Node
 	&{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
+	${resp}  Get Request    platina   ${get_node_list}    params=${data}     headers=${headers}
+	Sleep    3s
+	${resp}  Get Request    platina   ${get_node_list}    params=${data}     headers=${headers}
+	Sleep    3s
 	${resp}  Get Request    platina   ${get_node_list}    params=${data}     headers=${headers}
     	Log    \n Status code = ${resp.status_code}    console=yes
     	Log    \n Response = ${resp.json()}    console=yes
@@ -254,6 +266,9 @@ Pcc-node-summary-add-node-with-some-features
     	Should Be Equal As Strings    ${resp.json()['status']}    200
 	${status}    ${node_id}    Validate Node    ${resp.json()}    ${node3_name}
 	Should Be Equal As Strings    ${status}    True    msg=node ${node3_name} is not present in node list
+ 	${status}    Validate Node Online Status    ${resp.json()}    ${node3_name}
+	Should Be Equal As Strings    ${status}    True    msg=node ${node3_name} added successfully but it is offline
+
 
 Pcc-Node-Group-Create
     	[Tags]    Node Attributes    regression_test

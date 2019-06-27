@@ -14,3 +14,5 @@ tenant_list = "/user-management/tenant/list/"
 node_tenant_assignment = "/user-management/tenant/nodes/update/"
 add_group_to_node = "/pccserver/node/update/"
 delete_tenant = "/user-management/tenant/delete/"
+get_maas_images = "/maas/images/"
+

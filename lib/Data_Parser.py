@@ -140,3 +140,40 @@ class Data_Parser:
             return False, None
         except Exception:
             return False, None
+
+    def get_maas_role_id(self, resp_data):
+        """ Get MaaS role Id from response
+        """
+        try:
+            for data in eval(str(resp_data))['Data']:
+                if str(data['name']) == "MaaS":
+                    return True, str(data['id'])
+            return False, None
+        except Exception:
+            return False, None
+
+    def validate_node_online_status(self, resp_data, node_name):
+        """ Verify Node Online Status
+        """
+        try:
+            if resp_data['Data'] != None:
+                for data in eval(str(resp_data))['Data']:
+                    if str(data['Name']) == str(node_name):
+                        if str(data['nodeAvailabilityStatus']['connectionStatus']) == "online":
+                            return True
+                        else:
+                            return False
+            return False
+        except Exception:
+            return False
+
+    def get_centOS_image_id(self, resp_data):
+        """ Get CENT OS image ID
+        """
+        try:
+            for data in a['Data']:
+                if "centos" in data['name']:
+		    return True, str(data['id'])
+            return False, None
+        except Exception:
+            return False, None
