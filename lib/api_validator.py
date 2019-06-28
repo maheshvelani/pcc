@@ -14,9 +14,7 @@ import json
 
 
 
-import pdb
-pdb.set_trace()
-test_data = {'username':'admin', 'password':'platina123'}
+test_data = {'username':'admin', 'password':'admin'}
 
 # Login
 resp = requests.post('https://172.17.2.47:9999/security/auth/', json=test_data, verify = False)

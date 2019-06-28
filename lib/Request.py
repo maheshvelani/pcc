@@ -80,7 +80,6 @@ class Request(RequestsLibrary):
             ``params`` url parameters to append to the uri
             ``timeout`` connection timeout
             """
-            #import sys, pdb; pdb.Pdb(stdout=sys.__stdout__).set_trace()
 
             session = self._cache.switch(alias)
             data = self._format_data_according_to_header(session, data, headers)
@@ -96,7 +95,12 @@ class Request(RequestsLibrary):
 
             if json:
                 if json.has_key("roles"):
-                    json["roles"] = [json["roles"]]
+                    #import sys, pdb; pdb.Pdb(stdout=sys.__stdout__).set_trace()
+                    if type(json["roles"]) == list:
+                        json["roles"] = [ int(val) for val in json["roles"] ]
+                    else:
+                        json["roles"] = [json["roles"]]
+
             response = self._body_request(
             "put",
             session,
