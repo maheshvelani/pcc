@@ -30,6 +30,7 @@ class Request(RequestsLibrary):
 	        ``allow_redirects`` Boolean. Set to True if POST/PUT/DELETE redirect following is allowed.
 	        ``timeout`` connection timeout
 	    """
+            # import sys, pdb; pdb.Pdb(stdout=sys.__stdout__).set_trace()
 	    session = self._cache.switch(alias)
 	    if not files:
 	        data = self._format_data_according_to_header(session, data, headers)
@@ -40,7 +41,11 @@ class Request(RequestsLibrary):
             if json:
                 if type(json) == list:
                     json = [ int(x) for x in json ]
-    
+
+            if str(uri) == "/maas/deployments/":
+               json['nodes'] = eval(json['nodes'])
+               json['sshKeys'] = eval(json['sshKeys'])
+
             response = self._body_request(
 	            "post",
 	            session,
@@ -95,7 +100,6 @@ class Request(RequestsLibrary):
 
             if json:
                 if json.has_key("roles"):
-                    #import sys, pdb; pdb.Pdb(stdout=sys.__stdout__).set_trace()
                     if type(json["roles"]) == list:
                         json["roles"] = [ int(val) for val in json["roles"] ]
                     else:

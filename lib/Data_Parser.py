@@ -177,3 +177,20 @@ class Data_Parser:
             return False, None
         except Exception:
             return False, None
+
+
+    def validate_node_provision_status(self, resp_data, node_name):
+        """ Verify Node Online Status
+        """
+        try:
+            if resp_data['Data'] != None:
+                for data in eval(str(resp_data))['Data']:
+                    if str(data['Name']) == str(node_name):
+                        if str(data['provisionStatus']) == "Finished":
+                            return True
+                        else:
+                            return False
+            return False
+        except Exception:
+            return False
+
