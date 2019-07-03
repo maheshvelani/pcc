@@ -4,7 +4,7 @@ user_pwd  = "admin"
 
 
 # Node Data
-node_name = "i-58"
+node_name = "i58"
 
 
 # MaaS installation Inveder Data
@@ -14,15 +14,15 @@ inveder_usr_pwd = "cals0ft"
 
 
 # OS Deployment data
+server_name = "sv8"
 image_name = "centos76"
 en_US = "en_US"
 PDT = "PDT"
 mass_user = "auto_test"
-server_name = "sv9"
 ssh_key = "['pcc']"
 
 
 # OS Deployment server IP
-server_ip = ""
-server_usr_name = ""
-server_usr_pwd = ""
+server_ip = "172.17.2.101"
+server_usr_name = "pcc"
+server_usr_pwd = "cals0ft"

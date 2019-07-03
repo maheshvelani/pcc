@@ -3,7 +3,7 @@ Library  	OperatingSystem
 Library  	Collections
 Library  	String
 Library         SSHLibrary
-
+Library		Process
 
 Library    	${CURDIR}/../lib/Request.py
 Variables       ${CURDIR}/../test_data/MaaS_Test_Data.py
@@ -64,16 +64,16 @@ pcc_MaaS_Enable_Bare_Metal_Services
 	# Verify Maas Installation Complete status
        	&{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
        	${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
-       	Log    \n Status code = ${resp.status_code}    console=yes
-       	Log    \n Response = ${resp.json()}    console=yes
+	Log    \n Status code = ${resp.status_code}    console=yes
+	Log    \n Response = ${resp.json()}    console=yes
        	Should Be Equal As Strings    ${resp.status_code}    200
        	Should Be Equal As Strings    ${resp.json()['status']}    200
-       	#${status}    ${node_id}    Validate Node Roles    ${resp.json()}    ${node_name}    ${maas_role_id}
-       	#Should Be Equal As Strings    ${status}    True    msg=Node ${node_name} is not updated with the MaaS Roles
+	${status}    ${node_id}    Validate Node Roles    ${resp.json()}    ${node_name}    ${maas_role_id}
+	Should Be Equal As Strings    ${status}    True    msg=Node ${node_name} is not updated with the MaaS Roles
 
 	Run Keyword And Ignore Error	Verify mass installation process completed
 	# Terminate connection with invaders
- 	Close All Connections
+	Close All Connections
 
         # Get Server Id and online status
 	&{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
@@ -107,10 +107,20 @@ pcc_MaaS_Enable_Bare_Metal_Services
         Should Be Equal As Strings    ${resp.status_code}    200
         Should Be Equal As Strings    ${resp.json()['status']}    200
         ${status}    Validate Node Provision Status    ${resp.json()}    ${server_name}
-        Should Be Equal As Strings    ${status}    True    msg=Provision Status of server ${server_name} is not Finished
+	Should Be Equal As Strings    ${status}    True    msg=Provision Status of server ${server_name} is not Finished
 
 	# Verify CentOS installed in remote machine
-	Verify CentOS installed in server machine
+    	Run Keyword And Ignore Error    Verify CentOS installed in server machine
+
+	# Delete MaaS roles from Inveder
+	@{roles_group}    create list
+        &{data}    Create Dictionary  Id=${node_id}    roles=${roles_group}
+        ${resp}  Put Request    platina    ${add_group_to_node}    json=${data}     headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings  ${resp.status_code}    200
+	# Wait for few sec to delet roles
+	Sleep    5 minutes
 
 #	# Get MaaS image ID
 #       ${resp}    Get Request    platina    ${get_maas_images}    headers=${headers}
@@ -141,9 +151,9 @@ Verify mass installation process completed
 
 Verify CentOS installed in server machine
        	Open Connection     ${server_ip}    timeout=1 hour
-	Login               ${server_usr_name}        ${server_usr_pwd}
+	Login                 pcc    cals0ft
         Sleep    2s
 
-        ${output}=         Execute Command    uname -a
+        ${output}=         Execute Command    uptime
         Log    \n\n SERVER DATA = ${output}    console=yes
-	Should Contain    ${output}    Darwin
+	#Should Contain    ${output}    Darwin
