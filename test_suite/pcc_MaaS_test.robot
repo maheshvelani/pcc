@@ -30,6 +30,16 @@ pcc_MaaS_Enable_Bare_Metal_Services
         Set Suite Variable    ${maas_role_id}    ${role_id}
         Log    \n MaaS Role ID = ${maas_role_id}    console=yes
 
+        # Get Id of LLDP role
+        ${resp}  Get Request    platina   ${add_role}    headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings  ${resp.status_code}    200
+        ${status}    ${role_id}    Get LLDP Role Id    ${resp.json()}
+        Should Be Equal As Strings    ${status}    True    msg=LLDP Role Not Found in Roles
+        Set Suite Variable    ${lldp_role_id}    ${role_id}
+        Log    \n LLDP Role ID = ${lldp_role_id}    console=yes
+
         # Get Node Id and online status
 	&{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
         ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
@@ -45,7 +55,7 @@ pcc_MaaS_Enable_Bare_Metal_Services
         Should Be Equal As Strings    ${status}    True    msg=node ${node_name} added successfully but it is offline
 
         # Assign MaaS role to node
-	@{roles_group}    create list    2    ${maas_role_id}
+	@{roles_group}    create list    ${lldp_role_id}    ${maas_role_id}
         &{data}    Create Dictionary  Id=${node_id}    roles=${roles_group}
         ${resp}  Put Request    platina    ${add_group_to_node}    json=${data}     headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes

@@ -154,6 +154,17 @@ class Data_Parser:
         except Exception:
             return False, None
 
+    def get_lldp_role_id(self, resp_data):
+        """ Get LLDP role Id from response
+        """
+        try:
+            for data in eval(str(resp_data))['Data']:
+                if str(data['name']) == "LLDP":
+                    return True, str(data['id'])
+            return False, None
+        except Exception:
+            return False, None
+
     def validate_node_online_status(self, resp_data, node_name):
         """ Verify Node Online Status
         """
@@ -179,7 +190,6 @@ class Data_Parser:
             return False, None
         except Exception:
             return False, None
-
 
     def validate_node_provision_status(self, resp_data, node_name):
         """ Verify Node Online Status
