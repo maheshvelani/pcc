@@ -19,7 +19,7 @@ Add Invader as a Node
 
         # Add Invader Node
 	&{data}    Create Dictionary  	Name=${invader_node_name}  Host=${invader_node_host}
-	Log    Creating Invader with parameters : \n${data} \n    console=yes
+	Log    \nCreating Invader Node with parameters : \n${data}\n    console=yes
 	${resp}    Post Request    platina    ${add_node}    json=${data}   headers=${headers}
 	Log    \n Status code = ${resp.status_code}    console=yes
 	Log    \n Response = ${resp.json()}    console=yes
@@ -65,7 +65,7 @@ Add Server as a Node
 	...    console=${server_console}  bmc=${server_bmc_host}  bmcUser=${server_bmc_user}
 	...    bmcPassword=${server_bmc_pwd}  bmcUsers=@{server_bmc_users}
 	...    sshKeys=@{server_ssh_keys}  managed=${${server_managed_by_pcc}}
-	Log    Creating Server with parameters : \n${data} \n    console=yes
+	Log    \nCreating Server node with parameters : \n${data}\n    console=yes
 	${resp}    Post Request    platina    ${add_node}    json=${data}   headers=${headers}
 	Log    \n Status code = ${resp.status_code}    console=yes
 	Log    \n Response = ${resp.json()}    console=yes
