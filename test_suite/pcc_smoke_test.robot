@@ -76,7 +76,7 @@ Add Server as a Node
 	Sleep    90s
 
 	# Validate Added Node Present in Node List
-        &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
+	&{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
 	# Hit get_node_list API for few times to refresh the node list
 	# And verify Node availability from the latest fetched node data
 	${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
@@ -84,10 +84,10 @@ Add Server as a Node
 	${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
 	Sleep    3s
 	${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
-    	Log    \n Status code = ${resp.status_code}    console=yes
-    	Log    \n Response = ${resp.json()}    console=yes
-    	Should Be Equal As Strings    ${resp.status_code}    200
-    	Should Be Equal As Strings    ${resp.json()['status']}    200
+	Log    \n Status code = ${resp.status_code}    console=yes
+	Log    \n Response = ${resp.json()}    console=yes
+	Should Be Equal As Strings    ${resp.status_code}    200
+	Should Be Equal As Strings    ${resp.json()['status']}    200
 
  	# Parse fetched node list and verify added Node availability from response data
  	${status}    ${node_id}    Validate Node    ${resp.json()}    ${server_node_name}
@@ -98,3 +98,135 @@ Add Server as a Node
         # Verify Online Status of Added Server
  	${status}    Validate Node Online Status    ${resp.json()}    ${server_node_name}
 	Should Be Equal As Strings    ${status}    True    msg=Server ${server_node_name} added successfully but it is offline
+
+
+Create a Node Group
+	[Tags]    Smoke_Test    Groups
+	[Documentation]    Verify User Should be able to Create Node Group
+
+	# Add Group
+	&{data}    Create Dictionary  Name=${create_group_name}    Description=${create_group_desc}
+	Log    \nCreating Group with parameters: \n${data}\n    console=yes
+	${resp}  Post Request    platina   ${add_group}    json=${data}     headers=${headers}
+	Log    \n Status code = ${resp.status_code}    console=yes
+	Log    \n Response = ${resp.json()}    console=yes
+	Should Be Equal As Strings    ${resp.status_code}    200
+	Should Be Equal As Strings    ${resp.json()['status']}    200
+
+	Sleep    5s
+
+	# Validate added group present in Group List
+	${resp}  Get Request    platina   ${get_group}    headers=${headers}
+	Log    \n Status code = ${resp.status_code}    console=yes
+	Log    \n Response = ${resp.json()}    console=yes
+	Should Be Equal As Strings    ${resp.status_code}    200
+	Should Be Equal As Strings    ${resp.json()['status']}    200
+
+	# Parse fetched group list and verify added Group availability from response data
+	${status}    ${id}    Validate Group    ${resp.json()}    ${create_group_name}
+	Should Be Equal As Strings    ${status}    True    msg=Group ${create_group_name} is not present in Groups list
+	Set Suite Variable    ${create_group_id}    ${id}
+	Log    \n Group ${create_group_name} ID = ${create_group_id}   console=yes
+
+
+PCC Node Group Assignment
+	[Tags]    Smoke_Test    Groups
+	[Documentation]    Node to Group Assignment
+
+	# Verify Group is present before assign it to node
+	${resp}  Get Request    platina   ${get_group}    headers=${headers}
+	Log    \n Status code = ${resp.status_code}    console=yes
+	Log    \n Response = ${resp.json()}    console=yes
+	Should Be Equal As Strings    ${resp.status_code}    200
+	Should Be Equal As Strings    ${resp.json()['status']}    200
+	# Parse fetched group list and verify assign Group availability from response data
+	${status}    ${id}    Validate Group    ${resp.json()}    ${assign_group_name}
+	Should Be Equal As Strings    ${status}    True    msg=Group ${assign_group_name} is not present in Groups list
+	Set Suite Variable    ${assign_group_id}    ${id}
+	Log    \n Group ${assign_group_name} ID = ${assign_group_id}    console=yes
+
+	# Assign A Group to Node
+        &{data}    Create Dictionary  Id=${invader_id}    ClusterId=${assign_group_id}
+	Log    \nAssigning a Group with parameters: \n${data}\n    console=yes
+        ${resp}  Put Request    platina    ${add_group_to_node}    json=${data}     headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings  ${resp.status_code}    200
+
+	# Wait for few second to update Node with Assigned Group
+	Sleep    60s
+
+	# Validated Assigned Group
+	&{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
+	${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
+	Log    \n Status code = ${resp.status_code}    console=yes
+	Log    \n Response = ${resp.json()}    console=yes
+	Should Be Equal As Strings    ${resp.status_code}    200
+	Should Be Equal As Strings    ${resp.json()['status']}    200
+	${status}    ${node_id}    Validate Node Group    ${resp.json()}    ${invader_node_name}    ${assign_group_id}
+	Should Be Equal As Strings    ${status}    True    msg=Node ${invader_node_name} is not updated with the Group ${assign_group_name}
+
+
+Create a Node Role
+	[Tags]    Smoke_Test    Roles
+	[Documentation]    Node Role Creation
+
+	# Create a Node Role
+	&{data}    Create Dictionary  name=${create_role_name}    description=${create_role_desc}    owner=${1}
+	Log    \nCreating Node Role With Params: \n${data}\n    console=yes
+	${resp}  Post Request    platina   ${add_role}    json=${data}     headers=${headers}
+	Log    \n Status code = ${resp.status_code}    console=yes
+	Log    \n Response = ${resp.json()}    console=yes
+	Should Be Equal As Strings    ${resp.status_code}    200
+	Should Be Equal As Strings    ${resp.json()['status']}    200
+
+	# Wait for few seconds to reflect node roles over PCC
+	Sleep    5s
+
+	# Validate Added Role
+	${resp}  Get Request    platina   ${add_role}    headers=${headers}
+	Log    \n Status code = ${resp.status_code}    console=yes
+	Log    \n Response = ${resp.json()}    console=yes
+	Should Be Equal As Strings    ${resp.status_code}    200
+	Should Be Equal As Strings    ${resp.json()['status']}    200
+	${status}    ${role_id}    Validate Roles    ${resp.json()}    ${create_role_name}
+	Should Be Equal As Strings    ${status}    True    msg=Role ${create_role_name} is not present in Roles list
+	Set Suite Variable    ${create_role_id}    ${role_id}
+	Log    \n Roles ${create_role_name} ID = ${create_role_id}   console=yes
+
+
+PCC Node Role Assignment
+	[Tags]    Smoke_Test    Roles
+	[Documentation]    Node Role Assignment
+
+	# Validate Assign Role is present in Roles list
+	${resp}  Get Request    platina   ${add_role}    headers=${headers}
+	Log    \n Status code = ${resp.status_code}    console=yes
+	Log    \n Response = ${resp.json()}    console=yes
+	Should Be Equal As Strings    ${resp.status_code}    200
+	Should Be Equal As Strings    ${resp.json()['status']}    200
+	${status}    ${role_id}    Validate Roles    ${resp.json()}    ${assign_role_name}
+	Should Be Equal As Strings    ${status}    True    msg=Role ${assign_role_name} is not present in Roles list
+	Set Suite Variable    ${assign_role_id}    ${role_id}
+	Log    \n Roles ${assign_role_name} ID = ${assign_role_id}   console=yes
+
+	# Assign Role to Node
+	&{data}    Create Dictionary  Id=${invader_id}    roles=${assign_role_id}
+	${resp}  Put Request    platina    ${add_group_to_node}    json=${data}     headers=${headers}
+	Log    \n Status code = ${resp.status_code}    console=yes
+	Log    \n Response = ${resp.json()}    console=yes
+	Should Be Equal As Strings  ${resp.status_code}    200
+
+	# Wait for few seconds to reflect assign roles over node
+	Sleep    90s
+
+	# Validate Assigned Roles
+	&{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
+	${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
+	Log    \n Status code = ${resp.status_code}    console=yes
+	Log    \n Response = ${resp.json()}    console=yes
+	Should Be Equal As Strings    ${resp.status_code}    200
+	Should Be Equal As Strings    ${resp.json()['status']}    200
+	${status}    ${node_id}    Validate Node Roles    ${resp.json()}    ${invader_node_name}    ${assign_role_id}
+	Should Be Equal As Strings    ${status}    True    msg=Node ${invader_node_name} is not updated with the Roles ${assign_role_name}
+
