@@ -21,6 +21,8 @@ class Data_Parser:
                         if host:
                             if str(data['Host']) == str(host):
                                 return True, str(data['Id'])
+                            else:
+                                return False, None
                         return True, str(data['Id'])
             return False, None
         except Exception:

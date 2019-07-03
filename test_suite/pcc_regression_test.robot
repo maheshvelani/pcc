@@ -4,7 +4,7 @@ Library  	Collections
 Library  	String
 
 Library    	${CURDIR}/../lib/Request.py
-Variables       ${CURDIR}/../test_data/Test_Data.py
+Variables       ${CURDIR}/../test_data/Regression_Test_Data.py
 Variables       ${CURDIR}/../test_data/Url_Paths.py
 Library         ${CURDIR}/../lib/Data_Parser.py
 Resource        ${CURDIR}/../resource/Resource_Keywords.robot
