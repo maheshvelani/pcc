@@ -96,69 +96,6 @@ Add Server as a Node
 	Should Be Equal As Strings    ${status}    True    msg=Server ${server_node_name} added successfully but it is offline
 
 
-Create a Node Group
-	[Tags]    Smoke_Test    Groups
-	[Documentation]    Verify User Should be able to Create Node Group
-
-	# Add Group
-	&{data}    Create Dictionary  Name=${create_group_name}    Description=${create_group_desc}
-	Log    \nCreating Group with parameters: \n${data}\n    console=yes
-	${resp}  Post Request    platina   ${add_group}    json=${data}     headers=${headers}
-	Log    \n Status code = ${resp.status_code}    console=yes
-	Log    \n Response = ${resp.json()}    console=yes
-	Should Be Equal As Strings    ${resp.status_code}    200
-
-	Sleep    5s
-
-	# Validate added group present in Group List
-	${resp}  Get Request    platina   ${get_group}    headers=${headers}
-	Log    \n Status code = ${resp.status_code}    console=yes
-	Log    \n Response = ${resp.json()}    console=yes
-	Should Be Equal As Strings    ${resp.status_code}    200
-
-	# Parse fetched group list and verify added Group availability from response data
-	${status}    ${id}    Validate Group    ${resp.json()}    ${create_group_name}
-	Should Be Equal As Strings    ${status}    True    msg=Group ${create_group_name} is not present in Groups list
-	Set Suite Variable    ${create_group_id}    ${id}
-	Log    \n Group ${create_group_name} ID = ${create_group_id}   console=yes
-
-
-PCC Node Group Assignment
-	[Tags]    Smoke_Test    Groups
-	[Documentation]    Node to Group Assignment
-
-	# Verify Group is present before assign it to node
-	${resp}  Get Request    platina   ${get_group}    headers=${headers}
-	Log    \n Status code = ${resp.status_code}    console=yes
-	Log    \n Response = ${resp.json()}    console=yes
-	Should Be Equal As Strings    ${resp.status_code}    200
-	# Parse fetched group list and verify assign Group availability from response data
-	${status}    ${id}    Validate Group    ${resp.json()}    ${assign_group_name}
-	Should Be Equal As Strings    ${status}    True    msg=Group ${assign_group_name} is not present in Groups list
-	Set Suite Variable    ${assign_group_id}    ${id}
-	Log    \n Group ${assign_group_name} ID = ${assign_group_id}    console=yes
-
-	# Assign A Group to Node
-        &{data}    Create Dictionary  Id=${invader_id}    ClusterId=${assign_group_id}
-	Log    \nAssigning a Group with parameters: \n${data}\n    console=yes
-        ${resp}  Put Request    platina    ${add_group_to_node}    json=${data}     headers=${headers}
-        Log    \n Status code = ${resp.status_code}    console=yes
-        Log    \n Response = ${resp.json()}    console=yes
-        Should Be Equal As Strings  ${resp.status_code}    200
-
-	# Wait for few second to update Node with Assigned Group
-	Sleep    60s
-
-	# Validated Assigned Group
-	&{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
-	${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
-	Log    \n Status code = ${resp.status_code}    console=yes
-	Log    \n Response = ${resp.json()}    console=yes
-	Should Be Equal As Strings    ${resp.status_code}    200
-	${status}    ${node_id}    Validate Node Group    ${resp.json()}    ${invader_node_name}    ${assign_group_id}
-	Should Be Equal As Strings    ${status}    True    msg=Node ${invader_node_name} is not updated with the Group ${assign_group_name}
-
-
 Create a Node Role
 	[Tags]    Smoke_Test    Roles
 	[Documentation]    Node Role Creation
@@ -276,8 +213,8 @@ Assign a Site to Node
 	Log    \n Status code = ${resp.status_code}    console=yes
 	Log    \n Response = ${resp.json()}    console=yes
 	Should Be Equal As Strings    ${resp.status_code}    200
-	${status}    ${node1_id}    Validate Node Site    ${resp.json()}    ${invader_id}    ${assign_site_id}
-	Should Be Equal As Strings    ${status}    True    msg=Node ${invader_name} is not updated with the site ${assign_site_name}
+	${status}    ${node1_id}    Validate Node Site    ${resp.json()}    ${invader_node_name}    ${assign_site_id}
+	Should Be Equal As Strings    ${status}    True    msg=Node ${invader_node_name} is not updated with the site ${assign_site_name}
 
 
 Create a Tenant
@@ -336,4 +273,67 @@ Assign a Tenant to Node
 	Log    \n Response = ${resp.json()}    console=yes
 	Should Be Equal As Strings    ${resp.status_code}    200
 	${status}    ${invader_id}    Validate Node Tenant    ${resp.json()}    ${invader_node_name}    ${assign_tenant_id}
-	Should Be Equal As Strings    ${status}    True    msg=Node ${invader_name} is not updated with the Tenant ${assign_tenant_name}
+	Should Be Equal As Strings    ${status}    True    msg=Node ${invader_node_name} is not updated with the Tenant ${assign_tenant_name}
+
+
+Create a Node Group
+	[Tags]    Smoke_Test    Groups
+	[Documentation]    Verify User Should be able to Create Node Group
+
+	# Add Group
+	&{data}    Create Dictionary  Name=${create_group_name}    Description=${create_group_desc}
+	Log    \nCreating Group with parameters: \n${data}\n    console=yes
+	${resp}  Post Request    platina   ${add_group}    json=${data}     headers=${headers}
+	Log    \n Status code = ${resp.status_code}    console=yes
+	Log    \n Response = ${resp.json()}    console=yes
+	Should Be Equal As Strings    ${resp.status_code}    200
+
+	Sleep    5s
+
+	# Validate added group present in Group List
+	${resp}  Get Request    platina   ${get_group}    headers=${headers}
+	Log    \n Status code = ${resp.status_code}    console=yes
+	Log    \n Response = ${resp.json()}    console=yes
+	Should Be Equal As Strings    ${resp.status_code}    200
+
+	# Parse fetched group list and verify added Group availability from response data
+	${status}    ${id}    Validate Group    ${resp.json()}    ${create_group_name}
+	Should Be Equal As Strings    ${status}    True    msg=Group ${create_group_name} is not present in Groups list
+	Set Suite Variable    ${create_group_id}    ${id}
+	Log    \n Group ${create_group_name} ID = ${create_group_id}   console=yes
+
+
+PCC Node Group Assignment
+	[Tags]    Smoke_Test    Groups
+	[Documentation]    Node to Group Assignment
+
+	# Verify Group is present before assign it to node
+	${resp}  Get Request    platina   ${get_group}    headers=${headers}
+	Log    \n Status code = ${resp.status_code}    console=yes
+	Log    \n Response = ${resp.json()}    console=yes
+	Should Be Equal As Strings    ${resp.status_code}    200
+	# Parse fetched group list and verify assign Group availability from response data
+	${status}    ${id}    Validate Group    ${resp.json()}    ${assign_group_name}
+	Should Be Equal As Strings    ${status}    True    msg=Group ${assign_group_name} is not present in Groups list
+	Set Suite Variable    ${assign_group_id}    ${id}
+	Log    \n Group ${assign_group_name} ID = ${assign_group_id}    console=yes
+
+	# Assign A Group to Node
+        &{data}    Create Dictionary  Id=${invader_id}    ClusterId=${assign_group_id}
+	Log    \nAssigning a Group with parameters: \n${data}\n    console=yes
+        ${resp}  Put Request    platina    ${add_group_to_node}    json=${data}     headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings  ${resp.status_code}    200
+
+	# Wait for few second to update Node with Assigned Group
+	Sleep    60s
+
+	# Validated Assigned Group
+	&{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
+	${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
+	Log    \n Status code = ${resp.status_code}    console=yes
+	Log    \n Response = ${resp.json()}    console=yes
+	Should Be Equal As Strings    ${resp.status_code}    200
+	${status}    ${node_id}    Validate Node Group    ${resp.json()}    ${invader_node_name}    ${assign_group_id}
+	Should Be Equal As Strings    ${status}    True    msg=Node ${invader_node_name} is not updated with the Group ${assign_group_name}

@@ -68,8 +68,8 @@ pcc_MaaS_Enable_Bare_Metal_Services
         Ssh into node HOST
 	Run Keyword And Ignore Error	Verify mass installation process started
 
-	# Wait for 10 minutes
-	Sleep	10 minutes 10 seconds
+	# Wait for 12 minutes
+	Sleep	12 minutes
 
 	# Verify Maas Installation Complete status
        	&{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
@@ -106,8 +106,8 @@ pcc_MaaS_Enable_Bare_Metal_Services
         Log    \n Response Data = ${resp.json()}    console=yes
     	Should Be Equal As Strings  ${resp.status_code}  200
 
-	# Wait for 12 minutes
-	Sleep	12 minutes
+	# Wait for 15 minutes
+	Sleep	15 minutes
 
         # Verify Provision Status over server
 	&{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
