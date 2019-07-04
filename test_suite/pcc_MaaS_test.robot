@@ -120,7 +120,7 @@ pcc_MaaS_Enable_Bare_Metal_Services
 	Should Be Equal As Strings    ${status}    True    msg=Provision Status of server ${server_name} is not Finished
 
 	# Verify CentOS installed in remote machine
-    	Run Keyword And Ignore Error    Verify CentOS installed in server machine
+	Verify CentOS installed in server machine
 
 	# Delete MaaS roles from Inveder
 	@{roles_group}    create list
@@ -143,6 +143,7 @@ pcc_MaaS_Enable_Bare_Metal_Services
 #       Set Suite Variable    ${centOS_image_id}    ${image_id}
 
 
+
 *** keywords ***
 ssh into node HOST
        	Open Connection     ${inveder_ip}    timeout=1 hour
@@ -160,10 +161,14 @@ Verify mass installation process completed
 	Should Not Contain    ${output}     tinyproxy.conf
 
 Verify CentOS installed in server machine
-       	Open Connection     ${server_ip}    timeout=1 hour
-	Login                 pcc    cals0ft
-        Sleep    2s
+	# Get OS release data from server
+        ${rc}  ${output}    Run And Return Rc And Output        ssh ${server_ip} "cat /etc/os-release"
+        Log    \n\nGET OS release status Code = ${rc}    console=yes
+        Log    \n\nSERVER OS RELEASE DATA = ${output}    console=yes
+	Should Contain    ${output}    CentOS Linux
 
-        ${output}=         Execute Command    uptime
-        Log    \n\n SERVER DATA = ${output}    console=yes
-	#Should Contain    ${output}    Darwin
+        ${rc}  ${output}    Run And Return Rc And Output        ssh ${server_ip} "uptime -p"
+        Log    \n\nServer uptime status code = ${rc}    console=yes
+        Log    \n\nSERVER UP Time Data DATA = ${output}    console=yes
+	${status}    Verify server up time     ${output}
+        Should Be Equal As Strings    ${status}    True    msg=There are no new OS deployed in last few minutes

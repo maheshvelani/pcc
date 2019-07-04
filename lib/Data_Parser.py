@@ -217,3 +217,15 @@ class Data_Parser:
             return False
         except Exception:
             return False
+
+
+    def verify_server_up_time(self, uptime_data):
+        """ validate Server Uptim
+        """
+        if "day" in str(uptime_data).lower():
+            return False
+
+        if "hours" in str(uptime_data).lower():
+            return False
+
+        return True
