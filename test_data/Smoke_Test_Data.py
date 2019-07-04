@@ -54,3 +54,27 @@ create_role_desc = "automation_role"
 # before select group role
 # By Default it will assign "LLDP" roles to node
 assign_role_name = "LLDP"
+
+
+# Site Creation Data
+create_site_name = "automation_site"
+create_site_desc = "automation_site"
+
+
+# Assign Sites To Node
+# Please make sure Site name is present in Site list
+# before select Site name
+# By Default it will assign "automation_site" site to node
+assign_site_name = "automation_site"
+
+
+# Tenant Creation Data
+create_tenant_name = "automation_tenant"
+create_tenant_desc = "automation_tenant"
+
+
+# Assign Tenant To Node
+# Please make sure Tenant name is present in Tenant list
+# before select Tenant name
+# By Default it will assign "automation_tenant" tenant to node
+assign_tenant_name = "automation_tenant"

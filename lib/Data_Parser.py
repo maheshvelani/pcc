@@ -143,6 +143,18 @@ class Data_Parser:
         except Exception:
             return False, None
 
+    def validate_node_tenant(self, resp_data, node_name, tenant_id):
+        """ validated Assigned Tenant in node
+        """
+        try:
+            for data in eval(str(resp_data))['Data']:
+                if str(data['Name']) == str(node_name):
+                    if int(tenant_id) == int(data['owner']):
+                        return True, str(data['Id'])
+            return False, None
+        except Exception:
+            return False, None
+
     def get_maas_role_id(self, resp_data):
         """ Get MaaS role Id from response
         """
@@ -205,4 +217,3 @@ class Data_Parser:
             return False
         except Exception:
             return False
-
