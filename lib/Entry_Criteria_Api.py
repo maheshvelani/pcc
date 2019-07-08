@@ -52,7 +52,7 @@ class Entry_Criteria_Api(OperatingSystem, SSHLibrary):
 
         try:
             for data in node_data:
-                cmd = "ssh-keygen -f \"/home/pcc/.ssh/known_hosts\" -R {0}".format(node_data[data]["HOST])
+                cmd = "ssh-keygen -f \"/home/pcc/.ssh/known_hosts\" -R {0}".format(node_data[data]["HOST"])
                 try:
                     code, output = self.run_and_return_rc_and_output(cmd)
                 except:
@@ -84,7 +84,7 @@ class Entry_Criteria_Api(OperatingSystem, SSHLibrary):
         """
         try:
             login_op = self.open_connection(ip_addr)
-            robot_logger("login over invader Ip = ", ip)
+            robot_logger("login over invader Ip = ", ip_addr)
             self.login("pcc", "cals0ft")
 
             out = self.execute_command("sudo -s")
@@ -132,7 +132,9 @@ class Entry_Criteria_Api(OperatingSystem, SSHLibrary):
 
             out = self.execute_command("rm -rf /etc/network/interfaces.d/maas-xeth*")
             robot_logger("cmd = {} and o/p = {1}".format("rm -rf /etc/network/interfaces.d/maas-xeth*", out))
-            time.sleep(1)           
+            time.sleep(1)
+            # Terminating the session with Invader
+            self.close_connection()
         except:
               pass
 
@@ -140,7 +142,14 @@ class Entry_Criteria_Api(OperatingSystem, SSHLibrary):
     def clear_server(self, ip_addr):
         """ Clear server From Backend
         """
-        cmd = "ssh {0} \'{1}\'".format((ip_addr, "sudo crontab -r")
+        cmd = "ssh-keygen -f \"/home/pcc/.ssh/known_hosts\" -R {0}".format(ip_addr)
+        try:
+            code, output = self.run_and_return_rc_and_output(cmd)
+        except:
+            pass
+        robot_logger("cmd-{0} o/p={1}".format(str(cmd), output))
+
+        cmd = "ssh {0} \'{1}\'".format((ip_addr, "sudo crontab -r"))
         try:
             code, output = self.run_and_return_rc_and_output(cmd)
         except:
@@ -162,11 +171,11 @@ class Entry_Criteria_Api(OperatingSystem, SSHLibrary):
         robot_logger("cmd-{0} o/p={1}".format(str(cmd), output))
 
 
-    def node_clean_up_from_back-end_command(self, node_type):
+    def node_clean_up_from_back_end_command(self, node_type):
         """ Clean Node Server or Invader from back End
         """
         try:
-            for ip, type in eval(str(node_data)).items():
+            for ip, type in eval(str(node_type)).items():
                 if str(type) == "Server":
                     self.clean_invader(ip)
                 elif str(type) == "Invader":
@@ -174,3 +183,29 @@ class Entry_Criteria_Api(OperatingSystem, SSHLibrary):
             return True
         except:
             return False
+
+    def server_pxe_boot(self, server_ip):
+        """ PXE boot to Server
+        """
+        cmd = "for cmd in \"chassis bootdev pxe\" \"chassis power cycle\" \"sol activate\"; " \
+              "do ipmitool -I lanplus -H {0} -U ADMIN -P ADMIN $cmd; done".format(server_ip)
+        try:
+            code, output = self.run_and_return_rc_and_output(cmd)
+        except:
+            pass
+        robot_logger("cmd-{0} o/p={1}".format(str(cmd), output))
+        time.sleep(20)
+
+    def get_server_id(self, resp_data, server_host):
+        """Get Server ID added After PXE boot
+        """
+        try:
+            if resp_data['Data'] != None:
+                for data in eval(str(resp_data))['Data']:
+                    if str(data['Host']) == str(server_host):
+                        return True, str(data['Id'])
+                return False, None
+            else:
+                return False, None
+        except Exception:
+            return False, None
