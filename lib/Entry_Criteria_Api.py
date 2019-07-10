@@ -23,6 +23,9 @@ def robot_logger(msg):
 
 class Entry_Criteria_Api(OperatingSystem, SSHLibrary):
 
+    def __init__(self):
+        self.master_node = None
+
     def get_available_node_data(self, resp_data):
         """Check any Invader or Server is available in node list
            if yes then return node with attached IP
@@ -209,3 +212,34 @@ class Entry_Criteria_Api(OperatingSystem, SSHLibrary):
                 return False, None
         except Exception:
             return False, None
+
+    def verify_kubernetes_cluster_installed(self, ip_addr):
+        """Verify Cluster Created
+        """
+        login_op = self.open_connection(ip_addr)
+        robot_logger("login over invader Ip = ", ip_addr)
+        self.login("pcc", "cals0ft")
+
+        out = self.execute_command("sudo -s")
+        robot_logger("cmd = {} and o/p = {1}".format("crontab -r", out))
+        time.sleep(1)
+
+        out = self.execute_command("kubectl get nodes")
+        robot_logger("cmd = {} and o/p = {1}".format("kubectl get nodes", out))
+        time.sleep(1)
+
+        if "Ready    master" in out:
+            self.master_node = str(out.split('\n')[1].split()[0])
+            self.close_connection()
+            return True
+        else:
+            self.close_connection()
+            return False
+
+    def get_k8s_installation_status(self, stat1, stat2):
+        """Verify master Node
+        """
+        if (stat1 == True) or (stat2 == True):
+            return True
+        else:
+            return False

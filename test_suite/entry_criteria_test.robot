@@ -28,15 +28,15 @@ Invader and Server Cleanup from UI
         Set Suite Variable    ${node_host}    ${node_data}
         Set Suite Variable    ${node_avail_status}    ${status}
         Pass Execution If	${node_avail_status}==False    No Nodes are available over PCC
-#	Log    \nDeleting the Node's from UI......     console=yes
-#	:FOR    ${id}    IN    @{node_id}
-#	\    @{data}    Create List    ${id}
-#        \    Log    \nDeleting Node with ID = ${id}    console=yes
-#	\    ${resp}    Post Request    platina    ${delete_node}    headers=${headers}    json=${data}
-#	\    Log    \n Status code = ${resp.status_code}    console=yes
-#	\    Log    \n Response = ${resp.json()}    console=yes
-#	\    Should Be Equal As Strings    ${resp.status_code}    200
-#	\    Sleep    10s
+        Log    \nDeleting the Node's from UI......     console=yes
+        :FOR    ${id}    IN    @{node_id}
+        \    @{data}    Create List    ${id}
+        \    Log    \nDeleting Node with ID = ${id}    console=yes
+        \    ${resp}    Post Request    platina    ${delete_node}    headers=${headers}    json=${data}
+        \    Log    \n Status code = ${resp.status_code}    console=yes
+        \    Log    \n Response = ${resp.json()}    console=yes
+        \    Should Be Equal As Strings    ${resp.status_code}    200
+        \    Sleep    10s
 
 
 Invader and Server Cleanup from Back-End
@@ -309,12 +309,70 @@ OS Deployment over Server machine
         Log    \n Status code = ${resp.status_code}    console=yes
         Log    \n Response = ${resp.json()}    console=yes
         Should Be Equal As Strings    ${resp.status_code}    200
-        Should Be Equal As Strings    ${resp.json()['status']}    200
         ${status}    Validate Node Provision Status    ${resp.json()}    ${server_node_name}
         Should Be Equal As Strings    ${status}    True    msg=Provision Status of server ${server_node_name} is not Finished
 
         # Verify CentOS installed in remote machine
         Verify CentOS installed in server machine
+
+
+Create Kubernetes Cluster
+        [Tags]    Entry Criteria
+        [Documentation]    Create Kubernetes Cluster
+
+        # Create Kubernetes cluster
+        &{data1}    Create Dictionary  id=${${invader1_id}}
+        &{data2}    Create Dictionary  id=${${invader2_id}}
+        &{data3}    Create Dictionary  id=${${server1_id}}
+        &{data}    Create Dictionary  name=${cluster_name}  k8sVersion=${cluster_version}  cniPlugin=${cni_plugin}
+        ...    nodes=[&{data1}, &{data2}, &{data3}]
+        Log    \nCreating Cluster with data: ${data}\n
+        ${resp}  Post Request    platina   ${add_kubernetes_cluster}    json=${data}    headers=${headers}
+        Log    \n Status Code = ${resp.status_code}    console=yes
+        Should Be Equal As Strings  ${resp.status_code}  200
+
+        # Wait for few seconds
+        Sleep  10 minutes
+
+        # Verify cluster created
+        ${resp}  Get Request    platina   ${add_kubernetes_cluster}    headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings    ${resp.status_code}    200
+        ${status}    ${id}    Validate Cluster    ${resp.json()}    ${cluster_name}
+        Should Be Equal As Strings    ${status}    True    msg=Created Cluster ${cluster_name} is not present in Cluster list
+        Set Suite Variable    ${cluster_id}    ${id}
+        ${status}    Validate Cluster Deploy Status    ${resp.json()}
+        Should Be Equal As Strings    ${status}    True    msg=Cluster installation failed
+
+
+Verify Created K8s Cluster installation from back end
+        [Tags]    Entry Criteria
+        [Documentation]    Verify Kubernetes Cluster
+
+        ${status1}    Verify Kubernetes cluster installed    ${invader1_node_host}
+        ${status2}    Verify Kubernetes cluster installed    ${invader2_node_host}
+        ${status}    get k8s installation status    ${status1}    ${status2}
+        Should Be Equal As Strings    ${status}    True    msg=K8s Cluster not running in back end
+
+
+Add an app to k8s
+        [Tags]    Entry Criteria
+        [Documentation]    Add an App to K8S
+
+        # Create Kubernetes cluster
+        &{data}    Create Dictionary  appName=${app_name}  appNamespace=${app_name}  gitUrl=${git_url}
+        ..  gitRepoPath=${git_repo_path}  gitBranch=${git_branch}
+        Log    \nAdding App with Data with data: ${data}\n
+        ${resp}  Post Request    platina   ${add_kubernetes_cluster}${cluster_id}/app    json=${data}    headers=${headers}
+        Log    \n Status Code = ${resp.status_code}    console=yes
+        Should Be Equal As Strings  ${resp.status_code}  200
+
+        Sleep    2 minutes
+
+        # Verify App Installed Successfully..
+
+
 
 
 *** keywords ***

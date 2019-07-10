@@ -228,3 +228,28 @@ class Data_Parser:
             return False
 
         return True
+
+    def validate_cluster(self, resp_data, cluster_name):
+        """ verify added cluster from cluster list
+        """
+        try:
+            if resp_data['Data'] != None:
+                for data in eval(str(resp_data))['Data']:
+                    if str(data['name']) == str(cluster_name):
+                        return True, str(data['ID'])
+            return False, None
+        except Exception:
+            return False, None
+
+
+    def validate_cluster_deploy_status(self, resp_data):
+        """ Get Server ID added After PXE boot
+        """
+        try:
+            for data in eval(str(resp_data))['Data']:
+                if str(data['deployStatus']) == "installed":
+                    return True
+            return False
+        except Exception:
+            return False
+

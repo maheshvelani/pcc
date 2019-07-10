@@ -17,4 +17,4 @@ delete_tenant = "/user-management/tenant/delete/"
 get_maas_images = "/maas/images/"
 os_deployment = "/maas/deployments/"
 update_node = "/pccserver/node/update/"
-
+add_kubernetes_cluster = "/pccserver/kubernetes/"

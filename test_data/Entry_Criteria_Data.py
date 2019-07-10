@@ -8,28 +8,28 @@
 # PCC Login Data
 # Login into PCC mentioned into Server URL
 # E.g. Here it will be Login into PCC-216
-server_url = "https://172.17.2.215:9999"
+server_url = "https://172.17.2.216:9999"
 user_name = "admin"
 user_pwd = "admin"
 
 
 # Test Data for Invader as Node
 # Update This data as per supported Invader over PCC server
-invader1_node_name = "i61"
-invader1_node_host = "172.17.2.61"
+invader1_node_name = "i58"
+invader1_node_host = "172.17.2.58"
 
 
 # Test Data for Invader as Node
 # Update This data as per supported Invader over PCC server
-invader2_node_name = "i62"
-invader2_node_host = "172.17.2.62"
+invader2_node_name = "i59"
+invader2_node_host = "172.17.2.59"
 
 
 # Test Data to Add Server as Node
 # Update This data as per supported Server over PCC
-server_node_name = "sv16"
-server_node_host = "172.17.2.116"
-server_bmc_host = "172.17.3.116"
+server_node_name = "sv101"
+server_node_host = "172.17.2.101"
+server_bmc_host = "172.17.3.101"
 server_bmc_user = "ADMIN"
 server_bmc_pwd = "ADMIN"
 server_console = "ttyS1"
@@ -48,3 +48,16 @@ en_US = "en_US"
 PDT = "PDT"
 mass_user = "auto_test"
 ssh_key = "['pcc']"
+
+
+# K8S Cluster Test data
+cluster_name = "calsoft"
+cluster_version = "v1.14.3"
+cni_plugin = "kube-router"
+
+
+# App installation data
+app_name = "iperf-app"
+git_url = "https://platinasystems:e2939d936e189f689b4f62ffd30a026109e362c4@github.com/platinasystems/ops"
+git_branch = "master"
+git_repo_path = "k8s/apps/helm-charts"
