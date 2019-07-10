@@ -218,7 +218,6 @@ class Data_Parser:
         except Exception:
             return False
 
-
     def verify_server_up_time(self, uptime_data):
         """ validate Server Uptim
         """

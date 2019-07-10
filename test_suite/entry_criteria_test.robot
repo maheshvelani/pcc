@@ -290,6 +290,33 @@ Assign LLDP role to Server
         Should Be Equal As Strings    ${status}    True    msg=Node ${server_node_name} is not updated with the Roles LLDP
 
 
+OS Deployment over Server machine
+        [Tags]    Entry Criteria
+        [Documentation]    Assign LLDP to Server
+        # Start OS Deployment
+        &{data}    Create Dictionary  nodes=[${${server1_id}}]  image=${image_name}  locale=${en_US}  timezone=${PDT}  adminUser=${mass_user}  sshKeys=${ssh_key}
+        ${resp}  Post Request    platina   ${os_deployment}    json=${data}    headers=${headers}
+        Log    \n Status Code = ${resp.status_code}    console=yes
+        Log    \n Response Data = ${resp.json()}    console=yes
+    	Should Be Equal As Strings  ${resp.status_code}  200
+
+        # Wait for 15 minutes
+        Sleep	15 minutes
+
+        # Verify Provision Status over server
+        &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
+        ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings    ${resp.status_code}    200
+        Should Be Equal As Strings    ${resp.json()['status']}    200
+        ${status}    Validate Node Provision Status    ${resp.json()}    ${server_node_name}
+        Should Be Equal As Strings    ${status}    True    msg=Provision Status of server ${server_node_name} is not Finished
+
+        # Verify CentOS installed in remote machine
+        Verify CentOS installed in server machine
+
+
 *** keywords ***
 SSH into Invader and Verify mass installation started
         [Arguments]    ${invader_ip}
@@ -300,3 +327,16 @@ SSH into Invader and Verify mass installation started
         Log    \n\n INVADER DATA = ${output}    console=yes
         Should Contain    ${output}    tinyproxy.conf
         Close All Connections
+
+Verify CentOS installed in server machine
+        # Get OS release data from server
+        ${rc}  ${output}    Run And Return Rc And Output        ssh ${server_node_host} "cat /etc/os-release"
+        Log    \n\nGET OS release status Code = ${rc}    console=yes
+        Log    \n\nSERVER OS RELEASE DATA = ${output}    console=yes
+        Should Contain    ${output}    CentOS Linux
+
+        ${rc}  ${output}    Run And Return Rc And Output        ssh ${server_node_host} "uptime -p"
+        Log    \n\nServer uptime status code = ${rc}    console=yes
+        Log    \n\nSERVER UP Time Data DATA = ${output}    console=yes
+        ${status}    Verify server up time     ${output}
+        Should Be Equal As Strings    ${status}    True    msg=There are no new OS deployed in last few minutes

@@ -41,3 +41,10 @@ server_ssh_keys = "pcc"
 invader_usr_name = "pcc"
 invader_usr_pwd = "cals0ft"
 
+
+# OS Deployment data
+image_name = "centos76"
+en_US = "en_US"
+PDT = "PDT"
+mass_user = "auto_test"
+ssh_key = "['pcc']"
