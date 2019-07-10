@@ -58,6 +58,6 @@ cni_plugin = "kube-router"
 
 # App installation data
 app_name = "iperf-app"
-git_url = "https://platinasystems:e2939d936e189f689b4f62ffd30a026109e362c4@github.com/platinasystems/ops"
+git_url = " https://github.com/platinasystems/devops"
 git_branch = "master"
-git_repo_path = "k8s/apps/helm-charts"
+git_repo_path = "helm-charts"
