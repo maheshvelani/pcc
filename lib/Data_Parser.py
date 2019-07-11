@@ -8,9 +8,9 @@
 ###########################################
 
 
-
 class Data_Parser:
-    
+
+    @staticmethod
     def validate_node(self, resp_data, node_name, host=None):
         """ find added node from node list
         """
@@ -28,6 +28,7 @@ class Data_Parser:
         except Exception:
             return False, None
 
+    @staticmethod
     def validate_node_manage_status(self, resp_data, node_name, status):
         """ find added node manage status
         """
@@ -40,6 +41,7 @@ class Data_Parser:
         except Exception:
             return False
 
+    @staticmethod
     def validate_group(self, resp_data, expect_group):
         """ Get Expected Group from the group list
         """
@@ -51,6 +53,7 @@ class Data_Parser:
         except Exception:
             return False, None
 
+    @staticmethod
     def validate_roles(self, resp_data, expect_role):
         """ Get Expected Role from the group list
         """
@@ -62,6 +65,7 @@ class Data_Parser:
         except Exception:
             return False, None
 
+    @staticmethod
     def validate_sites(self, resp_data, expect_site):
         """ Get Expected Site from the site list
         """
@@ -73,6 +77,7 @@ class Data_Parser:
         except Exception:
             return False, None
 
+    @staticmethod
     def validate_sites_desc(self, resp_data, expect_desc):
         """ Get Expected Site Description from the site list
         """
@@ -84,6 +89,7 @@ class Data_Parser:
         except Exception:
             return False, None
 
+    @staticmethod
     def validate_node_site(self, resp_data, node_name, site_id):
         """ validated updated site in node
         """
@@ -96,6 +102,7 @@ class Data_Parser:
         except Exception:
             return False, None
 
+    @staticmethod
     def get_tenant_id(self, response, tenant_name):
         """get tenant id from tenant list
         """
@@ -107,6 +114,7 @@ class Data_Parser:
         except Exception:
             return False, None
 
+    @staticmethod
     def verify_parent_tenant(self, response, tenant_name, parent_id):
         """Verify Tenant Parent
         """
@@ -119,6 +127,7 @@ class Data_Parser:
         except Exception:
             return False, None
 
+    @staticmethod
     def validate_node_group(self, resp_data, node_name, group_id):
         """ validated Assigned Group in node
         """
@@ -131,6 +140,7 @@ class Data_Parser:
         except Exception:
             return False, None
 
+    @staticmethod
     def validate_node_roles(self, resp_data, node_name, role_id):
         """ validated Assigned Roles in node
         """
@@ -143,6 +153,7 @@ class Data_Parser:
         except Exception:
             return False, None
 
+    @staticmethod
     def validate_node_tenant(self, resp_data, node_name, tenant_id):
         """ validated Assigned Tenant in node
         """
@@ -155,6 +166,7 @@ class Data_Parser:
         except Exception:
             return False, None
 
+    @staticmethod
     def get_maas_role_id(self, resp_data):
         """ Get MaaS role Id from response
         """
@@ -166,6 +178,7 @@ class Data_Parser:
         except Exception:
             return False, None
 
+    @staticmethod
     def get_lldp_role_id(self, resp_data):
         """ Get LLDP role Id from response
         """
@@ -177,6 +190,7 @@ class Data_Parser:
         except Exception:
             return False, None
 
+    @staticmethod
     def validate_node_online_status(self, resp_data, node_name):
         """ Verify Node Online Status
         """
@@ -192,17 +206,7 @@ class Data_Parser:
         except Exception:
             return False
 
-    def get_centOS_image_id(self, resp_data):
-        """ Get CENT OS image ID
-        """
-        try:
-            for data in a['Data']:
-                if "centos" in data['name']:
-		    return True, str(data['id'])
-            return False, None
-        except Exception:
-            return False, None
-
+    @staticmethod
     def validate_node_provision_status(self, resp_data, node_name):
         """ Verify Node Online Status
         """
@@ -218,6 +222,7 @@ class Data_Parser:
         except Exception:
             return False
 
+    @staticmethod
     def verify_server_up_time(self, uptime_data):
         """ validate Server Uptim
         """
@@ -229,6 +234,7 @@ class Data_Parser:
 
         return True
 
+    @staticmethod
     def validate_cluster(self, resp_data, cluster_name):
         """ verify added cluster from cluster list
         """
@@ -241,7 +247,7 @@ class Data_Parser:
         except Exception:
             return False, None
 
-
+    @staticmethod
     def validate_cluster_deploy_status(self, resp_data):
         """ Get Server ID added After PXE boot
         """
@@ -253,3 +259,36 @@ class Data_Parser:
         except Exception:
             return False
 
+    @staticmethod
+    def verify_app_present_in_cluster(self, resp_data, app_name):
+        """Verify Installed App Present in cluster details"""
+        try:
+            for data in eval(str(resp_data))['Data']:
+                if str(app_name) in str(data['apps']):
+                    return True
+            return False
+        except Exception:
+            return False
+
+    @staticmethod
+    def verify_node_added_in_cluster(self, resp_data, node_id):
+        """ Verify added Node Present in Cluster
+        """
+        try:
+            for data in eval(str(resp_data))['Data']["nodes"]:
+                if int(data['id']) == int(node_id):
+                    return True
+            return False
+        except Exception:
+            return False
+
+    @staticmethod
+    def verify_cluster_deleted(resp_data, cluster_name):
+        """ verify Deleted Cluster
+        """
+        try:
+            if cluster_name in eval(str(resp_data))['Data']:
+                return False
+            return True
+        except Exception:
+            return False

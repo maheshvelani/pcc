@@ -360,10 +360,10 @@ Add an app to k8s
         [Tags]    Entry Criteria
         [Documentation]    Add an App to K8S
 
-        # Create Kubernetes cluster
+        # Add an App to Kubernetes cluster
         &{data}    Create Dictionary  appName=${app_name}  appNamespace=${app_name}  gitUrl=${git_url}
         ..  gitRepoPath=${git_repo_path}  gitBranch=${git_branch}
-        Log    \nAdding App with Data with data: ${data}\n
+        Log    \nAdding App with Data: ${data}\n
         ${resp}  Post Request    platina   ${add_kubernetes_cluster}${cluster_id}/app    json=${data}    headers=${headers}
         Log    \n Status Code = ${resp.status_code}    console=yes
         Should Be Equal As Strings  ${resp.status_code}  200
@@ -371,7 +371,175 @@ Add an app to k8s
         Sleep    2 minutes
 
         # Verify App Installed Successfully..
+        ${resp}  Get Request    platina   ${add_kubernetes_cluster}/${${cluster_id}}    headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings    ${resp.status_code}    200
+        ${status}    Verify App Present in Cluster    ${resp.json()}    ${app_name}
+        Should Be Equal As Strings    ${status}    True    msg=Installed App ${app_name} is not present/installed in cluster
 
+
+Add Server as a Node
+        [Tags]    Entry Criteria
+        [Documentation]    Add One More server as a Node
+
+        # Add Server Node
+        @{server_bmc_users}    Create List    ${server2_bmc_user}
+        @{server_ssh_keys}    Create List    ${server2_ssh_keys}
+        &{data}    Create Dictionary  	Name=${server2_node_name}  Host=${server2_node_host
+        ...    console=${server2_console}  bmc=${server2_bmc_host}  bmcUser=${server2_bmc_user}
+        ...    bmcPassword=${server2_bmc_pwd}  bmcUsers=@{server2_bmc_users}
+        ...    sshKeys=@{server2_ssh_keys}  managed=${${server2_managed_by_pcc}}
+        Log    \nCreating Server node with parameters : \n${data}\n    console=yes
+        ${resp}    Post Request    platina    ${add_node}    json=${data}   headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings    ${resp.status_code}    200
+
+        # wait for few seconds to add Server into Node List
+        Sleep    90s
+
+        # Validate Added Node Present in Node List
+        &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
+        # Hit get_node_list API for few times to refresh the node list
+        # And verify Node availability from the latest fetched node data
+        ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
+        Sleep    3s
+        ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
+        Sleep    3s
+        ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings    ${resp.status_code}    200
+
+        # Parse fetched node list and verify added Node availability from response data
+        ${status}    ${node_id}    Validate Node    ${resp.json()}    ${server2_node_name}
+        Should Be Equal As Strings    ${status}    True    msg=Server ${server2_node_name} is not present in node list
+        Log    \n Server ${server_node_name} ID = ${node_id}   console=yes
+        Set Suite Variable    ${server2_id}    ${node_id}
+
+        # Verify Online Status of Added Server
+        ${status}    Validate Node Online Status    ${resp.json()}    ${server2_node_name}
+        Should Be Equal As Strings    ${status}    True    msg=Server ${server2_node_name} added successfully but it is offline
+
+
+Assign LLDP role to Server
+        [Tags]    Entry Criteria
+        [Documentation]    Assign LLDP to Server
+
+        # Assign Role to Node
+        &{data}    Create Dictionary  Id=${server2_id}    roles=${lldp_role_id}
+        Log    \nAssigning a Roles with parameters: \n${data}\n    console=yes
+        ${resp}  Put Request    platina    ${add_group_to_node}    json=${data}     headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings  ${resp.status_code}    200
+
+        # Wait for few seconds to reflect assign roles over node
+        Sleep	5 minutes
+
+        # Validate Assigned Roles
+        &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
+        ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings    ${resp.status_code}    200
+        ${status}    ${node_id}    Validate Node Roles    ${resp.json()}    ${server2_node_name}    ${lldp_role_id}
+        Should Be Equal As Strings    ${status}    True    msg=Node ${server2_node_name} is not updated with the Roles LLDP
+
+
+Add A Node To K8s
+        [Tags]    Entry Criteria
+        [Documentation]    Add an Node to K8S
+
+        # Add A Node to Kubernetes cluster
+        &{node_data}    Create Dictionary  id=${${server2_id}}
+        &{data}    Create Dictionary  rolePolicy=auto  toAdd=[&{node_data}]  toRemove=[]
+        Log    \nAdding Node with Data: ${data}\n
+        ${resp}  Put Request    platina   ${add_kubernetes_cluster}${cluster_id}    json=${data}    headers=${headers}
+        Log    \n Status Code = ${resp.status_code}    console=yes
+        Should Be Equal As Strings  ${resp.status_code}  200
+
+        Sleep    5 minutes
+
+        # Verify Node Added Successfully..
+        ${resp}  Get Request    platina   ${add_kubernetes_cluster}/${${cluster_id}}    headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings    ${resp.status_code}    200
+        ${status}    Verify Node Added in Cluster    ${resp.json()}    ${server2_id}
+        Should Be Equal As Strings    ${status}    True    msg=Node ${server2_node_name} is not present in cluster
+
+
+Delete a node from k8s
+        [Tags]    Entry Criteria
+        [Documentation]    Delete a Node From K8s
+
+        # Delete Node From Kubernetes cluster
+        &{data}    Create Dictionary  rolePolicy=auto  toAdd=[]  toRemove=[${${server1_id}}]
+        Log    \nDeleting Node with Data: ${data}\n
+        ${resp}  Put Request    platina   ${add_kubernetes_cluster}${cluster_id}    json=${data}    headers=${headers}
+        Log    \n Status Code = ${resp.status_code}    console=yes
+        Should Be Equal As Strings  ${resp.status_code}  200
+
+        Sleep    5 minutes
+
+        # Verify Node Deleted From Cluster
+        ${resp}  Get Request    platina   ${add_kubernetes_cluster}/${${cluster_id}}    headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings    ${resp.status_code}    200
+        ${status}    Verify Node Added in Cluster    ${resp.json()}    ${server1_id}
+        Should Be Equal As Strings    ${status}    False    msg=Node ${server1_node_name} is not deleted incluster
+
+
+Update k8s and verify version updated
+        [Tags]    Entry Criteria
+        [Documentation]    Update K8s version
+
+        Log    \nversion Update Step is Not automated as not able to perform it manually...\n
+
+
+Install another app as sanity check
+        [Tags]    Entry Criteria
+        [Documentation]    Insatall Another app as sanity check
+
+        # Install an App to K8s Cluster
+        &{data}    Create Dictionary  appName=${app2_name}  appNamespace=${app2_name}  gitUrl=${git2_url}
+        ..  gitRepoPath=${git2_repo_path}  gitBranch=${git2_branch}
+        Log    \nAdding App with Data: ${data}\n
+        ${resp}  Post Request    platina   ${add_kubernetes_cluster}${cluster_id}/app    json=${data}    headers=${headers}
+        Log    \n Status Code = ${resp.status_code}    console=yes
+        Should Be Equal As Strings  ${resp.status_code}  200
+
+        Sleep    2 minutes
+
+        # Verify App Installed Successfully..
+        ${resp}  Get Request    platina   ${add_kubernetes_cluster}/${${cluster_id}}    headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings    ${resp.status_code}    200
+        ${status}    Verify App Present in Cluster    ${resp.json()}    ${app2_name}
+        Should Be Equal As Strings    ${status}    True    msg=Installed App ${app2_name} is not present/installed in cluster
+
+
+Delete K8s Cluster
+        # Delete K8s Cluster
+        Log    \nAdding App with Data: ${data}\n
+        ${resp}  Delete Request	   platina    ${add_kubernetes_cluster}${cluster_id}    json={"forceRemove":false}    headers=${headers}
+        Log    \n Status Code = ${resp.status_code}    console=yes
+        Should Be Equal As Strings  ${resp.status_code}  200
+
+        # Wait for few seconds
+        Sleep    3 minutes
+
+        # Verify Cluster Deleted
+        ${resp}  Get Request    platina   ${add_kubernetes_cluster}    headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings    ${resp.status_code}    200
+        ${status}    Verify Cluster Deleted    ${resp.json()}    ${cluster_name}
+        Should Be Equal As Strings    ${status}    True    msg=Cluster ${cluster_name} not deleted
 
 
 
@@ -398,3 +566,9 @@ Verify CentOS installed in server machine
         Log    \n\nSERVER UP Time Data DATA = ${output}    console=yes
         ${status}    Verify server up time     ${output}
         Should Be Equal As Strings    ${status}    True    msg=There are no new OS deployed in last few minutes
+
+
+*** Variables ***
+${remove_force}    {"forceRemove":false}
+
+

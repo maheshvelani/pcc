@@ -47,7 +47,6 @@ class Entry_Criteria_Api(OperatingSystem, SSHLibrary):
         except Exception:
             return False, None, None
 
-
     def get_node_type(self, node_data):
         """ Get Node Type(Server Or Invader)
         """
@@ -81,7 +80,6 @@ class Entry_Criteria_Api(OperatingSystem, SSHLibrary):
         except:
             return node_type_dict
 
-    
     def clean_invader(self, ip_addr):
         """ Clean Invader from Backend
         """
@@ -141,7 +139,6 @@ class Entry_Criteria_Api(OperatingSystem, SSHLibrary):
         except:
               pass
 
-
     def clear_server(self, ip_addr):
         """ Clear server From Backend
         """
@@ -172,7 +169,6 @@ class Entry_Criteria_Api(OperatingSystem, SSHLibrary):
         except:
             pass
         robot_logger("cmd-{0} o/p={1}".format(str(cmd), output))
-
 
     def node_clean_up_from_back_end_command(self, node_type):
         """ Clean Node Server or Invader from back End
