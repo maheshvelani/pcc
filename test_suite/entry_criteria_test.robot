@@ -36,7 +36,7 @@ Invader and Server Cleanup from UI
         \    Log    \n Status code = ${resp.status_code}    console=yes
         \    Log    \n Response = ${resp.json()}    console=yes
         \    Should Be Equal As Strings    ${resp.status_code}    200
-        \    Sleep    10s
+        \    Sleep    60s
 
 
 Invader and Server Cleanup from Back-End
@@ -47,7 +47,7 @@ Invader and Server Cleanup from Back-End
         ${node_type}    Get Node Type    ${node_host}
         Log    Node Type Data = ${node_type}    console=yes
         ${status}    Node Clean up from Back-End Command    ${node_type}
-        Should Be Equal As Strings    ${status}    True    msg=Failed to clean up Data from Node Back End		
+        Should Be Equal As Strings    ${status}    True    msg=Failed to clean up Data from Node Back End
 
 
 Add Invader-1 as a Node and Verify Online Status
@@ -63,7 +63,7 @@ Add Invader-1 as a Node and Verify Online Status
         Should Be Equal As Strings    ${resp.status_code}    200
 
         # wait for few seconds to add Invader into Node List
-	    Sleep    90s
+	Sleep    90s
 
         # Validate Added Node Present in Node List
         &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
@@ -102,7 +102,7 @@ Add Invader-2 as a Node and Verify Online Status
         Should Be Equal As Strings    ${resp.status_code}    200
 
         # wait for few seconds to add Invader into Node List
-	    Sleep    90s
+	Sleep    90s
 
         # Validate Added Node Present in Node List
         &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
@@ -213,9 +213,10 @@ Assign MaaS Roles to Invader - 2
 PXE Boot to Server
         [Tags]    Entry Criteria
         [Documentation]    Server PXE Boot
-        ${status}    Server PXE boot    ${server_node_host}
+        ${status}    Server PXE boot    ${server_bmc_host}
         Should Be Equal As Strings    ${status}    True    msg=PXE boot Failed Over Server ${server_node_host}
-        Sleep   2 minutes
+        # Wait till Server Get Boot
+        Sleep   20 minutes
 
 
 Update Server information added after PXE boot
@@ -570,5 +571,3 @@ Verify CentOS installed in server machine
 
 *** Variables ***
 ${remove_force}    {"forceRemove":false}
-
-

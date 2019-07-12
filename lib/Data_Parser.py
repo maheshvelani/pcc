@@ -11,7 +11,7 @@
 class Data_Parser:
 
     @staticmethod
-    def validate_node(self, resp_data, node_name, host=None):
+    def validate_node(resp_data, node_name, host=None):
         """ find added node from node list
         """
         try:
@@ -29,7 +29,7 @@ class Data_Parser:
             return False, None
 
     @staticmethod
-    def validate_node_manage_status(self, resp_data, node_name, status):
+    def validate_node_manage_status(resp_data, node_name, status):
         """ find added node manage status
         """
         try:
@@ -42,7 +42,7 @@ class Data_Parser:
             return False
 
     @staticmethod
-    def validate_group(self, resp_data, expect_group):
+    def validate_group(resp_data, expect_group):
         """ Get Expected Group from the group list
         """
         try:
@@ -54,7 +54,7 @@ class Data_Parser:
             return False, None
 
     @staticmethod
-    def validate_roles(self, resp_data, expect_role):
+    def validate_roles(resp_data, expect_role):
         """ Get Expected Role from the group list
         """
         try:
@@ -66,7 +66,7 @@ class Data_Parser:
             return False, None
 
     @staticmethod
-    def validate_sites(self, resp_data, expect_site):
+    def validate_sites(resp_data, expect_site):
         """ Get Expected Site from the site list
         """
         try:
@@ -78,7 +78,7 @@ class Data_Parser:
             return False, None
 
     @staticmethod
-    def validate_sites_desc(self, resp_data, expect_desc):
+    def validate_sites_desc(resp_data, expect_desc):
         """ Get Expected Site Description from the site list
         """
         try:
@@ -90,7 +90,7 @@ class Data_Parser:
             return False, None
 
     @staticmethod
-    def validate_node_site(self, resp_data, node_name, site_id):
+    def validate_node_site(resp_data, node_name, site_id):
         """ validated updated site in node
         """
         try:
@@ -103,7 +103,7 @@ class Data_Parser:
             return False, None
 
     @staticmethod
-    def get_tenant_id(self, response, tenant_name):
+    def get_tenant_id(response, tenant_name):
         """get tenant id from tenant list
         """
         try:
@@ -115,7 +115,7 @@ class Data_Parser:
             return False, None
 
     @staticmethod
-    def verify_parent_tenant(self, response, tenant_name, parent_id):
+    def verify_parent_tenant(response, tenant_name, parent_id):
         """Verify Tenant Parent
         """
         try:
@@ -128,7 +128,7 @@ class Data_Parser:
             return False, None
 
     @staticmethod
-    def validate_node_group(self, resp_data, node_name, group_id):
+    def validate_node_group(resp_data, node_name, group_id):
         """ validated Assigned Group in node
         """
         try:
@@ -141,7 +141,7 @@ class Data_Parser:
             return False, None
 
     @staticmethod
-    def validate_node_roles(self, resp_data, node_name, role_id):
+    def validate_node_roles(resp_data, node_name, role_id):
         """ validated Assigned Roles in node
         """
         try:
@@ -154,7 +154,7 @@ class Data_Parser:
             return False, None
 
     @staticmethod
-    def validate_node_tenant(self, resp_data, node_name, tenant_id):
+    def validate_node_tenant(resp_data, node_name, tenant_id):
         """ validated Assigned Tenant in node
         """
         try:
@@ -167,7 +167,7 @@ class Data_Parser:
             return False, None
 
     @staticmethod
-    def get_maas_role_id(self, resp_data):
+    def get_maas_role_id(resp_data):
         """ Get MaaS role Id from response
         """
         try:
@@ -179,7 +179,7 @@ class Data_Parser:
             return False, None
 
     @staticmethod
-    def get_lldp_role_id(self, resp_data):
+    def get_lldp_role_id(resp_data):
         """ Get LLDP role Id from response
         """
         try:
@@ -191,7 +191,7 @@ class Data_Parser:
             return False, None
 
     @staticmethod
-    def validate_node_online_status(self, resp_data, node_name):
+    def validate_node_online_status(resp_data, node_name):
         """ Verify Node Online Status
         """
         try:
@@ -207,7 +207,7 @@ class Data_Parser:
             return False
 
     @staticmethod
-    def validate_node_provision_status(self, resp_data, node_name):
+    def validate_node_provision_status(resp_data, node_name):
         """ Verify Node Online Status
         """
         try:
@@ -223,7 +223,7 @@ class Data_Parser:
             return False
 
     @staticmethod
-    def verify_server_up_time(self, uptime_data):
+    def verify_server_up_time(uptime_data):
         """ validate Server Uptim
         """
         if "day" in str(uptime_data).lower():
@@ -235,7 +235,7 @@ class Data_Parser:
         return True
 
     @staticmethod
-    def validate_cluster(self, resp_data, cluster_name):
+    def validate_cluster(resp_data, cluster_name):
         """ verify added cluster from cluster list
         """
         try:
@@ -248,7 +248,7 @@ class Data_Parser:
             return False, None
 
     @staticmethod
-    def validate_cluster_deploy_status(self, resp_data):
+    def validate_cluster_deploy_status(resp_data):
         """ Get Server ID added After PXE boot
         """
         try:
@@ -260,7 +260,7 @@ class Data_Parser:
             return False
 
     @staticmethod
-    def verify_app_present_in_cluster(self, resp_data, app_name):
+    def verify_app_present_in_cluster(resp_data, app_name):
         """Verify Installed App Present in cluster details"""
         try:
             for data in eval(str(resp_data))['Data']:
@@ -271,7 +271,7 @@ class Data_Parser:
             return False
 
     @staticmethod
-    def verify_node_added_in_cluster(self, resp_data, node_id):
+    def verify_node_added_in_cluster(resp_data, node_id):
         """ Verify added Node Present in Cluster
         """
         try:

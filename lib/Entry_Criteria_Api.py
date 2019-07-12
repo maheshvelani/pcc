@@ -156,14 +156,14 @@ class Entry_Criteria_Api(OperatingSystem, SSHLibrary):
             pass
         robot_logger("cmd-{0} o/p={1}".format(str(cmd), output))
 
-        cmd = "ssh {0} \'{1}\'".format((ip_addr, "sudo ps -aef | grep pccagent | awk '{print $2}' | xargs kill -9")
+        cmd = "ssh {0} \'{1}\'".format((ip_addr, "sudo ps -aef | grep pccagent | awk '{print $2}' | xargs kill -9"))
         try:
             code, output = self.run_and_return_rc_and_output(cmd)
         except:
             pass
         robot_logger("cmd-{0} o/p={1}".format(str(cmd), output))
 
-        cmd = "ssh {0} \'{1}\'".format((ip_addr, "sudo ps -aef | grep collector | awk '{print $2}' | xargs kill -9")
+        cmd = "ssh {0} \'{1}\'".format((ip_addr, "sudo ps -aef | grep collector | awk '{print $2}' | xargs kill -9"))
         try:
             code, output = self.run_and_return_rc_and_output(cmd)
         except:
@@ -186,15 +186,26 @@ class Entry_Criteria_Api(OperatingSystem, SSHLibrary):
     def server_pxe_boot(self, server_ip):
         """ PXE boot to Server
         """
-        cmd = "for cmd in \"chassis bootdev pxe\" \"chassis power cycle\" \"sol activate\"; " \
-              "do ipmitool -I lanplus -H {0} -U ADMIN -P ADMIN $cmd; done".format(server_ip)
         try:
-            code, output = self.run_and_return_rc_and_output(cmd)
+            cmd_1 = "ipmitool -I lanplus -H {0} -U ADMIN -P ADMIN chassis bootdev pxe".format(server_ip)
+            try:
+                code, output = self.run_and_return_rc_and_output(cmd_1)
+            except:
+                pass
+            robot_logger("cmd-{0} o/p={1}".format(str(cmd_1), output))
+            
+            time.sleep(5)
+ 
+            cmd_2 = "ipmitool -I lanplus -H {0} -U ADMIN -P ADMIN chassis power cycle".format(server_ip)
+            try:
+                code, output = self.run_and_return_rc_and_output(cmd_2)
+            except:
+                pass
+            robot_logger("cmd-{0} o/p={1}".format(str(cmd_2), output))
+            return True
         except:
-            pass
-        robot_logger("cmd-{0} o/p={1}".format(str(cmd), output))
-        time.sleep(20)
-
+            return False
+    
     def get_server_id(self, resp_data, server_host):
         """Get Server ID added After PXE boot
         """
