@@ -33,7 +33,7 @@ server1_console = "ttyS1"
 server1_managed_by_pcc = "true"
 server1_ssh_keys = "pcc"
 
- server2_node_name = "sv8"
+server2_node_name = "sv8"
 server2_node_host = "172.17.2.102"
 server2_bmc_host = "172.17.3.102"
 server2_bmc_user = "ADMIN"
