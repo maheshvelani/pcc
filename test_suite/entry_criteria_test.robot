@@ -213,9 +213,10 @@ Assign MaaS Roles to Invader - 2
 PXE Boot to Server
         [Tags]    Entry Criteria
         [Documentation]    Server PXE Boot
-        ${status}    Server PXE boot    ${server_bmc_host}
-        Should Be Equal As Strings    ${status}    True    msg=PXE boot Failed Over Server ${server_node_host}
+        ${status}    Server PXE boot    ${server1_bmc_host}
+        Should Be Equal As Strings    ${status}    True    msg=PXE boot Failed Over Server ${server1_node_host}
         # Wait till Server Get Boot
+        Log    \nPXE boot Started......
         Sleep   20 minutes
 
 
@@ -229,16 +230,19 @@ Update Server information added after PXE boot
         Log    \n Status code = ${resp.status_code}    console=yes
         Log    \n Response = ${resp.json()}    console=yes
         Should Be Equal As Strings    ${resp.status_code}    200
-        ${status}    ${server_id}    Get Server Id    ${resp.json()}    ${server_node_host}
-        Should Be Equal As Strings    ${status}    True    msg=Server ${server_node_name} is not present in node list
-        Log    \n Server ${server_node_name} ID = ${server_id}   console=yes
+        ${status}    ${node_id}    Get Server Id    ${resp.json()}    ${server1_bmc_host}
+        Should Be Equal As Strings    ${status}    True    msg=Booted Server ${server1_bmc_host} is not present in node list
+        Log    \n Server ${server1_node_name} ID = ${node_id}   console=yes
         Set Suite Variable    ${server1_id}    ${node_id}
 
         # Update Server Node with proper information
-        &{data}    Create Dictionary    Id=${server1_id}  Name=${server_node_name}  console=${server_console}
-        ...    managed=${${server_managed_by_pcc}}  bmc=${server_bmc_host}  bmcUser=${server_bmc_user}
-	    ...    bmcPassword=${server_bmc_pwd}  bmcUsers=@{server_bmc_users}
-	    ...    sshKeys=@{server_ssh_keys}
+        @{server1_bmc_users}    Create List    ${server1_bmc_user}
+        @{server1_ssh_keys}    Create List    ${server1_ssh_keys}
+        &{data}    Create Dictionary    Id=${server1_id}  Name=${server1_node_name}  console=${server1_console}
+        ...    managed=${${server1_managed_by_pcc}}  bmc=${server1_bmc_host}  bmcUser=${server1_bmc_user}
+        ...    bmcPassword=${server1_bmc_pwd}  bmcUsers=@{server1_bmc_users}
+        ...    sshKeys=@{server1_ssh_keys}  Host=${server1_node_host}
+        Log    \n Updating Server with Data : \n${data}\n    console=yes
         ${resp}  Put Request    platina    ${update_node}    json=${data}     headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
         # Log    \n Response = ${resp.json()}    console=yes
@@ -256,14 +260,14 @@ Update Server information added after PXE boot
         Should Be Equal As Strings    ${resp.status_code}    200
 
         # Parse fetched node list and verify added Node availability from response data
-        ${status}    ${node_id}    Validate Node    ${resp.json()}    ${server_node_name}
-        Should Be Equal As Strings    ${status}    True    msg=Server ${server_node_name} is not present in node list
-        Log    \n Server ${server_node_name} ID = ${node_id}   console=yes
+        ${status}    ${node_id}    Validate Node    ${resp.json()}    ${server1_node_name}
+        Should Be Equal As Strings    ${status}    True    msg=Server ${server1_node_name} is not present in node list
+        Log    \n Server ${server1_node_name} ID = ${node_id}   console=yes
         Set Suite Variable    ${server1_id}    ${node_id}
 
         # Verify Online Status of Added Server
-        ${status}    Validate Node Online Status    ${resp.json()}    ${server_node_name}
-        Should Be Equal As Strings    ${status}    True    msg=Server ${server_node_name} added successfully but it is offline
+        ${status}    Validate Node Online Status    ${resp.json()}    ${server1_node_name}
+        Should Be Equal As Strings    ${status}    True    msg=Server ${server1_node_name} added successfully but it is offline
 
 
 Assign LLDP role to Server
@@ -271,7 +275,8 @@ Assign LLDP role to Server
         [Documentation]    Assign LLDP to Server
 
         # Assign Role to Node
-        &{data}    Create Dictionary  Id=${server1_id}    roles=${lldp_role_id}
+#        &{data}    Create Dictionary  Id=${server1_id}    roles=${lldp_role_id}
+        &{data}    Create Dictionary  Id=12    roles=2
         Log    \nAssigning a Roles with parameters: \n${data}\n    console=yes
         ${resp}  Put Request    platina    ${add_group_to_node}    json=${data}     headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
