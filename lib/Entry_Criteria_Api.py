@@ -206,14 +206,15 @@ class Entry_Criteria_Api(OperatingSystem, SSHLibrary):
         except:
             return False
     
-    def get_server_id(self, resp_data, server_host):
+    def get_server_id(self, resp_data, bmc_host):
         """Get Server ID added After PXE boot
         """
         try:
             if resp_data['Data'] != None:
                 for data in eval(str(resp_data))['Data']:
-                    if str(data['Host']) == str(server_host):
-                        return True, str(data['Id'])
+                    if data.has_key('bmc'):
+                    	if str(data['bmc']) == str(bmc_host):
+                            return True, str(data['Id'])
                 return False, None
             else:
                 return False, None

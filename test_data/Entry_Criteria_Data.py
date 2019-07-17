@@ -27,20 +27,20 @@ invader2_node_host = "172.17.2.43"
 
 # Test Data to Add Server as Node
 # Update This data as per supported Server over PCC
-server_node_name = "sv110"
-server_node_host = "172.17.2.110"
-server_bmc_host = "172.17.3.110"
-server_bmc_user = "ADMIN"
-server_bmc_pwd = "ADMIN"
-server_console = "ttyS1"
-server_managed_by_pcc = "true"
-server_ssh_keys = "pcc"
+server1_node_name = "sv110"
+server1_node_host = "172.17.2.110"
+server1_bmc_host = "172.17.3.110"
+server1_bmc_user = "ADMIN"
+server1_bmc_pwd = "ADMIN"
+server1_console = "ttyS1"
+server1_managed_by_pcc = "true"
+server1_ssh_keys = "pcc"
 
 # Test Data to Add Server as Node
 # Update This data as per supported Server over PCC
-server2_node_name = "sv111"
-server2_node_host = "172.17.2.111"
-server2_bmc_host = "172.17.3.111"
+server2_node_name = "sv124"
+server2_node_host = "172.17.2.124"
+server2_bmc_host = "172.17.3.124"
 server2_bmc_user = "ADMIN"
 server2_bmc_pwd = "ADMIN"
 server2_console = "ttyS1"
