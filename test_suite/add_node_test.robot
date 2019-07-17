@@ -40,9 +40,9 @@ Add Invader
 	[Arguments]    ${Index}
  
         # Add Invader Node
-	${name}    ${Invader${index}_node_name}
-	${host}    ${Invader${index}_node_host}
-        &{data}    Create Dictionary  	Name=${name}  Host=${host}
+	${name}     Set Variable  ${Invader${index}_node_name}
+	${host}    Set Variable  ${Invader${index}_node_host}
+        &{data}     Create Dictionary  	Name=${name}  Host=${host}
         Log    \nCreating Invader Node with parameters : \n${data}\n    console=yes
         ${resp}    Post Request    platina    ${add_node}    json=${data}   headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
@@ -81,22 +81,22 @@ Add Server
 
         # Add Server Node
 
-	${name}    ${server${index}_node_name}
-	${host}    ${server${index}_node_host}
-	${bmc_host}    ${server${index}_bmc_host}
-	${bmc_user}    ${server${index}_bmc_user}
-	${bmc_pwd}    ${server${index}_bmc_pwd}
-	${console}    ${sevader${index}_console}
-	${manage_pcc}    ${server${index}_managed_by_pcc}
-	${ssh_key}    ${server${index}_ssh_keys}
+	${name}    Set Variable  ${server${index}_node_name}
+	${host}   Set Variable   ${server${index}_node_host}
+	${bmc_host}   Set Variable  ${server${index}_bmc_host}
+	${bmc_user}   Set Variable  ${server${index}_bmc_user}
+	${bmc_pwd}   Set Variable  ${server${index}_bmc_pwd}
+	${console}   Set Variable  ${server${index}_console}
+	${manage_pcc}    Set Variable  ${server${index}_managed_by_pcc}
+	${ssh_key}    Set Variable  ${server${index}_ssh_keys}
 
 
         @{server_bmc_users}    Create List    ${bmc_user}
         @{server_ssh_keys}    Create List    ${ssh_key}
         &{data}    Create Dictionary  	Name=${name}  Host=${host}
         ...    console=${console}  bmc=${bmc_host}  bmcUser=${bmc_user}
-        ...    bmcPassword=${bmc_pwd}  bmcUsers=@{bmc_users}
-        ...    sshKeys=@{server_ssh_keys}  managed=${${server_managed_by_pcc}}
+        ...    bmcPassword=${bmc_pwd}  bmcUsers=@{server_bmc_users}
+        ...    sshKeys=@{server_ssh_keys}  managed=${${server${Index}_managed_by_pcc}}
         Log    \nCreating Server node with parameters : \n${data}\n    console=yes
         ${resp}    Post Request    platina    ${add_node}    json=${data}   headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
@@ -122,7 +122,7 @@ Add Server
         # Parse fetched node list and verify added Node availability from response data
         ${status}    ${node_id}    Validate Node    ${resp.json()}    ${name}
         Should Be Equal As Strings    ${status}    True    msg=Server ${name} is not present in node list
-        Log    \n Server ${server_node_name} ID = ${node_id}   console=yes
+        Log    \n Server ID = ${node_id}   console=yes
         Set Suite Variable    ${server${Index}_id}    ${node_id}
 
         # Verify Online Status of Added Server
