@@ -13,7 +13,7 @@ user_name = "admin"
 user_pwd = "admin"
 
  #Node data
-total_node = 2
+total_invader = 2
 total_server = 4
 
  # Test Data for Invader as Node
@@ -65,9 +65,12 @@ server4_ssh_keys = "pcc"
 
 
 
- # Test Data for Group Creation
-create_group_name = "automation_group"
-create_group_desc = "automation_group"
+total_group = 2
+# Test Data for Group Creation
+create1_group_name = "automation_group1"
+create1_group_desc = "automation_group1"
+create2_group_name = "automation_group2"
+create2_group_desc = "automation_group2"
 
 
  # Assign Group To Node
@@ -75,14 +78,15 @@ create_group_desc = "automation_group"
 # before select group name
 # By Default keep it as "automation_group" as we are creating this
 # group just before group assignment test
-assign_group_name = "automation_group"
+assign_group_name = "automation_group1"
 
 
 # Node Role Creation Data
 # It will assign ROOT as role Tenant
-create_role_name = "automation_role"
-create_role_desc = "automation_role"
-
+create1_role_name = "automation_role1"
+create1_role_desc = "automation_role1"
+create2_role_name = "automation_role2"
+create2_role_desc = "automation_role2"
 
 # Assign Roles To Node
 # Please make sure role name is present in role list
@@ -91,25 +95,29 @@ create_role_desc = "automation_role"
 assign_role_name = "LLDP"
 
 
+total_site = 2
 # Site Creation Data
-create_site_name = "automation_site"
-create_site_desc = "automation_site"
-
+create1_site_name = "automation_site1"
+create1_site_desc = "automation_site1"
+create2_site_name = "automation_site2"
+create2_site_desc = "automation_site2"
 
 # Assign Sites To Node
 # Please make sure Site name is present in Site list
 # before select Site name
 # By Default it will assign "automation_site" site to node
-assign_site_name = "automation_site"
+assign_site_name = "automation_site1"
 
 
+total_tenant = 2
 # Tenant Creation Data
-create_tenant_name = "automation_tenant"
-create_tenant_desc = "automation_tenant"
-
+create1_tenant_name = "automation_tenant1"
+create1_tenant_desc = "automation_tenant1"
+create2_tenant_name = "automation_tenant2"
+create2_tenant_desc = "automation_tenant2"
 
  # Assign Tenant To Node
 # Please make sure Tenant name is present in Tenant list
 # before select Tenant name
 # By Default it will assign "automation_tenant" tenant to node
-assign_tenant_name = "automation_tenant"
+assign_tenant_name = "automation_tenant1"
