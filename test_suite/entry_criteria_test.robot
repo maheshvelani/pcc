@@ -270,35 +270,9 @@ Update Server information added after PXE boot
         Should Be Equal As Strings    ${status}    True    msg=Server ${server1_node_name} added successfully but it is offline
 
 
-Assign LLDP role to Server
-        [Tags]    Entry Criteria
-        [Documentation]    Assign LLDP to Server
-
-        # Assign Role to Node
-#        &{data}    Create Dictionary  Id=${server1_id}    roles=${lldp_role_id}
-        &{data}    Create Dictionary  Id=12    roles=2
-        Log    \nAssigning a Roles with parameters: \n${data}\n    console=yes
-        ${resp}  Put Request    platina    ${add_group_to_node}    json=${data}     headers=${headers}
-        Log    \n Status code = ${resp.status_code}    console=yes
-        Log    \n Response = ${resp.json()}    console=yes
-        Should Be Equal As Strings  ${resp.status_code}    200
-
-        # Wait for few seconds to reflect assign roles over node
-        Sleep	5 minutes
-
-        # Validate Assigned Roles
-        &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
-        ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
-        Log    \n Status code = ${resp.status_code}    console=yes
-        Log    \n Response = ${resp.json()}    console=yes
-        Should Be Equal As Strings    ${resp.status_code}    200
-        ${status}    ${node_id}    Validate Node Roles    ${resp.json()}    ${server_node_name}    ${lldp_role_id}
-        Should Be Equal As Strings    ${status}    True    msg=Node ${server_node_name} is not updated with the Roles LLDP
-
-
 OS Deployment over Server machine
         [Tags]    Entry Criteria
-        [Documentation]    Assign LLDP to Server
+        [Documentation]    OS Deployment
         # Start OS Deployment
         &{data}    Create Dictionary  nodes=[${${server1_id}}]  image=${image_name}  locale=${en_US}  timezone=${PDT}  adminUser=${mass_user}  sshKeys=${ssh_key}
         ${resp}  Post Request    platina   ${os_deployment}    json=${data}    headers=${headers}
@@ -322,6 +296,31 @@ OS Deployment over Server machine
         Verify CentOS installed in server machine
 
 
+Assign LLDP role to Server
+        [Tags]    Entry Criteria
+        [Documentation]    Assign LLDP to Server
+
+        # Assign Role to Node
+        &{data}    Create Dictionary  Id=${server1_id}    roles=${lldp_role_id}
+        Log    \nAssigning a Roles with parameters: \n${data}\n    console=yes
+        ${resp}  Put Request    platina    ${add_group_to_node}    json=${data}     headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings  ${resp.status_code}    200
+
+        # Wait for few seconds to reflect assign roles over node
+        Sleep	5 minutes
+
+        # Validate Assigned Roles
+        &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
+        ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings    ${resp.status_code}    200
+        ${status}    ${node_id}    Validate Node Roles    ${resp.json()}    ${server_node_name}    ${lldp_role_id}
+        Should Be Equal As Strings    ${status}    True    msg=Node ${server_node_name} is not updated with the Roles LLDP
+
+
 Create Kubernetes Cluster
         [Tags]    Entry Criteria
         [Documentation]    Create Kubernetes Cluster
@@ -330,15 +329,24 @@ Create Kubernetes Cluster
         &{data1}    Create Dictionary  id=${${invader1_id}}
         &{data2}    Create Dictionary  id=${${invader2_id}}
         &{data3}    Create Dictionary  id=${${server1_id}}
+        @{json}    Create List    ${data1}  ${data2}  ${data3}
+
         &{data}    Create Dictionary  name=${cluster_name}  k8sVersion=${cluster_version}  cniPlugin=${cni_plugin}
-        ...    nodes=[&{data1}, &{data2}, &{data3}]
+        ...    nodes=@{json}
         Log    \nCreating Cluster with data: ${data}\n
         ${resp}  Post Request    platina   ${add_kubernetes_cluster}    json=${data}    headers=${headers}
         Log    \n Status Code = ${resp.status_code}    console=yes
+        Log    \n JSON RESP = ${resp.json()}    console=yes
         Should Be Equal As Strings  ${resp.status_code}  200
 
         # Wait for few seconds
-        Sleep  10 minutes
+        Sleep  5 minutes
+        Log To Console    \nK8s is installing..... 
+        Sleep  5 minutes
+        Log To Console    \nK8s is installing..... 
+        Sleep  5 minutes
+        Log To Console    \nK8s is installing..... 
+        Sleep  5 minutes
 
         # Verify cluster created
         ${resp}  Get Request    platina   ${add_kubernetes_cluster}    headers=${headers}
