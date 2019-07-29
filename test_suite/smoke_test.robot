@@ -69,14 +69,22 @@ Create Tenant
         \    Run Keyword And Continue On Failure    Add Tenant    ${Index}
 
 
-Assign LLDP role to Invaders
+Assign role to Invaders
         [Tags]    role_assign
         [Documentation]    Verify User Should be able to assign role to node
 
-        :For  ${index}  IN RANGE    0  ${total_}
+        :For  ${index}  IN RANGE    0  ${total_invader}
         \    ${Index}    Evaluate    ${index}+1
-        \    Run Keyword And Continue On Failure    Add Tenant    ${Index}
+        \    Run Keyword And Continue On Failure    Assign Role To Invader    ${Index}
 
+
+Assign role to Server
+        [Tags]    role_assign
+        [Documentation]    Verify User Should be able to assign role to node
+
+        :For  ${index}  IN RANGE    0  ${total_server}
+        \    ${Index}    Evaluate    ${index}+1
+        \    Run Keyword And Continue On Failure    Assign Role To Server    ${Index}
 
 
 *** keywords ***
@@ -268,3 +276,68 @@ Add Tenant
         Log    \n Tenant ${create${Index}_tenant_name} ID = ${create${Index}_tenant_id}    console=yes
 
 
+Assign Role To Invader
+	[Arguments]    ${Index}
+
+        # Validate Assign Role is present in Roles list
+        ${resp}  Get Request    platina   ${add_role}    headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings    ${resp.status_code}    200
+        ${status}    ${role_id}    Validate Roles    ${resp.json()}    ${assign_role_name}
+        Should Be Equal As Strings    ${status}    True    msg=Role ${assign_role_name} is not present in Roles list
+        Set Suite Variable    ${assign_role_id}    ${role_id}
+        Log    \n Roles ${assign_role_name} ID = ${assign_role_id}   console=yes
+
+        # Assign Role to Node
+        &{data}    Create Dictionary  Id=${invader${index}_id}    roles=${assign_role_id}
+        Log    \nAssigning a Roles with parameters: \n${data}\n    console=yes
+        ${resp}  Put Request    platina    ${add_group_to_node}    json=${data}     headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings  ${resp.status_code}    200
+
+        # Wait for few seconds to reflect assign roles over node
+        Sleep	5 minutes
+        # Validate Assigned Roles
+        &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
+        ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings    ${resp.status_code}    200
+        ${status}    ${node_id}    Validate Node Roles    ${resp.json()}    ${invader${Index}_node_name}    ${assign_role_id}
+        Should Be Equal As Strings    ${status}    True    msg=Node ${invader${Index}_node_name} is not updated with the Roles ${assign_role_name}
+
+
+Assign Role To Server
+	[Arguments]    ${Index}
+
+        # Validate Assign Role is present in Roles list
+        ${resp}  Get Request    platina   ${add_role}    headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings    ${resp.status_code}    200
+        ${status}    ${role_id}    Validate Roles    ${resp.json()}    ${assign_role_name}
+        Should Be Equal As Strings    ${status}    True    msg=Role ${assign_role_name} is not present in Roles list
+        Set Suite Variable    ${assign_role_id}    ${role_id}
+        Log    \n Roles ${assign_role_name} ID = ${assign_role_id}   console=yes
+
+        # Assign Role to Node
+        &{data}    Create Dictionary  Id=${server${index}_id}    roles=${assign_role_id}
+        Log    \nAssigning a Roles with parameters: \n${data}\n    console=yes
+        ${resp}  Put Request    platina    ${add_group_to_node}    json=${data}     headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings  ${resp.status_code}    200
+
+        # Wait for few seconds to reflect assign roles over node
+        Sleep	5 minutes
+
+        # Validate Assigned Roles
+        &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
+        ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings    ${resp.status_code}    200
+        ${status}    ${node_id}    Validate Node Roles    ${resp.json()}    ${server${Index}_node_name}    ${assign_role_id}
+        Should Be Equal As Strings    ${status}    True    msg=Node ${server${Index}_node_name} is not updated with the Roles ${assign_role_name}
