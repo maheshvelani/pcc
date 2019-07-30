@@ -224,6 +224,7 @@ class Entry_Criteria_Api(OperatingSystem, SSHLibrary):
     def verify_kubernetes_cluster_installed(self, ip_addr):
         """Verify Cluster Created
         """
+        import sys, pdb; pdb.Pdb(stdout=sys.__stdout__).set_trace()
         login_op = self.open_connection(ip_addr)
         robot_logger("login over invader Ip = ", ip_addr)
         self.login("pcc", "cals0ft")
@@ -255,19 +256,27 @@ class Entry_Criteria_Api(OperatingSystem, SSHLibrary):
     def prepare_invader_topology(self, resp, i_id, interface_sv, assign_ip):
         """Get Invader Topology
         """
-        topology_str = {"ifName":None,"nodeID":None,"speed":10000,"ipv4Addresses":[],"gateway":"","fecType":"",
-                        "mediaType":"copper","macAddress":"50:18:4c:00:0b:f3","status":"up","management":False}
-        
-        for data in eval(str(resp))['Data']::
+        topology_str = { "ifName" : None,
+                         "nodeID" : None,
+                         "speed" : 10000,
+                         "ipv4Addresses" : [],
+                         "gateway" : "",
+                         "fecType" : "",
+                         "mediaType" : "copper",
+                         "macAddress" : "50:18:4c:00:0b:f3",
+                         "status" : "up",
+                         "management":False
+                       }
+        for data in eval(str(resp))['Data']:
             if int(data["NodeId"]) == int(i_id):
 		for link in data["links"]:
 		    if interface_sv == link["interface_name"]:
 			topology_str["ifName"] = interface_sv
 			topology_str["nodeID"] = int(i_id)
 			if link["ipv4_addresses"]:
-			    topology_str["ipv4Addresses"] = link["ipv4_addresses"] + [asign_ip]
+			    topology_str["ipv4Addresses"] = link["ipv4_addresses"] + [assign_ip]
 			else:
-		            topology_str["ipv4Addresses"] = [asign_ip]
+		            topology_str["ipv4Addresses"] = [assign_ip]
 
         if topology_str["nodeID"] == None:
             return False, None 

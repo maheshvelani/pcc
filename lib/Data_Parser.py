@@ -263,8 +263,8 @@ class Data_Parser:
     def verify_app_present_in_cluster(resp_data, app_name):
         """Verify Installed App Present in cluster details"""
         try:
-            for data in eval(str(resp_data))['Data']:
-                if str(app_name) in str(data['apps']):
+            #for data in eval(str(resp_data))['Data']:
+            if str(app_name) in str(eval(str(resp_data))['Data']["apps"]):
                     return True
             return False
         except Exception:
@@ -290,5 +290,16 @@ class Data_Parser:
             if cluster_name in eval(str(resp_data))['Data']:
                 return False
             return True
+        except Exception:
+            return False
+
+    @staticmethod
+    def verify_cluster_version(resp_data, cluster_ver):
+        """ verify Cluster Version
+        """
+        try:
+            if cluster_ver in str(eval(str(resp_data))['Data']["k8sVersion"]):
+                return True
+            return False
         except Exception:
             return False

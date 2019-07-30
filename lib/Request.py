@@ -46,6 +46,9 @@ class Request(RequestsLibrary):
                json['nodes'] = eval(json['nodes'])
                json['sshKeys'] = eval(json['sshKeys'])
 
+            if ("gitUrl" in json) and ("appNamespace" in json):
+                json = eval(str(json))
+
             response = self._body_request(
 	            "post",
 	            session,
