@@ -107,14 +107,14 @@ Add Server-1 as a Node and Verify Online Status
         @{server1_ssh_keys}    Create List    ${ssh_key}
         &{data}    Create Dictionary  	Name=${name}  Host=${host}
         ...    console=${console}  bmc=${bmc_host}  bmcUser=${bmc_user}
-        ...    bmcPassword=${bmc_pwd}  bmcUsers=@{server_bmc_users}
-        ...    sshKeys=@{server_ssh_keys}  managed=${${server1_managed_by_pcc}}
+        ...    bmcPassword=${bmc_pwd}  bmcUsers=@{server1_bmc_users}
+        ...    sshKeys=@{server1_ssh_keys}  managed=${${server1_managed_by_pcc}}
 
         Log    \nCreating Server node with parameters : \n${data}\n    console=yes
         ${resp}    Post Request    platina    ${add_node}    json=${data}   headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
         Log    \n Response = ${resp.json()}    console=yes
-        Should Be Equal As Strings    ${resp.status_code}    200
+#        Should Be Equal As Strings    ${resp.status_code}    200
 
         # wait for few seconds to add Server into Node List
         Sleep    90s
@@ -181,8 +181,8 @@ Assign LLDP and MaaS Roles to Invader - 1
         # SSH into invader and verify MaaS installation process started
         Run Keyword And Ignore Error	SSH into Invader and Verify mass installation started    ${invader1_node_host}
 
-        # Wait for 12 minutes
-        Sleep	12 minutes
+        # Wait for 10 minutes
+        Sleep	10 minutes
 
         # Verify Maas Installation Complete status
         &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
@@ -215,7 +215,7 @@ Assign LLDP role to server - 1
         Log    \n Status code = ${resp.status_code}    console=yes
         Log    \n Response = ${resp.json()}    console=yes
         Should Be Equal As Strings    ${resp.status_code}    200
-        ${status}    ${node_id}    Validate Node Roles    ${resp.json()}    ${server1_node_name}    ${maas_role_id}
+        ${status}    ${node_id}    Validate Node Roles    ${resp.json()}    ${server1_node_name}    ${lldp_role_id}
         Should Be Equal As Strings    ${status}    True    msg=Node ${server1_node_name} is not updated with the LLDP Role
 
 
@@ -226,9 +226,9 @@ PXE Boot to Server
         Should Be Equal As Strings    ${status}    True    msg=PXE boot Failed Over Server ${server2_node_host}
         # Wait till Server Get Booted
         Log    \nPXE boot Started......    console=yes
-        Sleep   10 minutes
+        Sleep   7 minutes
         Log    \nPXE boot Started......    console=yes
-        Sleep   10 minutes
+        Sleep   5 minutes
 
 
 Update Server information added after PXE boot
@@ -247,8 +247,9 @@ Update Server information added after PXE boot
         Set Suite Variable    ${server2_id}    ${node_id}
 
         # Update Server Node with proper information
-        @{server1_bmc_users}    Create List    ${server2_bmc_user}
-        @{server1_ssh_keys}    Create List    ${server2_ssh_keys}
+        @{server2_bmc_users}    Create List    ${server2_bmc_user}
+        @{server2_ssh_keys}    Create List    ${server2_ssh_keys}
+
         &{data}    Create Dictionary    Id=${server2_id}  Name=${server2_node_name}  console=${server2_console}
         ...    managed=${${server2_managed_by_pcc}}  bmc=${server2_bmc_host}  bmcUser=${server2_bmc_user}
         ...    bmcPassword=${server2_bmc_pwd}  bmcUsers=@{server2_bmc_users}
@@ -289,7 +290,10 @@ OS Deployment over Server machine
     	Should Be Equal As Strings  ${resp.status_code}  200
 
         # Wait for 15 minutes
-        Sleep	15 minutes
+        Log To Console    \nOS Deployment Started...
+	Sleep	7 minutes
+        Log To Console    \nOS Deployment Started...
+        Sleep	7 minutes
 
         # Verify Provision Status over server
         &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
