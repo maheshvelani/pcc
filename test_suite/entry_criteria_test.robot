@@ -425,12 +425,12 @@ Test Teardown   Delete All Sessions
 #        Should Be Equal As Strings    ${status}    True    msg=Cluster installation failed
 #
 #
-Verify Created K8s Cluster installation from back end
-        [Tags]    Entry Criteria
-        [Documentation]    Verify Kubernetes Cluster
-        Verify K8s installed    
-
-
+#Verify Created K8s Cluster installation from back end
+#        [Tags]    Entry Criteria
+#        [Documentation]    Verify Kubernetes Cluster
+#        Verify K8s installed    
+#
+#
 #Add an app to k8s
 #        [Tags]    Entry Criteria
 #        [Documentation]    Add an App to K8S
@@ -627,8 +627,8 @@ Verify Created K8s Cluster installation from back end
 #
 #Delete K8s Cluster
 #        # Delete K8s Cluster
-#        Log    \nAdding App with Data: ${data}\n
-#        ${resp}  Delete Request	   platina    ${add_kubernetes_cluster}${cluster_id}    json={"forceRemove":false}    headers=${headers}
+#        Log    \n\nDeleting Cluster...
+#        ${resp}  Delete Request	   platina    ${add_kubernetes_cluster}/${cluster_id}    headers=${headers}
 #        Log    \n Status Code = ${resp.status_code}    console=yes
 #        Should Be Equal As Strings  ${resp.status_code}  200
 #
@@ -671,32 +671,29 @@ Verify CentOS installed in server machine
         SSHLibrary.Close All Connections
 
 
+Verify K8s installed
+        # Get OS release data from server
+        Log To Console    \n\nVerifying K8S over ${invader1_node_host}\n\n
+	${rc}  ${output}    Entry_Criteria_Api.Run And Return Rc And Output        ssh ${invader1_node_host} "sudo kubectl get nodes"
+	Sleep    2s
+ 	Log    \n\nInvader K8S Status = ${output}    console=yes
+        Should Contain  ${output}    Ready
+        Should Contain  ${output}    master
+
+
 #Verify K8s installed
 #        # Get OS release data from server
 #        Log To Console    \n\n${invader1_node_host}\n\n
 #        SSHLibrary.Open Connection     ${invader1_node_host}    timeout=1 hour
-#	 SSHLibrary.Login               pcc        cals0ft
-#	 Sleep    2s
-#	 ${output}=        SSHLibrary.Execute Command    sudo -s
-# 	 Log    \n\nSUDO O/P = ${output}    console=yes
+#	SSHLibrary.Login               pcc    cals0ft
+#	Sleep    2s
+#	${output}=        SSHLibrary.Execute Command    sudo -s
+# 	Log    \n\nSUDO O/P = ${output}    console=yes
 #        ${output}    SSHLibrary.Execute Command    kubectl get nodes
 #        Log    \n\nK8SDATA = ${output} \n\n    console=yes
 #        Should Contain  ${output}    Ready
 #        Should Contain  ${output}    master
 #        SSHLibrary.Close All Connections
-
-#Verify CentOS installed in server machine
-#        # Get OS release data from server
-#        ${rc}  ${output}    Run And Return Rc And Output        ssh ${server_node_host} "cat /etc/os-release"
-#        Log    \n\nGET OS release status Code = ${rc}    console=yes
-#        Log    \n\nSERVER OS RELEASE DATA = ${output}    console=yes
-#        Should Contain    ${output}    CentOS Linux
-#
-#        ${rc}  ${output}    Run And Return Rc And Output        ssh ${server_node_host} "uptime -p"
-#        Log    \n\nServer uptime status code = ${rc}    console=yes
-#        Log    \n\nSERVER UP Time Data DATA = ${output}    console=yes
-#        ${status}    Verify server up time     ${output}
-#        Should Be Equal As Strings    ${status}    True    msg=There are no new OS deployed in last few minutes
 
 
 *** Variables ***
