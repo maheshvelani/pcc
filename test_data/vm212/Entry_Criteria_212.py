@@ -17,17 +17,11 @@ user_pwd = "admin"
 # Update This data as per supported Invader over PCC server
 invader1_node_name = "i43"
 invader1_node_host = "172.17.2.43"
+# Invader interface
 interface_sv1 = "xeth32-2"
 asign_ip_to_interface1 = "192.0.2.102/31"
 interface_sv2 = "xeth6-2"
 asign_ip_to_interface2 = "192.0.2.100/31"
-
-
-
-## Test Data for Invader as Node
-## Update This data as per supported Invader over PCC server
-#invader2_node_name = "i42"
-#invader2_node_host = "172.17.2.42"
 
 
 # Test Data to Add Server as Node
@@ -91,3 +85,5 @@ git2_repo_path = "helm-charts"
 
 
 upgrade_k8_version = "v1.13.5"
+
+satus_false = "false"
