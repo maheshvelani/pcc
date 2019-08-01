@@ -48,6 +48,11 @@ server2_bmc_pwd = "ADMIN"
 server2_console = "ttyS1"
 server2_managed_by_pcc = "true"
 server2_ssh_keys = "pcc"
+# Management parameters
+management_interface = "eth2"
+management_ip = "172.17.2.110/23"
+gateway_ip = "172.17.2.1"
+# topolofy parameters
 interface2_name = "ens2"
 interface2_ip = "192.0.2.101/31"
 
@@ -61,7 +66,7 @@ invader_usr_pwd = "cals0ft"
 image_name = "centos76"
 en_US = "en_US"
 PDT = "PDT"
-mass_user = "auto_test"
+mass_user = "pcc"
 ssh_key = "['pcc']"
 
 

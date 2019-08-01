@@ -223,6 +223,22 @@ class Data_Parser:
             return False
 
     @staticmethod
+    def validate_os_provision_status(resp_data, node_name):
+        """ Verify OS deploy Status
+        """
+        try:
+            if resp_data['Data'] != None:
+                for data in eval(str(resp_data))['Data']:
+                    if str(data['Name']) == str(node_name):
+                        if str(data['provisionStatus']) == "Not provisioned":
+                            return True
+                        else:
+                            return False
+            return False
+        except Exception:
+            return False
+
+    @staticmethod
     def verify_server_up_time(uptime_data):
         """ validate Server Uptim
         """
