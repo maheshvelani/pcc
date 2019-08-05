@@ -318,7 +318,7 @@ OS Deployment over Server machine
         Should Be Equal As Strings    ${status}    True    msg=Provision Status of server ${server2_node_name} is not Finished
 
         # Verify CentOS installed in remote machine
-        Run Keyword And Ignore Error    Verify CentOS installed in server machine
+        Verify CentOS installed in server machine
 
 
 Assign LLDP role to Server - 2
