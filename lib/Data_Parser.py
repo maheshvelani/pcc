@@ -54,6 +54,38 @@ class Data_Parser:
             return False, None
 
     @staticmethod
+    def get_node_group_count(resp_data, expect_group, desc=None):
+        """ Validate Node group count
+        """
+        g_cnt = 0
+        try:
+            for data in eval(str(resp_data))['Data']:
+                if str(data['Name']) == str(expect_group):
+                    g_cnt += 1
+                    if desc:
+                        if ((str(data['Description:']) == None)
+                                or
+                             (str(data['Description:']) == '')):
+                            return True, str(data['Id'])
+                        else:
+                            return False, None
+            return True, str(g_cnt)
+        except Exception:
+            return False, None
+
+    @staticmethod
+    def validate_group_desc(resp_data, expect_group_desc):
+        """ Get Expected Group from the group list
+        """
+        try:
+            for data in eval(str(resp_data))['Data']:
+                if str(data['Description:']) == str(expect_group_desc):
+                    return True, str(data['Id'])
+            return False, None
+        except Exception:
+            return False, None
+
+    @staticmethod
     def validate_roles(resp_data, expect_role):
         """ Get Expected Role from the group list
         """

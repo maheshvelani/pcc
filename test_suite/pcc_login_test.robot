@@ -3,8 +3,7 @@ Library  	OperatingSystem
 Library  	Collections
 Library  	String
 
-Library    	${CURDIR}/../lib/Request.py
-Variables       ${CURDIR}/../test_data/Login_Test_Data.py
+Library    	    ${CURDIR}/../lib/Request.py
 Variables       ${CURDIR}/../test_data/Url_Paths.py
 Library         ${CURDIR}/../lib/Data_Parser.py
 Resource        ${CURDIR}/../resource/Resource_Keywords.robot
