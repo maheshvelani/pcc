@@ -20,10 +20,10 @@ PCC Node Group
 
     	# Click on node group
     	${resp}  Get Request    platina   ${get_group}    headers=${headers}
-	Log    \n Status code = ${resp.status_code}    console=yes
-	Log    \n Response = ${resp.json()}    console=yShould Be Equal As Strings  ${resp.status_code}    200
-	Should Be Equal As Strings  ${resp.status_code}    200
-	Sleep    2s
+    	Log    \n Status code = ${resp.status_code}    console=yes
+    	Log    \n Response = ${resp.json()}    console=yShould Be Equal As Strings  ${resp.status_code}    200
+    	Should Be Equal As Strings  ${resp.status_code}    200
+    	Sleep    2s
 
 
 PCC Node Group Create
@@ -426,29 +426,29 @@ Delete 100 node groups
         [Tags]    NodeG Mgmt    Groups
         [Documentation]    Delete Multiple Node Group
 
-	FOR    ${index}    IN RANGE    1    101
-	\   # Get Node ID
+        FOR    ${index}    IN RANGE    1    101
+        \   # Get Node ID
         \   ${resp}  Get Request    platina   ${get_group}    headers=${headers}
         \   Log    \n Status code = ${resp.status_code}    console=yes
         \   Log    \n Response = ${resp.json()}    console=yes
         \   Should Be Equal As Strings    ${resp.status_code}    200
         \   ${status}    ${group_id}    Validate Group    ${resp.json()}    ${group13_name}${index}
         \   Should Be Equal As Strings    ${status}    True    msg=Group ${group13_name}${index} is not present in group list
-	\
-	\   # Delete Group
-	\   ${resp}  Delete Request    platina   ${get_group}${group_id}    headers=${headers}
+        \
+        \   # Delete Group
+        \   ${resp}  Delete Request    platina   ${get_group}${group_id}    headers=${headers}
         \   Log    \n Status code = ${resp.status_code}    console=yes
         \   Should Be Equal As Strings    ${resp.status_code}    200
-	\
-	\   Sleep    5s
-	\
-	\   # Validate Group deleted
-	\   ${resp}  Get Request    platina   ${get_group}    headers=${headers}
-	\   Log    \n Status code = ${resp.status_code}    console=yes
-	\   Log    \n Response = ${resp.json()}    console=yes
+        \
+        \   Sleep    5s
+        \
+        \   # Validate Group deleted
+        \   ${resp}  Get Request    platina   ${get_group}    headers=${headers}
+        \   Log    \n Status code = ${resp.status_code}    console=yes
+        \   Log    \n Response = ${resp.json()}    console=yes
         \   ${status}    ${id}    Validate Group    ${resp.json()}    ${group_name}${index}
         \   Should Be Equal As Strings    ${status}   False     msg=Group ${group_name}${index} is present in Groups list
-	\   Sleep    1s
+        \   Sleep    1s
 
 
 Update PCC Node Group Name with Existing Group Name
