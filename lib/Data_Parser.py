@@ -86,6 +86,21 @@ class Data_Parser:
             return False, None
 
     @staticmethod
+    def validate_role_desc(resp_data, expect_role, expect_role_desc=None):
+        """ Get Expected Role from the role list
+        """
+        try:
+            for data in eval(str(resp_data))['Data']:
+                if str(data['name']) == str(expect_role):
+                    if str(data['Description:']) == str(expect_role_desc)\
+                        or \
+                            str(data['Description:']) == '':
+                        return True, str(data['Id'])
+            return False, None
+        except Exception:
+            return False, None
+
+    @staticmethod
     def validate_roles(resp_data, expect_role):
         """ Get Expected Role from the group list
         """
@@ -93,6 +108,19 @@ class Data_Parser:
             for data in eval(str(resp_data))['Data']:
                 if str(data['name']) == str(expect_role):
                     return True, str(data['id'])
+            return False, None
+        except Exception:
+            return False, None
+
+    @staticmethod
+    def validate_role_tenant(resp_data, expect_role):
+        """ Get Expected Role Tenant from the group list
+        """
+        try:
+            for data in eval(str(resp_data))['Data']:
+                if str(data['name']) == str(expect_role):
+                    if not int("1") in data['owners']:
+                        return True, str(data['id'])
             return False, None
         except Exception:
             return False, None
