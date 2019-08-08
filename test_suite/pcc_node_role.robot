@@ -18,7 +18,7 @@ Verify the UI Node Role Information
         [Documentation]    Verify the UI information on node role
 
         # Click on node role
-        ${resp}  Get Request    platina   ${get_role}    headers=${headers}
+        ${resp}  Get Request    platina   ${add_role}    headers=${headers}
         Log    \nStatus code = ${resp.status_code}    console=yes
         Log    \nResponse = ${resp.json()}    console=yes
         Should Be Equal As Strings  ${resp.status_code}    200
@@ -30,9 +30,9 @@ PCC Node Role Creation
         [Documentation]    Adding new node role
 
         @{app}    Create List    ${3}
-        &{data}    Create Dictionary  Name=${role1_name}    Description=${role1_desc}  templateIDs:@{app}  owners=${1}
+        &{data}    Create Dictionary  Name=${role1_name}    Description=${role1_desc}  templateIDs=@{app}  owners=@{owner}
         Log    \nCreating Role with parameters: \n${data}\n    console=yes
-        ${resp}  Post Request    platina   ${get_role}    json=${data}     headers=${headers}
+        ${resp}  Post Request    platina   ${add_role}    json=${data}     headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
         Log    \n Response = ${resp.json()}    console=yes
         Should Be Equal As Strings    ${resp.status_code}    200
@@ -41,7 +41,7 @@ PCC Node Role Creation
         Sleep    5s
 
         # Validate  Added Node Role
-        ${resp}  Get Request    platina   ${get_role}    headers=${headers}
+        ${resp}  Get Request    platina   ${add_role}    headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
         Log    \n Response = ${resp.json()}    console=yes
         Should Be Equal As Strings    ${resp.status_code}    200
@@ -49,8 +49,6 @@ PCC Node Role Creation
         # Parse fetched role list and verify geted Role availability from response data
         ${status}    ${id}    Validate Roles    ${resp.json()}    ${role1_name}
         Should Be Equal As Strings    ${status}    True    msg=Role ${role1_name} is not present in Role list
-        Set Suite Variable    ${create_role1_id}    ${id}
-        Log    \n Role ${role1_name} ID = ${create_role_id}   console=yes
         Sleep    2s
 
 
@@ -59,9 +57,9 @@ PCC Node Role Creation Without Name
         [Documentation]    Adding new node role without name
 
         @{app}    Create List    ${3}
-        &{data}    Create Dictionary  Name=  Description=${role2_desc}  owners=${1}  templateIDs:@{app}
+        &{data}    Create Dictionary  Description=${role2_desc}  owners=@{owner}  templateIDs=@{app}
         Log    \nCreating Role with parameters: \n${data}\n    console=yes
-        ${resp}  Post Request    platina   ${get_role}    json=${data}     headers=${headers}
+        ${resp}  Post Request    platina   ${add_role}    json=${data}     headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
         Log    \n Response = ${resp.json()}    console=yes
         Should Not Be Equal As Strings    ${resp.status_code}    200    msg=Node Role Created successfully without Name
@@ -70,7 +68,7 @@ PCC Node Role Creation Without Name
 #        Sleep    2s
 #
 #        # Validate  Added Node Role
-#        ${resp}  Get Request    platina   ${get_role}    headers=${headers}
+#        ${resp}  Get Request    platina   ${add_role}    headers=${headers}
 #        Log    \n Status code = ${resp.status_code}    console=yes
 #        Log    \n Response = ${resp.json()}    console=yes
 #        Should Be Equal As Strings    ${resp.status_code}    200
@@ -86,9 +84,9 @@ PCC Node Role Creation Without Description
         [Documentation]    Adding new node role without description
 
         @{app}    Create List    ${3}
-        &{data}    Create Dictionary  Name=${role3_name}  Description=   owners=${1}  templateIDs:@{app}
+        &{data}    Create Dictionary  Name=${role3_name}  Description=   owners=@{owner}  templateIDs=@{app}
         Log    \nCreating Role with parameters: \n${data}\n    console=yes
-        ${resp}  Post Request    platina   ${get_role}    json=${data}     headers=${headers}
+        ${resp}  Post Request    platina   ${add_role}    json=${data}     headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
         Log    \n Response = ${resp.json()}    console=yes
         Should Be Equal As Strings    ${resp.status_code}    200
@@ -97,7 +95,7 @@ PCC Node Role Creation Without Description
         Sleep    5s
 
         # Validate geted role present in Role List
-        ${resp}  Get Request    platina   ${get_role}    headers=${headers}
+        ${resp}  Get Request    platina   ${add_role}    headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
         Log    \n Response = ${resp.json()}    console=yes
         Should Be Equal As Strings    ${resp.status_code}    200
@@ -112,9 +110,9 @@ Node Role Creation Without Application
         [Tags]    NodeR Mgmt    Roles
         [Documentation]    Adding new node role without Application
 
-        &{data}    Create Dictionary  Name=${role4_name}    Description=${role4_desc}    owners=${1}
+        &{data}    Create Dictionary  Name=${role4_name}    Description=${role4_desc}    owners=@{owner}
         Log    \nCreating Role with parameters: \n${data}\n    console=yes
-        ${resp}  Post Request    platina   ${get_role}    json=${data}     headers=${headers}
+        ${resp}  Post Request    platina   ${add_role}    json=${data}     headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
         Log    \n Response = ${resp.json()}    console=yes
         Should Be Equal As Strings    ${resp.status_code}    200
@@ -123,7 +121,7 @@ Node Role Creation Without Application
         Sleep    5s
 
         # Validate geted role present in Role List
-        ${resp}  Get Request    platina   ${get_role}    headers=${headers}
+        ${resp}  Get Request    platina   ${add_role}    headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
         Log    \n Response = ${resp.json()}    console=yes
         Should Be Equal As Strings    ${resp.status_code}    200
@@ -139,9 +137,9 @@ Node Role Creation Without Tenant
         [Documentation]    Adding new node role without Tenant
 
         @{app}    Create List    ${3}
-        &{data}    Create Dictionary  Name=${role5_name}  Description=${role5_desc}  templateIDs:@{app}
+        &{data}    Create Dictionary  Name=${role5_name}  Description=${role5_desc}  templateIDs=@{app}
         Log    \nCreating Role with parameters: \n${data}\n    console=yes
-        ${resp}  Post Request    platina   ${get_role}    json=${data}     headers=${headers}
+        ${resp}  Post Request    platina   ${add_role}    json=${data}     headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
         Log    \n Response = ${resp.json()}    console=yes
         Should Be Equal As Strings    ${resp.status_code}    200
@@ -150,7 +148,7 @@ Node Role Creation Without Tenant
         Sleep    5s
 
         # Validate geted role present in Role List
-        ${resp}  Get Request    platina   ${get_role}    headers=${headers}
+        ${resp}  Get Request    platina   ${add_role}    headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
         Log    \n Response = ${resp.json()}    console=yes
         Should Be Equal As Strings    ${resp.status_code}    200
@@ -167,7 +165,7 @@ PCC Node Role Creation With All Fields Empty
 
         &{data}    Create Dictionary  Name=    Description=     owners=  templateIDs=
         Log    \nCreating Role with parameters: \n${data}\n    console=yes
-        ${resp}  Post Request    platina   ${get_role}    json=${data}     headers=${headers}
+        ${resp}  Post Request    platina   ${add_role}    json=${data}     headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
         Log    \n Response = ${resp.json()}    console=yes
         Should Not Be Equal As Strings    ${resp.status_code}    200
@@ -179,9 +177,9 @@ PCC Edit Node Role
         [Documentation]    Updating node roles
 
         @{app}    Create List    ${3}
-        &{data}    Create Dictionary  Name=${role6_name}  Description=${role6_desc}  owners=${1}  templateIDs:@{app}
+        &{data}    Create Dictionary  Name=${role6_name}  Description=${role6_desc}  owners=@{owner}  templateIDs=@{app}
         Log    \nCreating Role with parameters: \n${data}\n    console=yes
-        ${resp}  Post Request    platina   ${get_role}    json=${data}     headers=${headers}
+        ${resp}  Post Request    platina   ${add_role}    json=${data}     headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
         Log    \n Response = ${resp.json()}    console=yes
         Should Be Equal As Strings    ${resp.status_code}    200
@@ -190,20 +188,20 @@ PCC Edit Node Role
         sleep      5s
 
         # Validate Added Node Roles
-        ${resp}  Get Request    platina    ${get_role}    headers=${headers}
+        ${resp}  Get Request    platina    ${add_role}    headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
         Log    \n Response = ${resp.json()}    console=yes
         Should Be Equal As Strings  ${resp.status_code}    200
         ${status}    ${role_id}    Validate Roles    ${resp.json()}    ${role6_name}
         Should Be Equal As Strings    ${status}    True    msg=Role ${role6_name} is not present in role list
 
-        &{data}    Create Dictionary  Name=${updated6_name}  Description=${updated6_desc}  owners=${0}
-        ${resp}     Put Request   platina   ${get_role}${role_id}    json=${data}     headers=${headers}
+        &{data}    Create Dictionary  Name=${updated6_name}  Description=${updated6_desc}
+        ${resp}     Put Request   platina   ${add_role}${role_id}    json=${data}     headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
         Should Be Equal As Strings    ${resp.status_code}    200
         Sleep    10s
 
-        ${resp}  Get Request    platina    ${get_role}    headers=${headers}
+        ${resp}  Get Request    platina    ${add_role}    headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
         Log    \n Response = ${resp.json()}    console=yes
         Should Be Equal As Strings  ${resp.status_code}    200
@@ -216,9 +214,9 @@ PCC Node Role Creation with More Than One App
         [Documentation]    Create Node Role with More Than one App
 
         @{app}    Create List    ${3}  ${9}
-        &{data}    Create Dictionary  Name=${role7_name}  Description=${role7_desc}  owners=${1}  templateIDs:@{app}
+        &{data}    Create Dictionary  Name=${role7_name}  Description=${role7_desc}  owners=@{owner}  templateIDs=@{app}
         Log    \nCreating Role with parameters: \n${data}\n    console=yes
-        ${resp}  Post Request    platina   ${get_role}    json=${data}     headers=${headers}
+        ${resp}  Post Request    platina   ${add_role}    json=${data}     headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
         Log    \n Response = ${resp.json()}    console=yes
         Should Be Equal As Strings    ${resp.status_code}    200
@@ -227,7 +225,7 @@ PCC Node Role Creation with More Than One App
         sleep      5s
 
         # Validate Added Node Roles
-        ${resp}  Get Request    platina    ${get_role}    headers=${headers}
+        ${resp}  Get Request    platina    ${add_role}    headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
         Log    \n Response = ${resp.json()}    console=yes
         Should Be Equal As Strings  ${resp.status_code}    200
@@ -239,9 +237,9 @@ PCC Node-Role deletion
         [Tags]    NodeR Mgmt    Roles
         [Documentation]    Deleting a node role
 
-        &{data}    Create Dictionary  Name=${role8_name}    Description=${role8_desc}    owners=${1}
+        &{data}    Create Dictionary  Name=${role8_name}    Description=${role8_desc}    owners=@{owner}
         Log    \nCreating Role with parameters: \n${data}\n    console=yes
-        ${resp}  Post Request    platina   ${get_role}    json=${data}     headers=${headers}
+        ${resp}  Post Request    platina   ${add_role}    json=${data}     headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
         Log    \n Response = ${resp.json()}    console=yes
         Should Be Equal As Strings    ${resp.status_code}    200
@@ -249,13 +247,13 @@ PCC Node-Role deletion
         # Wait for few seconds to verify role reflect over UI
         Sleep    5s
 
-        ${resp}  Get Request    platina   ${get_role}    headers=${headers}
+        ${resp}  Get Request    platina   ${add_role}    headers=${headers}
         Log    \n Response = ${resp.json()}    console=yes
-        ${status}    ${role_id}    Validate Roles    ${resp.json()}    ${role5_name}
+        ${status}    ${role_id}    Validate Roles    ${resp.json()}    ${role8_name}
         Should Be Equal As Strings    ${status}    True    msg=Role ${role8_name} is not present in role list
 
         # Delete Added Node Role
-        ${resp}  Delete Request    platina   ${get_role}${role_id}    headers=${headers}
+        ${resp}  Delete Request    platina   ${add_role}${role_id}    headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
         Log    \n Response = ${resp.json()}    console=yes
         Should Be Equal As Strings    ${resp.status_code}    200
@@ -263,7 +261,7 @@ PCC Node-Role deletion
         Sleep    5s
 
         # Validate Deleted Role
-        ${resp}  Get Request    platina   ${get_role}    headers=${headers}
+        ${resp}  Get Request    platina   ${add_role}    headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
         Log    \n Response = ${resp.json()}    console=yes
         Should Be Equal As Strings    ${resp.status_code}    200
@@ -277,9 +275,9 @@ Create Duplicate Node
         [Documentation]    Create a Duplicate Node
 
         @{app}    Create List    ${3}
-        &{data}    Create Dictionary  Name=${role1_name}  Description=${role1_desc}  owners=${1}  templateIDs:@{app}
+        &{data}    Create Dictionary  Name=${role1_name}  Description=${role1_desc}  owners=@{owner}  templateIDs=@{app}
         Log    \nCreating Role with parameters: \n${data}\n    console=yes
-        ${resp}  Post Request    platina   ${get_role}    json=${data}     headers=${headers}
+        ${resp}  Post Request    platina   ${add_role}    json=${data}     headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
         Log    \n Response = ${resp.json()}    console=yes
         Should Not Be Equal As Strings    ${resp.status_code}    200
@@ -289,9 +287,9 @@ Clear Exist Node Role Description
         [Tags]    NodeR Mgmt    Roles
         [Documentation]    Create Role Description
 
-        &{data}    Create Dictionary  Name=${role9_name}    Description=${role9_desc}    owners=${1}
+        &{data}    Create Dictionary  Name=${role9_name}    Description=${role9_desc}    owners=@{owner}
         Log    \nCreating Role with parameters: \n${data}\n    console=yes
-        ${resp}  Post Request    platina   ${get_role}    json=${data}     headers=${headers}
+        ${resp}  Post Request    platina   ${add_role}    json=${data}     headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
         Log    \n Response = ${resp.json()}    console=yes
         Should Be Equal As Strings    ${resp.status_code}    200
@@ -299,21 +297,21 @@ Clear Exist Node Role Description
         # Wait for few seconds to verify role reflect over UI
         Sleep    5s
 
-        ${resp}  Get Request    platina   ${get_role}    headers=${headers}
+        ${resp}  Get Request    platina   ${add_role}    headers=${headers}
         Log    \n Response = ${resp.json()}    console=yes
         ${status}    ${role_id}    Validate Roles    ${resp.json()}    ${role9_name}
         Should Be Equal As Strings    ${status}    True    msg=Role ${role9_name} is not present in role list
 
         # Clear description
         &{data}    Create Dictionary  Name=${role9_name}  Description=
-        ${resp}     Put Request   platina   ${get_role}${role_id}    json=${data}     headers=${headers}
+        ${resp}     Put Request   platina   ${add_role}${role_id}    json=${data}     headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
         Should Be Equal As Strings    ${resp.status_code}    200
 
         # Wait for few seconds to verify role reflect over UI
         Sleep    5s
 
-        ${resp}  Get Request    platina    ${get_role}    headers=${headers}
+        ${resp}  Get Request    platina    ${add_role}    headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
         Log    \n Response = ${resp.json()}    console=yes
         Should Be Equal As Strings  ${resp.status_code}    200
@@ -327,7 +325,7 @@ PCC Node Role Creation With Space Only
 
         &{data}    Create Dictionary  Name=${role15_name}    Description=${role15_desc}
         Log    \nCreating Role with parameters: \n${data}\n    console=yes
-        ${resp}  Post Request    platina   ${get_role}    json=${data}     headers=${headers}
+        ${resp}  Post Request    platina   ${add_role}    json=${data}     headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
         Log    \n Response = ${resp.json()}    console=yes
         Should Not Be Equal As Strings    ${resp.status_code}    200     msg=Node Role created With Only Space as a Name
@@ -340,7 +338,7 @@ PCC Node Role Creation With name Containing Special Characters Only
 
         &{data}    Create Dictionary  Name=${role16_name}    Description=${role16_desc}
         Log    \nCreating role with parameters: \n${data}\n    console=yes
-        ${resp}  Post Request    platina   ${get_role}    json=${data}     headers=${headers}
+        ${resp}  Post Request    platina   ${add_role}    json=${data}     headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
         Log    \n Response = ${resp.json()}    console=yes
         Should Not Be Equal As Strings    ${resp.status_code}    200
@@ -353,7 +351,7 @@ PCC Node Role Creation With Name Containing Numbers Only
 
         &{data}    Create Dictionary  Name=${role17_name}    Description=${role17_desc}
         Log    \nCreating role with parameters: \n${data}\n    console=yes
-        ${resp}  Post Request    platina   ${get_role}    json=${data}     headers=${headers}
+        ${resp}  Post Request    platina   ${add_role}    json=${data}     headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
         Log    \n Response = ${resp.json()}    console=yes
         Should Not Be Equal As Strings    ${resp.status_code}    200    msg=Node Created With Only Numbers as a Name
@@ -364,14 +362,14 @@ Create 100 node roles
         [Tags]    Node Mgmt    Roles
         [Documentation]   Adding 100 new roles
 
-        : FOR    ${index}    IN RANGE    1    101
+        : FOR    ${index}    IN RANGE    1    6
         \   @{app}    Create List    ${3}
-        \   &{data}    Create Dictionary  Name=Test_${index}    Description=Test_${index}  owners=${1}  templateIDs:@{app}
-        \   ${resp}  Post Request    platina   ${get_role}    json=${data}     headers=${headers}
+        \   &{data}    Create Dictionary  Name=Test_${index}    Description=Test_${index}  owners=@{owner}  templateIDs=@{app}
+        \   ${resp}  Post Request    platina   ${add_role}    json=${data}     headers=${headers}
         \   Log    \n Status code = ${resp.status_code}    console=yes
         \   Log    \n Response = ${resp.json()}    console=yes
         \   Should Be Equal As Strings    ${resp.status_code}    200
-        \   ${resp}  Get Request    platina   ${get_role}    headers=${headers}
+        \   ${resp}  Get Request    platina   ${add_role}    headers=${headers}
         \   Log    \n Response = ${resp.json()}    console=yes
         \   ${status}    ${role_id}    Validate Roles    ${resp.json()}    Test_${index}
         \   Should Be Equal As Strings    ${status}    True    msg=Role Test_${index} is not present in role list
@@ -381,16 +379,16 @@ Delete 100 node roles
         [Tags]    Node Mgmt    Roles
         [Documentation]   Deleting 100 node roles
 
-        : FOR    ${index}    IN RANGE    1    101
-        \   ${resp}  Get Request    platina   ${get_role}    headers=${headers}
+        : FOR    ${index}    IN RANGE    1    6
+        \   ${resp}  Get Request    platina   ${add_role}    headers=${headers}
         \   ${status}    ${role_id}    Validate Roles    ${resp.json()}    Test_${index}
         \   Should Be Equal As Strings    ${status}    True    msg=Role Test_${index} is not present in role list
-        \   ${resp}  Delete Request    platina   ${get_role}${role_id}    headers=${headers}
+        \   ${resp}  Delete Request    platina   ${add_role}${role_id}    headers=${headers}
         \   Log    \n Status code = ${resp.status_code}    console=yes
         \   Log    \n Response = ${resp.json()}    console=yes
         \   Should Be Equal As Strings    ${resp.status_code}    200
         \   # Validate Deleted Role
-        \   ${resp}  Get Request    platina   ${get_role}    headers=${headers}
+        \   ${resp}  Get Request    platina   ${add_role}    headers=${headers}
         \   Log    \n Status code = ${resp.status_code}    console=yes
         \   Log    \n Response = ${resp.json()}    console=yes
         \   Should Be Equal As Strings    ${resp.status_code}    200
@@ -399,15 +397,15 @@ Delete 100 node roles
         \   Sleep    2s
 
 
-Clear exist node role application
-        [Tags]    NodeG Mgmt  Roles
+Clear exist node role tenant
+        [Tags]    NodeG Mgmt  Roles  test
         [Documentation]    Changing tenant of node role
 
         # Add Node
         @{app}    Create List    ${3}
-        &{data}    Create Dictionary  Name=${role10_name}    Description=${role10_name}  templateIDs:@{app}  owners=${1}
+        &{data}    Create Dictionary  Name=${role10_name}    Description=${role10_name}  templateIDs=@{app}  owners=@{owner}
         Log    \nCreating Role with parameters: \n${data}\n    console=yes
-        ${resp}  Post Request    platina   ${get_role}    json=${data}     headers=${headers}
+        ${resp}  Post Request    platina   ${add_role}    json=${data}     headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
         Log    \n Response = ${resp.json()}    console=yes
         Should Be Equal As Strings    ${resp.status_code}    200
@@ -416,29 +414,33 @@ Clear exist node role application
         Sleep    5s
 
         # Validate  Added Node Role
-        ${resp}  Get Request    platina   ${get_role}    headers=${headers}
+        ${resp}  Get Request    platina   ${add_role}    headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
         Log    \n Response = ${resp.json()}    console=yes
         Should Be Equal As Strings    ${resp.status_code}    200
 
         # Parse fetched role list and verify geted Role availability from response data
-        ${status}    ${id}    Validate Roles    ${resp.json()}    ${role10_name}
+        ${status}    ${role_id}    Validate Roles    ${resp.json()}    ${role10_name}
         Should Be Equal As Strings    ${status}    True    msg=Role ${role10_name} is not present in Role list
         Sleep    2s
-
+	
+	@{owner}  Create List  ${0}
         # Clear Tenant of Excisting Node
-        &{data}    Create Dictionary  Name=${role9_name}  Description=${role10_name}  owners=${0}
-        ${resp}     Put Request   platina   ${get_role}${role_id}    json=${data}     headers=${headers}
+        &{data}    Create Dictionary  Name=${role10_name}  Description=${role10_name}  owners=@{owner}
+        ${resp}     Put Request   platina   ${add_role}${role_id}    json=${data}     headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
         Should Be Equal As Strings    ${resp.status_code}    200
 
         # Wait for few seconds to verify role reflect over UI
         Sleep    5s
 
-        ${resp}  Get Request    platina    ${get_role}    headers=${headers}
+        ${resp}  Get Request    platina    ${add_role}    headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
         Log    \n Response = ${resp.json()}    console=yes
         Should Be Equal As Strings  ${resp.status_code}    200
-        ${status}    ${role_id}    Validate Role Tenant    ${resp.json()}  ${role10_name}
+        ${status}    ${id}    Validate Role Tenant    ${resp.json()}  ${role10_name}
         Should Be Equal As Strings    ${status}    True    msg=Role Tenan Is Not Empty......
 
+
+*** variables ***
+@{owner}    ${1}

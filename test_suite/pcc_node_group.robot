@@ -405,7 +405,7 @@ Create 100 node groups
         [Tags]    NodeG Mgmt    Groups
         [Documentation]    Create Multiple Node Group
 
-        : FOR    ${index}    IN RANGE    1    6
+        : FOR    ${index}    IN RANGE    1    101
         \   &{data}    Create Dictionary  Name=${group13_name}${index}    Description=${group13_desc}${index}
         \   ${resp}  Post Request    platina   ${add_group}    json=${data}     headers=${headers}
         \   Log    \n Status code = ${resp.status_code}    console=yes
@@ -427,7 +427,7 @@ Delete 100 node groups
         [Tags]    NodeG Mgmt    Groups
         [Documentation]    Delete Multiple Node Group
 
-        FOR    ${index}    IN RANGE    1    6
+        FOR    ${index}    IN RANGE    1    101
         \   # Get Node ID
         \   ${resp}  Get Request    platina   ${get_group}    headers=${headers}
         \   Log    \n Status code = ${resp.status_code}    console=yes

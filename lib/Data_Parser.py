@@ -119,7 +119,7 @@ class Data_Parser:
         try:
             for data in eval(str(resp_data))['Data']:
                 if str(data['name']) == str(expect_role):
-                    if not int("1") in data['owners']:
+                    if int("1") not in list(data['owners']):
                         return True, str(data['id'])
             return False, None
         except Exception:
