@@ -1,10 +1,10 @@
 *** Settings ***
+
 Library  	    OperatingSystem
 Library  	    Collections
 Library  	    String
 
 Library    	    ${CURDIR}/../lib/Request.py
-Variables       ${CURDIR}/../test_data/Test_Data_Node_Group.py
 Variables       ${CURDIR}/../test_data/Url_Paths.py
 Library         ${CURDIR}/../lib/Data_Parser.py
 Resource        ${CURDIR}/../resource/Resource_Keywords.robot
@@ -21,7 +21,7 @@ PCC Node Group
     	# Click on node group
     	${resp}  Get Request    platina   ${get_group}    headers=${headers}
     	Log    \n Status code = ${resp.status_code}    console=yes
-    	Log    \n Response = ${resp.json()}    console=yShould Be Equal As Strings  ${resp.status_code}    200
+    	Log    \n Response = ${resp.json()}    console=yes
     	Should Be Equal As Strings  ${resp.status_code}    200
     	Sleep    2s
 
@@ -76,7 +76,7 @@ PCC Node group creation without description
 
         # Parse fetched group list and verify added Group availability from response data
         ${status}    ${id}    Validate Group    ${resp.json()}    ${group2_name}
-        Should Be Equal As Strings    ${status}    False    msg=Group Created without description successfuly...
+        Should Be Equal As Strings    ${status}    True    msg=Group Not Created without description successfuly...
         Set Suite Variable    ${create_group2_id}    ${id}
         Log    \n Group ${group2_name} ID = ${create_group2_id}   console=yes
         Sleep    2s
@@ -86,29 +86,29 @@ PCC Node group creation without name
         [Tags]    NodeG Mgmt    Groups
         [Documentation]    Adding new node group without name
 
-        &{data}    Create Dictionary  Name=    Description=${group2_desc}
+        &{data}    Create Dictionary  Description=${group2_desc}
         Log    \nCreating Group with parameters: \n${data}\n    console=yes
         ${resp}  Post Request    platina   ${add_group}    json=${data}     headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
         Log    \n Response = ${resp.json()}    console=yes
-        Should Be Equal As Strings    ${resp.status_code}    200
+        Should Not Be Equal As Strings    ${resp.status_code}    200  msg=Group created without name...
 
         # Wait for few seconds to reflect group over UI
         Sleep    5s
-
-        # Validate added group present in Group List
-        ${resp}  Get Request    platina   ${get_group}    headers=${headers}
-        Log    \n Status code = ${resp.status_code}    console=yes
-        Log    \n Response = ${resp.json()}    console=yes
-        Should Be Equal As Strings    ${resp.status_code}    200
-
-        # Parse fetched group list and verify added Group availability from response data
-        ${status}    ${id}    Validate Group Desc    ${resp.json()}    ${group2_desc}
-        Should Be Equal As Strings    ${status}    False    msg=Group Created without name successfuly...
-        Set Suite Variable    ${create_group2_id}    ${id}
-        Log    \n Group ${group2_name} ID = ${create_group2_id}   console=yes
-        Sleep    2s
-
+#
+#        # Validate added group present in Group List
+#        ${resp}  Get Request    platina   ${get_group}    headers=${headers}
+#        Log    \n Status code = ${resp.status_code}    console=yes
+#        Log    \n Response = ${resp.json()}    console=yes
+#        Should Be Equal As Strings    ${resp.status_code}    200
+#
+#        # Parse fetched group list and verify added Group availability from response data
+#        ${status}    ${id}    Validate Group Desc    ${resp.json()}    ${group2_desc}
+#        Should Be Equal As Strings    ${status}    False    msg=Group Created without name successfuly...
+#        Set Suite Variable    ${create_group2_id}    ${id}
+#        Log    \n Group ${group2_name} ID = ${create_group2_id}   console=yes
+#        Sleep    2s
+#
 
 PCc Node group deletion
         [Tags]    NodeG Mgmt    Groups
@@ -243,6 +243,7 @@ Clear exist node group description
 
         # Update Group Information
         &{data}    Create Dictionary  Name=${group7_name}    Description=    Id=${${group_id}}
+	Log    \nUpdating Node Group with empty description..    console=yes
         ${resp}     Put Request   platina   ${get_group}${group_id}    json=${data}     headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
         Should Be Equal As Strings    ${resp.status_code}    200
@@ -331,7 +332,7 @@ PCC Node Group Description Change
         Log    \n Status code = ${resp.status_code}    console=yes
         Log    \n Response = ${resp.json()}    console=yes
      	${status}    ${group_id}    Validate Group Desc    ${resp.json()}    ${update9_desc}
-        Should Be Equal As Strings    ${status}    True    msg=Group ${update9_name} description is not updated...
+        Should Be Equal As Strings    ${status}    True    msg=Group ${group9_name} description is not updated...
 
 
 Create Node Group with Special Characters Only
@@ -404,7 +405,7 @@ Create 100 node groups
         [Tags]    NodeG Mgmt    Groups
         [Documentation]    Create Multiple Node Group
 
-        : FOR    ${index}    IN RANGE    1    101
+        : FOR    ${index}    IN RANGE    1    6
         \   &{data}    Create Dictionary  Name=${group13_name}${index}    Description=${group13_desc}${index}
         \   ${resp}  Post Request    platina   ${add_group}    json=${data}     headers=${headers}
         \   Log    \n Status code = ${resp.status_code}    console=yes
@@ -426,7 +427,7 @@ Delete 100 node groups
         [Tags]    NodeG Mgmt    Groups
         [Documentation]    Delete Multiple Node Group
 
-        FOR    ${index}    IN RANGE    1    101
+        FOR    ${index}    IN RANGE    1    6
         \   # Get Node ID
         \   ${resp}  Get Request    platina   ${get_group}    headers=${headers}
         \   Log    \n Status code = ${resp.status_code}    console=yes
@@ -446,8 +447,8 @@ Delete 100 node groups
         \   ${resp}  Get Request    platina   ${get_group}    headers=${headers}
         \   Log    \n Status code = ${resp.status_code}    console=yes
         \   Log    \n Response = ${resp.json()}    console=yes
-        \   ${status}    ${id}    Validate Group    ${resp.json()}    ${group_name}${index}
-        \   Should Be Equal As Strings    ${status}   False     msg=Group ${group_name}${index} is present in Groups list
+        \   ${status}    ${id}    Validate Group    ${resp.json()}    ${group13_name}${index}
+        \   Should Be Equal As Strings    ${status}   False     msg=Group ${group13_name}${index} is present in Groups list
         \   Sleep    1s
 
 
@@ -455,7 +456,7 @@ Update PCC Node Group Name with Existing Group Name
         [Tags]    NodeG Mgmt  Groups
         [Documentation]    Update Node With Existing One
 
-        &{data}    Create Dictionary  Name=${group14_name}    Description=${group14_name}
+        &{data}    Create Dictionary  Name=${group14_name}    Description=${group14_desc}
         Log    \nCreating Group with parameters: \n${data}\n    console=yes
         ${resp}  Post Request    platina   ${add_group}    json=${data}     headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
@@ -470,10 +471,10 @@ Update PCC Node Group Name with Existing Group Name
         Log    \n Status code = ${resp.status_code}    console=yes
         Log    \n Response = ${resp.json()}    console=yes
      	${status}    ${group_id}    Validate Group    ${resp.json()}    ${group14_name}
-        Should Be Equal As Strings    ${status}    False    msg=Group ${group14_name} Created Successfully....
+        Should Be Equal As Strings    ${status}    True    msg=Group ${group14_name} Created Successfully....
 
         # Update Group Information
-        &{data}    Create Dictionary  Name=${group1_name}  Description=${update14_desc}  Id=${${group_id}}
+        &{data}    Create Dictionary  Name=${group1_name}  Description=${group14_desc}  Id=${${group_id}}
         ${resp}     Put Request   platina   ${get_group}${group_id}    json=${data}     headers=${headers}
         Log    \nStatus code = ${resp.status_code}    console=yes
         Should Not Be Equal As Strings    ${resp.status_code}    200    msg=Node Group Updated with Existing name...
@@ -504,4 +505,4 @@ Clear exist node group name
         &{data}    Create Dictionary  Name=    Description=${group15_desc}    Id=${${group_id}}
         ${resp}     Put Request   platina   ${get_group}${group_id}    json=${data}     headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
-        Should Be Equal As Strings    ${resp.status_code}    200    msg=Group Name updated with Empty
+        Should Not Be Equal As Strings    ${resp.status_code}    200    msg=Group Name updated with Empty field...

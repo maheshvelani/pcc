@@ -79,7 +79,7 @@ class Data_Parser:
         """
         try:
             for data in eval(str(resp_data))['Data']:
-                if str(data['Description:']) == str(expect_group_desc):
+                if str(data['Description']) == str(expect_group_desc):
                     return True, str(data['Id'])
             return False, None
         except Exception:
