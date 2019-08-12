@@ -398,7 +398,7 @@ Delete 100 node roles
 
 
 Clear exist node role tenant
-        [Tags]    NodeG Mgmt  Roles  test
+        [Tags]    NodeG Mgmt  Roles
         [Documentation]    Changing tenant of node role
 
         # Add Node
@@ -423,8 +423,8 @@ Clear exist node role tenant
         ${status}    ${role_id}    Validate Roles    ${resp.json()}    ${role10_name}
         Should Be Equal As Strings    ${status}    True    msg=Role ${role10_name} is not present in Role list
         Sleep    2s
-	
-	@{owner}  Create List  ${0}
+
+        @{owner}  Create List  ${0}
         # Clear Tenant of Excisting Node
         &{data}    Create Dictionary  Name=${role10_name}  Description=${role10_name}  owners=@{owner}
         ${resp}     Put Request   platina   ${add_role}${role_id}    json=${data}     headers=${headers}
@@ -440,6 +440,85 @@ Clear exist node role tenant
         Should Be Equal As Strings  ${resp.status_code}    200
         ${status}    ${id}    Validate Role Tenant    ${resp.json()}  ${role10_name}
         Should Be Equal As Strings    ${status}    True    msg=Role Tenan Is Not Empty......
+
+
+Change node role name to other exist node role name
+        [Tags]    NodeG Mgmt  Roles
+        [Documentation]    Change node role name to other exist node role name
+
+        @{app}    Create List    ${3}
+        &{data}    Create Dictionary  Name=${role11_name}    Description=${role11_name}  templateIDs=@{app}  owners=@{owner}
+        Log    \nCreating Role with parameters: \n${data}\n    console=yes
+        ${resp}  Post Request    platina   ${add_role}    json=${data}     headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings    ${resp.status_code}    200
+
+        # Wait for few seconds to reflect node role over UI
+        Sleep    5s
+
+        # Validate  Added Node Role
+        ${resp}  Get Request    platina   ${add_role}    headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings    ${resp.status_code}    200
+
+        # Parse fetched role list and verify geted Role availability from response data
+        ${status}    ${id}    Validate Roles    ${resp.json()}    ${role11_name}
+        Should Be Equal As Strings    ${status}    True    msg=Role ${role11_name} is not present in Role list
+        Sleep    2s
+
+        &{data}    Create Dictionary  Name=${role11_name}    Description=${role11_name}  templateIDs=@{app}  owners=@{owner}
+        Log    \nCreating Role with parameters: \n${data}\n    console=yes
+        ${resp}  Post Request    platina   ${add_role}    json=${data}     headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Not Be Equal As Strings    ${resp.status_code}    200
+
+
+PCC- node role name change
+        [Tags]    NodeG Mgmt  Roles
+        [Documentation]    PCC- node role name change
+
+        @{app}    Create List    ${3}
+        &{data}    Create Dictionary  Name=${role12_name}    Description=${role12_desc}  templateIDs=@{app}  owners=@{owner}
+        Log    \nCreating Role with parameters: \n${data}\n    console=yes
+        ${resp}  Post Request    platina   ${add_role}    json=${data}     headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings    ${resp.status_code}    200
+
+        # Wait for few seconds to reflect node role over UI
+        Sleep    5s
+
+        # Validate  Added Node Role
+        ${resp}  Get Request    platina   ${add_role}    headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings    ${resp.status_code}    200
+
+        # Parse fetched role list and verify geted Role availability from response data
+        ${status}    ${role_id}    Validate Roles    ${resp.json()}    ${role12_name}
+        Should Be Equal As Strings    ${status}    True    msg=Role ${role12_name} is not present in Role list
+        Sleep    2s
+
+        # Update Node Name
+        &{data}    Create Dictionary  Name=${role12_updated}  Description=${role12_desc}
+        ${resp}     Put Request   platina   ${add_role}${role_id}    json=${data}     headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Should Be Equal As Strings    ${resp.status_code}    200
+
+        # Wait for few seconds to reflect node role over UI
+        Sleep    5s
+
+        ${resp}  Get Request    platina    ${add_role}    headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings  ${resp.status_code}    200
+        ${status}    ${role_id}    Validate Roles    ${resp.json()}    ${role12_updated}
+        Should Be Equal As Strings    ${status}    True    msg=Role Not Updated......
+
+
 
 
 *** variables ***

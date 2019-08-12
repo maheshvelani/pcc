@@ -281,3 +281,12 @@ class Entry_Criteria_Api(OperatingSystem, SSHLibrary):
         if topology_str["nodeID"] == None:
             return False, None 
         return True, topology_str
+
+    def validate_inventory_data(self, resp, expected_mode):
+        """ Validate Mode
+        """
+        if str(expected_mode) in str(resp):
+            return True
+        else:
+            return False
+ 

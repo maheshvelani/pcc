@@ -231,6 +231,14 @@ PXE Boot to Server
         Sleep   5 minutes
 
 
+Validate Interface Mode - Expected Inventory Mode
+        [Tags]    Entry Criteria
+        [Documentation]    Verify that Server is in inventory mode
+
+	# verify Mode into Inventory
+	Validate server Mode    inventory
+	
+
 Update Server information added after PXE boot
         [Tags]    Entry Criteria
         [Documentation]    Update Server information
@@ -318,7 +326,7 @@ OS Deployment over Server machine
         Should Be Equal As Strings    ${status}    True    msg=Provision Status of server ${server2_node_name} is not Finished
 
         # Verify CentOS installed in remote machine
-        Verify CentOS installed in server machine
+        Run Keyword And Ignore Error    Verify CentOS installed in server machine
 
 
 Assign LLDP role to Server - 2
@@ -398,8 +406,15 @@ Assign Interface Ip to node to form Topology
         Log    \n Status Code = ${resp.status_code}    console=yes
         Log    \n JSON RESP = ${resp.json()}    console=yes
         Should Be Equal As Strings  ${resp.status_code}  200
-
         Sleep    25s
+
+
+Validate Interface Mode - Expected user mode
+        [Tags]    Entry Criteria
+        [Documentation]    Verify that Server is in inventory mode
+
+	# verify Mode into Inventory
+	Validate server Mode    user
 
 
 Create Kubernetes Cluster
@@ -675,7 +690,7 @@ SSH into Invader and Verify mass installation started
 
 Verify CentOS installed in server machine
         # Get OS release data from server
-        SSHLibrary.Open Connection     ${server1_node_host}    timeout=1 hour
+        SSHLibrary.Open Connection     ${server2_node_host}    timeout=1 hour
         SSHLibrary.Login               root        plat1na
         Sleep    2s
         ${output}=        SSHLibrary.Execute Command    cat /etc/os-release
@@ -696,6 +711,18 @@ Verify K8s installed
         Log    \n\nInvader K8S Status = ${output}    console=yes
         Should Contain  ${output}    Ready
         Should Contain  ${output}    master
+
+
+Validate server Mode
+        [Arguments]    ${mode}
+        # Get OS release data from server
+        Log To Console    \n\nVerifying K8S over ${invader1_node_host}\n\n
+        ${rc}  ${output}    Entry_Criteria_Api.Run And Return Rc And Output        ssh ${invader1_node_host} "sudo grep \'${interface_sv2}\' /srv/maas/state/tenants.json -C 2"
+	Log    \nINVENTORY DATA = ${output}\n    console=yes
+        Sleep    2s
+	${status}    Validate Inventory Data    ${output}    ${mode}
+	Should Be Equal As Strings    ${status}  True  msg=Expected mode is = ${mode} but actual mode is different...
+
 
 #Verify K8s installed
 #        # Get OS release data from server
