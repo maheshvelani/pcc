@@ -270,7 +270,7 @@ Update Server information added after PXE boot
         @{server2_ssh_keys}    Create List    ${server2_ssh_keys}
 
         &{data}    Create Dictionary    Id=${server2_id}  Name=${server2_node_name}  console=${server2_console}
-        ...    managed=${${server2_managed_by_pcc}}  bmc=${server2_bmc_host}  bmcUser=${server2_bmc_user}
+        ...    managed=${${server2_managed_by_pcc}}  bmc=${server2_bmc_host}/23  bmcUser=${server2_bmc_user}
         ...    bmcPassword=${server2_bmc_pwd}  bmcUsers=@{server2_bmc_users}
         ...    sshKeys=@{server2_ssh_keys}  Host=${server2_node_host}
         Log    \n Updating Server with Data : \n${data}\n    console=yes
@@ -303,6 +303,7 @@ OS Deployment over Server machine
 
         # Start OS Deployment
         &{data}    Create Dictionary  nodes=[${${server2_id}}]  image=${image_name}  locale=${en_US}  timezone=${PDT}  adminUser=${mass_user}  sshKeys=${ssh_key}
+        Log    \n Deploying OS with params = ${data}    console=yes
         ${resp}  Post Request    platina   ${os_deployment}    json=${data}    headers=${headers}
         Log    \n Status Code = ${resp.status_code}    console=yes
         Log    \n Response Data = ${resp.json()}    console=yes
@@ -314,7 +315,7 @@ OS Deployment over Server machine
         Log To Console    \nOS Deployment Started...
         Sleep	7 minutes
         Log To Console    \nOS Deployment Started...
-        Sleep	5 minutes
+        Sleep	7 minutes
 
         # Verify Provision Status over server
         &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
@@ -443,6 +444,8 @@ Create Kubernetes Cluster
         Sleep  5 minutes
         Log To Console    \nK8s is installing.....
         Sleep  5 minutes
+        Log To Console    \nK8s is installing.....
+        Sleep  3 minutes
 
         # Verify cluster created
         ${resp}  Get Request    platina   ${add_kubernetes_cluster}    headers=${headers}
@@ -706,7 +709,8 @@ Verify CentOS installed in server machine
 Verify K8s installed
         # Get OS release data from server
         Log To Console    \n\nVerifying K8S over ${invader1_node_host}\n\n
-        ${rc}  ${output}    Entry_Criteria_Api.Run And Return Rc And Output        ssh ${invader1_node_host} "sudo kubectl get nodes"
+	${invader_ip}    get ip   ${invader1_node_host}
+        ${rc}  ${output}    Entry_Criteria_Api.Run And Return Rc And Output        ssh ${invader_ip} "sudo kubectl get nodes"
         Sleep    2s
         Log    \n\nInvader K8S Status = ${output}    console=yes
         Should Contain  ${output}    Ready
@@ -716,8 +720,9 @@ Verify K8s installed
 Validate server Mode
         [Arguments]    ${mode}
         # Get OS release data from server
+        ${invader_ip}    get ip   ${invader1_node_host}
         Log To Console    \n\nVerifying K8S over ${invader1_node_host}\n\n
-        ${rc}  ${output}    Entry_Criteria_Api.Run And Return Rc And Output        ssh ${invader1_node_host} "sudo grep \'${interface_sv2}\' /srv/maas/state/tenants.json -C 2"
+        ${rc}  ${output}    Entry_Criteria_Api.Run And Return Rc And Output        ssh ${invader_ip} "sudo grep \'${interface_sv2}\' /srv/maas/state/tenants.json -C 2"
 	Log    \nINVENTORY DATA = ${output}\n    console=yes
         Sleep    2s
 	${status}    Validate Inventory Data    ${output}    ${mode}
