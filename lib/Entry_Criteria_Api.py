@@ -289,4 +289,9 @@ class Entry_Criteria_Api(OperatingSystem, SSHLibrary):
             return True
         else:
             return False
- 
+
+
+    def get_ip(self, ip):
+       """ Get Invader Ip 
+       """
+       return str(str(ip).split('/')[0])
