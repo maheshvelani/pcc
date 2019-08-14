@@ -290,7 +290,7 @@ class Data_Parser:
             if resp_data['Data'] != None:
                 for data in eval(str(resp_data))['Data']:
                     if str(data['Name']) == str(node_name):
-                        if str(data['provisionStatus']) == "Not provisioned":
+                        if str(data['provisionStatus']) == "Finished":
                             return True
                         else:
                             return False
