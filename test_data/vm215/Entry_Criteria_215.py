@@ -16,7 +16,7 @@ user_pwd = "admin"
 # Test Data for Invader as Node
 # Update This data as per supported Invader over PCC server
 invader1_node_name = "i61"
-invader1_node_host = "172.17.2.61"
+invader1_node_host = "172.17.2.61/23"
 # Invader interface
 interface_sv1 = "xeth29-1"
 asign_ip_to_interface1 = "192.0.2.12/31"
@@ -27,8 +27,8 @@ asign_ip_to_interface2 = "192.0.2.8/31"
 # Test Data to Add Server as Node
 # Update This data as per supported Server over PCC
 server1_node_name = "sv16"
-server1_node_host = "172.17.2.116"
-server1_bmc_host = "172.17.3.116"
+server1_node_host = "172.17.2.116/23"
+server1_bmc_host = "172.17.3.116/23"
 server1_bmc_user = "ADMIN"
 server1_bmc_pwd = "ADMIN"
 server1_console = "ttyS1"
@@ -41,7 +41,7 @@ interface1_ip = "192.0.2.13/31"
 # Test Data to Add Server as Node
 # Update This data as per supported Server over PCC
 server2_node_name = "sv17"
-server2_node_host = "172.17.2.117"
+server2_node_host = "172.17.2.117/23"
 server2_bmc_host = "172.17.3.117"
 server2_bmc_user = "ADMIN"
 server2_bmc_pwd = "ADMIN"
