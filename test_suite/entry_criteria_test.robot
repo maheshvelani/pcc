@@ -721,7 +721,7 @@ Validate server Mode
         [Arguments]    ${mode}
         # Get OS release data from server
         ${invader_ip}    get ip   ${invader1_node_host}
-        Log To Console    \n\nVerifying K8S over ${invader1_node_host}\n\n
+        Log To Console    \n\nVerifying mode over ${invader1_node_host}\n\n
         ${rc}  ${output}    Entry_Criteria_Api.Run And Return Rc And Output        ssh ${invader_ip} "sudo grep \'${interface_sv2}\' /srv/maas/state/tenants.json -C 2"
 	Log    \nINVENTORY DATA = ${output}\n    console=yes
         Sleep    2s
