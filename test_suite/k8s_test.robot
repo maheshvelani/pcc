@@ -10,15 +10,15 @@ Library         ${CURDIR}/../lib/Data_Parser.py
 Library         ${CURDIR}/../lib/Entry_Criteria_Api.py
 Resource        ${CURDIR}/../resource/Resource_Keywords.robot
 
-#Test Setup      Verify User Login
-#Test Teardown   Delete All Sessions
+Test Setup      Verify User Login
+Test Teardown   Delete All Sessions
 
 
 *** variables ***
-${node1_id}    4
-${node2_id}    5
-${node3_id}    6
-${run_cnt}     10
+${node1_id}    1
+${node2_id}    2
+${node3_id}    3
+${run_cnt}     2
 
 
 *** Test Cases ***
