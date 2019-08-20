@@ -693,7 +693,8 @@ SSH into Invader and Verify mass installation started
 
 Verify CentOS installed in server machine
         # Get OS release data from server
-        SSHLibrary.Open Connection     ${server2_node_host}    timeout=1 hour
+	${server_ip}    get ip   ${server2_node_host}
+        SSHLibrary.Open Connection     ${server_ip}    timeout=1 hour
         SSHLibrary.Login               root        plat1na
         Sleep    2s
         ${output}=        SSHLibrary.Execute Command    cat /etc/os-release

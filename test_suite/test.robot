@@ -33,3 +33,12 @@ login 43
 
         Close All Connections
 
+
+login 61
+        Open Connection     172.17.2.61
+        Login              pcc    cals0ft
+
+        ${output}=         Execute Command    ls -l
+        Log To Console    \nO/P = ${output}
+
+        Close All Connections
