@@ -738,9 +738,9 @@ Verify K8s installed
         SSHLibrary.Open Connection     ${i_ip}    timeout=1 hour
 	SSHLibrary.Login               ${invader_usr_name}  ${invader_usr_pwd }
 	Sleep    2s
-	${output}=        SSHLibrary.Execute Command    sudo -s
- 	Log    \n\nSUDO O/P = ${output}    console=yes
-        ${output}    SSHLibrary.Execute Command    kubectl get nodes
+	#${output}=        SSHLibrary.Execute Command    sudo -s
+ 	#Log    \n\nSUDO O/P = ${output}    console=yes
+        ${output}    SSHLibrary.Execute Command    sudo kubectl get nodes
         Log    \n\nK8SDATA = ${output} \n\n    console=yes
         Should Contain  ${output}    Ready
         Should Contain  ${output}    master
@@ -754,9 +754,9 @@ Validate server Mode
 	SSHLibrary.Open Connection     ${i_ip}    timeout=1 hour
 	SSHLibrary.Login               ${invader_usr_name}  ${invader_usr_pwd }
 	Sleep    2s
-	${output}=        SSHLibrary.Execute Command    sudo -s
-	Log    \n\nSUDO O/P = ${output}    console=yes
-	${output}    SSHLibrary.Execute Command    grep \'${interface_sv2}\' /srv/maas/state/tenants.json -C 2
+	#${output}=        SSHLibrary.Execute Command    sudo -s
+	#Log    \n\nSUDO O/P = ${output}    console=yes
+	${output}    SSHLibrary.Execute Command    sudo grep \'${interface_sv2}\' /srv/maas/state/tenants.json -C 2
 	SSHLibrary.Close All Connections
 	Log    \nINVENTORY DATA = ${output}\n    console=yes
         Sleep    2s
