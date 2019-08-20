@@ -682,7 +682,8 @@ Delete K8s Cluster
 *** keywords ***
 SSH into Invader and Verify mass installation started
         [Arguments]    ${invader_ip}
-        SSHLibrary.Open Connection     ${invader_ip}    timeout=1 hour
+        ${i_ip}    get ip   ${invader_ip}
+        SSHLibrary.Open Connection     ${i_ip}    timeout=1 hour
         SSHLibrary.Login               ${invader_usr_name}        ${invader_usr_pwd}
         Sleep    2s
         ${output}=         SSHLibrary.Execute Command    ps -aef | grep ROOT
@@ -707,39 +708,57 @@ Verify CentOS installed in server machine
         SSHLibrary.Close All Connections
 
 
+#Verify K8s installed
+#        # Get OS release data from server
+#        Log To Console    \n\nVerifying K8S over ${invader1_node_host}\n\n
+#	${invader_ip}    get ip   ${invader1_node_host}
+#        ${rc}  ${output}    Entry_Criteria_Api.Run And Return Rc And Output        ssh ${invader_ip} "sudo kubectl get nodes"
+#        Sleep    2s
+#        Log    \n\nInvader K8S Status = ${output}    console=yes
+#        Should Contain  ${output}    Ready
+#        Should Contain  ${output}    master
+#
+#
+#Validate server Mode
+#        [Arguments]    ${mode}
+#        # Get OS release data from server
+#        ${invader_ip}    get ip   ${invader1_node_host}
+#        Log To Console    \n\nVerifying mode over ${invader1_node_host}\n\n
+#        ${rc}  ${output}    Entry_Criteria_Api.Run And Return Rc And Output        ssh ${invader_ip} "sudo grep \'${interface_sv2}\' /srv/maas/state/tenants.json -C 2"
+#	Log    \nINVENTORY DATA = ${output}\n    console=yes
+#        Sleep    2s
+#	${status}    Validate Inventory Data    ${output}    ${mode}
+#	Should Be Equal As Strings    ${status}  True  msg=Expected mode is = ${mode} but actual mode is different...
+#
+
+
 Verify K8s installed
         # Get OS release data from server
-        Log To Console    \n\nVerifying K8S over ${invader1_node_host}\n\n
-	${invader_ip}    get ip   ${invader1_node_host}
-        ${rc}  ${output}    Entry_Criteria_Api.Run And Return Rc And Output        ssh ${invader_ip} "sudo kubectl get nodes"
-        Sleep    2s
-        Log    \n\nInvader K8S Status = ${output}    console=yes
+	${i_ip}    Get Ip    ${invader1_node_host}
+        SSHLibrary.Open Connection     ${i_ip}    timeout=1 hour
+	SSHLibrary.Login               ${invader_usr_name}  ${invader_usr_pwd }
+	Sleep    2s
+	${output}=        SSHLibrary.Execute Command    sudo -s
+ 	Log    \n\nSUDO O/P = ${output}    console=yes
+        ${output}    SSHLibrary.Execute Command    kubectl get nodes
+        Log    \n\nK8SDATA = ${output} \n\n    console=yes
         Should Contain  ${output}    Ready
         Should Contain  ${output}    master
+        SSHLibrary.Close All Connections
 
 
 Validate server Mode
         [Arguments]    ${mode}
         # Get OS release data from server
-        ${invader_ip}    get ip   ${invader1_node_host}
-        Log To Console    \n\nVerifying mode over ${invader1_node_host}\n\n
-        ${rc}  ${output}    Entry_Criteria_Api.Run And Return Rc And Output        ssh ${invader_ip} "sudo grep \'${interface_sv2}\' /srv/maas/state/tenants.json -C 2"
+        ${i_ip}    get ip   ${invader1_node_host}
+	SSHLibrary.Open Connection     ${i_ip}    timeout=1 hour
+	SSHLibrary.Login               ${invader_usr_name}  ${invader_usr_pwd }
+	Sleep    2s
+	${output}=        SSHLibrary.Execute Command    sudo -s
+	Log    \n\nSUDO O/P = ${output}    console=yes
+	${output}    SSHLibrary.Execute Command    grep \'${interface_sv2}\' /srv/maas/state/tenants.json -C 2
+	SSHLibrary.Close All Connections
 	Log    \nINVENTORY DATA = ${output}\n    console=yes
         Sleep    2s
 	${status}    Validate Inventory Data    ${output}    ${mode}
 	Should Be Equal As Strings    ${status}  True  msg=Expected mode is = ${mode} but actual mode is different...
-
-
-#Verify K8s installed
-#        # Get OS release data from server
-#        Log To Console    \n\n${invader1_node_host}\n\n
-#        SSHLibrary.Open Connection     ${invader1_node_host}    timeout=1 hour
-#	SSHLibrary.Login               pcc    cals0ft
-#	Sleep    2s
-#	${output}=        SSHLibrary.Execute Command    sudo -s
-# 	Log    \n\nSUDO O/P = ${output}    console=yes
-#        ${output}    SSHLibrary.Execute Command    kubectl get nodes
-#        Log    \n\nK8SDATA = ${output} \n\n    console=yes
-#        Should Contain  ${output}    Ready
-#        Should Contain  ${output}    master
-#        SSHLibrary.Close All Connections
