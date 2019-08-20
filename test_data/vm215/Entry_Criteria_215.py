@@ -18,10 +18,10 @@ user_pwd = "admin"
 invader1_node_name = "i61"
 invader1_node_host = "172.17.2.61/23"
 # Invader interface
-interface_sv1 = "xeth29-1"
-asign_ip_to_interface1 = "192.0.2.12/31"
-interface_sv2 = "xeth29-2"
-asign_ip_to_interface2 = "192.0.2.8/31"
+#interface_sv1 = "xeth29-1"
+#asign_ip_to_interface1 = "192.0.2.12/31"
+#interface_sv2 = "xeth29-2"
+#asign_ip_to_interface2 = "192.0.2.8/31"
 
 
 # Test Data to Add Server as Node
@@ -34,8 +34,8 @@ server1_bmc_pwd = "ADMIN"
 server1_console = "ttyS1"
 server1_managed_by_pcc = "true"
 server1_ssh_keys = "pcc"
-interface1_name = "enp139s0"
-interface1_ip = "192.0.2.13/31"
+#interface1_name = "enp139s0"
+#interface1_ip = "192.0.2.13/31"
 
 
 # Test Data to Add Server as Node
@@ -53,8 +53,8 @@ management_interface = "eth3"
 management_ip = "172.17.2.117/23"
 gateway_ip = "172.17.2.1"
 # topolofy parameters
-interface2_name = "enp129s0"
-interface2_ip = "192.0.2.9/31"
+#interface2_name = "enp129s0"
+#interface2_ip = "192.0.2.9/31"
 
 
 # Credentials to access invader via ssh

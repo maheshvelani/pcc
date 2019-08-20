@@ -295,3 +295,18 @@ class Entry_Criteria_Api(OperatingSystem, SSHLibrary):
        """ Get Invader Ip 
        """
        return str(str(ip).split('/')[0])
+
+
+    def get_interface_name(self, resp, main_node, remote_node):
+        """ Get Interface between main and remote node
+        """
+        try:
+            for data in eval(str(resp))['Data']:
+                if str(data["NodeName"]) == str(main_node):
+                    for link in data["links"]:
+                        if str(link["remote_node_name"]) == str(remote_node):
+                            return str(link["interface_name"])
+            return None
+        except Exception:
+            return None
+
