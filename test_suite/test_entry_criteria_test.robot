@@ -755,8 +755,10 @@ Validate server Mode
 	SSHLibrary.Open Connection     ${i_ip}    timeout=1 hour
 	SSHLibrary.Login               pcc    cals0ft
 	Sleep    2s
+	Log To Console    \n\nLogged in
 	${output}=        SSHLibrary.Execute Command    sudo -s
 	Log    \n\nSUDO O/P = ${output}    console=yes
+	Log To Console    \n\nSudo executed
 	${output}    SSHLibrary.Execute Command    grep \'${interface_sv2}\' /srv/maas/state/tenants.json -C 2
 	SSHLibrary.Close All Connections
 	Log    \nINVENTORY DATA = ${output}\n    console=yes
