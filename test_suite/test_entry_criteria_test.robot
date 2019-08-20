@@ -756,10 +756,10 @@ Validate server Mode
 	SSHLibrary.Login               pcc    cals0ft
 	Sleep    2s
 	Log To Console    \n\nLogged in
-	${output}=        SSHLibrary.Execute Command    sudo -s
-	Log    \n\nSUDO O/P = ${output}    console=yes
-	Log To Console    \n\nSudo executed
-	${output}    SSHLibrary.Execute Command    grep \'${interface_sv2}\' /srv/maas/state/tenants.json -C 2
+	#${output}=        SSHLibrary.Execute Command    sudo -s
+	#Log    \n\nSUDO O/P = ${output}    console=yes
+	#Log To Console    \n\nSudo executed
+	${output}    SSHLibrary.Execute Command    sudo grep \'${interface_sv2}\' /srv/maas/state/tenants.json -C 2
 	SSHLibrary.Close All Connections
 	Log    \nINVENTORY DATA = ${output}\n    console=yes
         Sleep    2s
