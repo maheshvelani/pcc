@@ -363,7 +363,7 @@ class Data_Parser:
         """ verify Deleted Cluster
         """
         try:
-            if cluster_name in eval(str(resp_data))['Data']:
+            if cluster_name in str(eval(str(resp_data))['Data']):
                 return False
             return True
         except Exception:
