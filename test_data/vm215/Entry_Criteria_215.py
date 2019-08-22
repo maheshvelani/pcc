@@ -49,9 +49,9 @@ server2_console = "ttyS1"
 server2_managed_by_pcc = "true"
 server2_ssh_keys = "pcc"
 # Management parameters
-management_interface = "eth3"
-management_ip = "172.17.2.117/23"
-gateway_ip = "172.17.2.1"
+#management_interface = "eth3"
+#management_ip = "172.17.2.117/23"
+#gateway_ip = "172.17.2.1"
 # topolofy parameters
 #interface2_name = "enp129s0"
 #interface2_ip = "192.0.2.9/31"

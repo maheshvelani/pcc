@@ -17,11 +17,6 @@ user_pwd = "admin"
 # Update This data as per supported Invader over PCC server
 invader1_node_name = "i43"
 invader1_node_host = "172.17.2.43/23"
-# Invader interface
-interface_sv1 = "xeth32-2"
-asign_ip_to_interface1 = "192.0.2.102/31"
-interface_sv2 = "xeth6-2"
-asign_ip_to_interface2 = "192.0.2.100/31"
 
 
 # Test Data to Add Server as Node
@@ -34,8 +29,6 @@ server1_bmc_pwd = "ADMIN"
 server1_console = "ttyS1"
 server1_managed_by_pcc = "true"
 server1_ssh_keys = "pcc"
-interface1_name = "enp130s0"
-interface1_ip = "192.0.2.103/31"
 
 
 # Test Data to Add Server as Node
@@ -48,13 +41,6 @@ server2_bmc_pwd = "ADMIN"
 server2_console = "ttyS1"
 server2_managed_by_pcc = "true"
 server2_ssh_keys = "pcc"
-# Management parameters
-management_interface = "eth2"
-management_ip = "172.17.2.110/23"
-gateway_ip = "172.17.2.1"
-# topolofy parameters
-interface2_name = "ens2"
-interface2_ip = "192.0.2.101/31"
 
 
 # Credentials to access invader via ssh

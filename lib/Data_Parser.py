@@ -336,6 +336,18 @@ class Data_Parser:
             return False
 
     @staticmethod
+    def validate_cluster_health_status(resp_data):
+        """ Get Server ID added After PXE boot
+        """
+        try:
+            for data in eval(str(resp_data))['Data']:
+                if str(data['healthStatus']).lower() == "good":
+                    return True
+            return False
+        except Exception:
+            return False
+
+    @staticmethod
     def verify_app_present_in_cluster(resp_data, app_name):
         """Verify Installed App Present in cluster details"""
         try:

@@ -254,10 +254,26 @@ Update Server information added after PXE boot
         Log    \n Server ${server2_node_name} ID = ${node_id}   console=yes
         Set Suite Variable    ${server2_id}    ${node_id}
 
+	# Get server Interface from topology
+        Log    \nGetting Topology Data...    console=yes
+        ${resp}    Get request    platina    ${get_topology}    headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+	${i_interface}  Get_booted_server_interface  ${resp.json()}  ${server2_id}
+	Log    \n\nBooted server Interface = ${i_interface}  console=yes	
+
+	# Get Booted server details
+        ${resp}  Get Request    platina   ${get_node_list}/${server2_id}    headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+	
+	# Get valid server interface to set management IP
+	${mngmt_interface}    get management ip interface    ${resp.json()}  ${i_interface}
+        Log    \nFound Suitable interface to assign management Ip = ${mngmt_interface}  console=yes
 
 	# Set Management Ip
-	@{mgt_ip}    Create List    ${management_ip}
-	&{data}    Create Dictionary  nodeID=${${server2_id}}  ipv4Addresses=@{mgt_ip}  ifName=${management_interface}  gateway=${gateway_ip}  management=${true}
+	@{mgt_ip}    Create List    ${server2_node_host}
+	&{data}    Create Dictionary  nodeID=${${server2_id}}  ipv4Addresses=@{mgt_ip}  ifName=${mngmt_interface}  gateway=172.17.2.1  management=${true}
         Log    \nAssigning management ip with params = ${data}    console=yes
 	${resp}  Post Request    platina    ${add_interface}    json=${data}     headers=${headers}
 	Log    \n MGT IP Assign status Code = ${resp.status_code}    console=yes
@@ -471,7 +487,9 @@ Create Kubernetes Cluster
         Should Be Equal As Strings    ${status}    True    msg=Created Cluster ${cluster_name} is not present in Cluster list
         Set Suite Variable    ${cluster_id}    ${id}
         ${status}    Validate Cluster Deploy Status    ${resp.json()}
-        Should Be Equal As Strings    ${status}    True    msg=Cluster installation failed
+        Should Be Equal As Strings    ${status}    True    msg=Cluster installation failed#
+        ${status}    Validate Cluster Health Status    ${resp.json()}
+        Should Be Equal As Strings    ${status}    True    msg=Cluster installed but Health status is not good
 
 
 Verify Created K8s Cluster installation from back end
