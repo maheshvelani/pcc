@@ -8,7 +8,7 @@
 # PCC Login Data
 # Login into PCC mentioned into Server URL
 # E.g. Here it will be Login into PCC-216
-server_url = "https://172.17.2.212:9999"
+server_url = "https://172.17.2.216:9999"
 user_name = "admin"
 user_pwd = "admin"
 
