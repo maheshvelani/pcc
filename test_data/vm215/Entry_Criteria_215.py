@@ -41,8 +41,8 @@ server1_ssh_keys = "pcc"
 # Test Data to Add Server as Node
 # Update This data as per supported Server over PCC
 server2_node_name = "sv17"
-server2_node_host = "172.17.2.117/23"
-server2_bmc_host = "172.17.3.117"
+server2_node_host = "172.17.2.126/23"
+server2_bmc_host = "172.17.3.126"
 server2_bmc_user = "ADMIN"
 server2_bmc_pwd = "ADMIN"
 server2_console = "ttyS1"
@@ -50,7 +50,7 @@ server2_managed_by_pcc = "true"
 server2_ssh_keys = "pcc"
 # Management parameters
 #management_interface = "eth3"
-#management_ip = "172.17.2.117/23"
+#management_ip = "172.17.2.126/23"
 #gateway_ip = "172.17.2.1"
 # topolofy parameters
 #interface2_name = "enp129s0"
