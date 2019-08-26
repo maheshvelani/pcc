@@ -8,10 +8,10 @@
 ###########################################
 
 
-
 class Data_Parser:
-    
-    def validate_node(self, resp_data, node_name, host=None):
+
+    @staticmethod
+    def validate_node(resp_data, node_name, host=None):
         """ find added node from node list
         """
         try:
@@ -21,12 +21,15 @@ class Data_Parser:
                         if host:
                             if str(data['Host']) == str(host):
                                 return True, str(data['Id'])
+                            else:
+                                return False, None
                         return True, str(data['Id'])
             return False, None
         except Exception:
             return False, None
 
-    def validate_node_manage_status(self, resp_data, node_name, status):
+    @staticmethod
+    def validate_node_manage_status(resp_data, node_name, status):
         """ find added node manage status
         """
         try:
@@ -38,7 +41,8 @@ class Data_Parser:
         except Exception:
             return False
 
-    def validate_group(self, resp_data, expect_group):
+    @staticmethod
+    def validate_group(resp_data, expect_group):
         """ Get Expected Group from the group list
         """
         try:
@@ -49,7 +53,55 @@ class Data_Parser:
         except Exception:
             return False, None
 
-    def validate_roles(self, resp_data, expect_role):
+    @staticmethod
+    def get_node_group_count(resp_data, expect_group, desc=None):
+        """ Validate Node group count
+        """
+        g_cnt = 0
+        try:
+            for data in eval(str(resp_data))['Data']:
+                if str(data['Name']) == str(expect_group):
+                    g_cnt += 1
+                    if desc:
+                        if ((str(data['Description:']) == None)
+                                or
+                             (str(data['Description:']) == '')):
+                            return True, str(data['Id'])
+                        else:
+                            return False, None
+            return True, str(g_cnt)
+        except Exception:
+            return False, None
+
+    @staticmethod
+    def validate_group_desc(resp_data, expect_group_desc):
+        """ Get Expected Group from the group list
+        """
+        try:
+            for data in eval(str(resp_data))['Data']:
+                if str(data['Description']) == str(expect_group_desc):
+                    return True, str(data['Id'])
+            return False, None
+        except Exception:
+            return False, None
+
+    @staticmethod
+    def validate_role_desc(resp_data, expect_role, expect_role_desc=None):
+        """ Get Expected Role from the role list
+        """
+        try:
+            for data in eval(str(resp_data))['Data']:
+                if str(data['name']) == str(expect_role):
+                    if str(data['Description:']) == str(expect_role_desc)\
+                        or \
+                            str(data['Description:']) == '':
+                        return True, str(data['Id'])
+            return False, None
+        except Exception:
+            return False, None
+
+    @staticmethod
+    def validate_roles(resp_data, expect_role):
         """ Get Expected Role from the group list
         """
         try:
@@ -60,7 +112,21 @@ class Data_Parser:
         except Exception:
             return False, None
 
-    def validate_sites(self, resp_data, expect_site):
+    @staticmethod
+    def validate_role_tenant(resp_data, expect_role):
+        """ Get Expected Role Tenant from the group list
+        """
+        try:
+            for data in eval(str(resp_data))['Data']:
+                if str(data['name']) == str(expect_role):
+                    if int("1") not in list(data['owners']):
+                        return True, str(data['id'])
+            return False, None
+        except Exception:
+            return False, None
+
+    @staticmethod
+    def validate_sites(resp_data, expect_site):
         """ Get Expected Site from the site list
         """
         try:
@@ -71,7 +137,8 @@ class Data_Parser:
         except Exception:
             return False, None
 
-    def validate_sites_desc(self, resp_data, expect_desc):
+    @staticmethod
+    def validate_sites_desc(resp_data, expect_desc):
         """ Get Expected Site Description from the site list
         """
         try:
@@ -82,7 +149,8 @@ class Data_Parser:
         except Exception:
             return False, None
 
-    def validate_node_site(self, resp_data, node_name, site_id):
+    @staticmethod
+    def validate_node_site(resp_data, node_name, site_id):
         """ validated updated site in node
         """
         try:
@@ -94,7 +162,8 @@ class Data_Parser:
         except Exception:
             return False, None
 
-    def get_tenant_id(self, response, tenant_name):
+    @staticmethod
+    def get_tenant_id(response, tenant_name):
         """get tenant id from tenant list
         """
         try:
@@ -105,7 +174,8 @@ class Data_Parser:
         except Exception:
             return False, None
 
-    def verify_parent_tenant(self, response, tenant_name, parent_id):
+    @staticmethod
+    def verify_parent_tenant(response, tenant_name, parent_id):
         """Verify Tenant Parent
         """
         try:
@@ -117,7 +187,8 @@ class Data_Parser:
         except Exception:
             return False, None
 
-    def validate_node_group(self, resp_data, node_name, group_id):
+    @staticmethod
+    def validate_node_group(resp_data, node_name, group_id):
         """ validated Assigned Group in node
         """
         try:
@@ -129,7 +200,8 @@ class Data_Parser:
         except Exception:
             return False, None
 
-    def validate_node_roles(self, resp_data, node_name, role_id):
+    @staticmethod
+    def validate_node_roles(resp_data, node_name, role_id):
         """ validated Assigned Roles in node
         """
         try:
@@ -140,3 +212,182 @@ class Data_Parser:
             return False, None
         except Exception:
             return False, None
+
+    @staticmethod
+    def validate_node_tenant(resp_data, node_name, tenant_id):
+        """ validated Assigned Tenant in node
+        """
+        try:
+            for data in eval(str(resp_data))['Data']:
+                if str(data['Name']) == str(node_name):
+                    if int(tenant_id) == int(data['owner']):
+                        return True, str(data['Id'])
+            return False, None
+        except Exception:
+            return False, None
+
+    @staticmethod
+    def get_maas_role_id(resp_data):
+        """ Get MaaS role Id from response
+        """
+        try:
+            for data in eval(str(resp_data))['Data']:
+                if str(data['name']) == "MaaS":
+                    return True, str(data['id'])
+            return False, None
+        except Exception:
+            return False, None
+
+    @staticmethod
+    def get_lldp_role_id(resp_data):
+        """ Get LLDP role Id from response
+        """
+        try:
+            for data in eval(str(resp_data))['Data']:
+                if str(data['name']) == "LLDP":
+                    return True, str(data['id'])
+            return False, None
+        except Exception:
+            return False, None
+
+    @staticmethod
+    def validate_node_online_status(resp_data, node_name):
+        """ Verify Node Online Status
+        """
+        try:
+            if resp_data['Data'] != None:
+                for data in eval(str(resp_data))['Data']:
+                    if str(data['Name']) == str(node_name):
+                        if str(data['nodeAvailabilityStatus']['connectionStatus']) == "online":
+                            return True
+                        else:
+                            return False
+            return False
+        except Exception:
+            return False
+
+    @staticmethod
+    def validate_node_provision_status(resp_data, node_name):
+        """ Verify Node Online Status
+        """
+        try:
+            if resp_data['Data'] != None:
+                for data in eval(str(resp_data))['Data']:
+                    if str(data['Name']) == str(node_name):
+                        if str(data['provisionStatus']) == "Finished":
+                            return True
+                        else:
+                            return False
+            return False
+        except Exception:
+            return False
+
+    @staticmethod
+    def validate_os_provision_status(resp_data, node_name):
+        """ Verify OS deploy Status
+        """
+        try:
+            if resp_data['Data'] != None:
+                for data in eval(str(resp_data))['Data']:
+                    if str(data['Name']) == str(node_name):
+                        if str(data['provisionStatus']) == "Finished":
+                            return True
+                        else:
+                            return False
+            return False
+        except Exception:
+            return False
+
+    @staticmethod
+    def verify_server_up_time(uptime_data):
+        """ validate Server Uptim
+        """
+        if "day" in str(uptime_data).lower():
+            return False
+
+        if "hours" in str(uptime_data).lower():
+            return False
+
+        return True
+
+    @staticmethod
+    def validate_cluster(resp_data, cluster_name):
+        """ verify added cluster from cluster list
+        """
+        try:
+            if resp_data['Data'] != None:
+                for data in eval(str(resp_data))['Data']:
+                    if str(data['name']) == str(cluster_name):
+                        return True, str(data['ID'])
+            return False, None
+        except Exception:
+            return False, None
+
+    @staticmethod
+    def validate_cluster_deploy_status(resp_data):
+        """ Get Server ID added After PXE boot
+        """
+        try:
+            for data in eval(str(resp_data))['Data']:
+                if str(data['deployStatus']) == "installed":
+                    return True
+            return False
+        except Exception:
+            return False
+
+    @staticmethod
+    def validate_cluster_health_status(resp_data):
+        """ Get Server ID added After PXE boot
+        """
+        try:
+            for data in eval(str(resp_data))['Data']:
+                if str(data['healthStatus']).lower() == "good":
+                    return True
+            return False
+        except Exception:
+            return False
+
+    @staticmethod
+    def verify_app_present_in_cluster(resp_data, app_name):
+        """Verify Installed App Present in cluster details"""
+        try:
+            #for data in eval(str(resp_data))['Data']:
+            if str(app_name) in str(eval(str(resp_data))['Data']["apps"]):
+                    return True
+            return False
+        except Exception:
+            return False
+
+    @staticmethod
+    def verify_node_added_in_cluster(resp_data, node_id):
+        """ Verify added Node Present in Cluster
+        """
+        try:
+            for data in eval(str(resp_data))['Data']["nodes"]:
+                if int(data['id']) == int(node_id):
+                    return True
+            return False
+        except Exception:
+            return False
+
+    @staticmethod
+    def verify_cluster_deleted(resp_data, cluster_name):
+        """ verify Deleted Cluster
+        """
+        try:
+            if cluster_name in str(eval(str(resp_data))['Data']):
+                return False
+            return True
+        except Exception:
+            return False
+
+    @staticmethod
+    def verify_cluster_version(resp_data, cluster_ver):
+        """ verify Cluster Version
+        """
+        try:
+            if cluster_ver in str(eval(str(resp_data))['Data']["k8sVersion"]):
+                return True
+            return False
+        except Exception:
+            return False

@@ -1,3 +1,7 @@
+###############################
+# URL path for PCC API
+###############################
+
 login = "/security/auth/"
 add_node = "/pccserver/node/add/"
 get_node_list = "/pccserver/node/"
@@ -14,3 +18,9 @@ tenant_list = "/user-management/tenant/list/"
 node_tenant_assignment = "/user-management/tenant/nodes/update/"
 add_group_to_node = "/pccserver/node/update/"
 delete_tenant = "/user-management/tenant/delete/"
+get_maas_images = "/maas/images/"
+os_deployment = "/maas/deployments/"
+update_node = "/pccserver/node/update/"
+add_kubernetes_cluster = "/pccserver/kubernetes/"
+get_topology = "/pccserver/topology/"
+add_interface = "/pccserver/interface"
