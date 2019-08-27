@@ -402,10 +402,10 @@ Assign Interface Ip to node to form Topology
         Set Suite Variable    ${interface2_name}
 
         # Get Invader Topology
-        ${status}    ${sv1_topology}    Prepare Invader Topology  ${resp.json()}  ${invader1_id}  ${interface_sv1}  ${asign_ip_to_interface1}
-        ${status}    ${sv2_topology}    Prepare Invader Topology  ${resp.json()}  ${invader1_id}  ${interface_sv2}  ${asign_ip_to_interface2}
-        ${status}    ${i1_topology}    Prepare Invader Topology  ${resp.json()}  ${server1_id}  ${interface1_name}  ${interface1_ip}
-        ${status}    ${i2_topology}    Prepare Invader Topology  ${resp.json()}  ${server2_id}  ${interface2_name}  ${interface2_ip}
+        ${status}    ${sv1_topology}    Prepare Invader Topology  ${resp.json()}  ${invader1_id}  ${interface_sv1}  192.0.2.102/31
+        ${status}    ${sv2_topology}    Prepare Invader Topology  ${resp.json()}  ${invader1_id}  ${interface_sv2}  192.0.2.100/31
+        ${status}    ${i1_topology}    Prepare Invader Topology  ${resp.json()}  ${server1_id}  ${interface1_name}  192.0.2.103/31
+        ${status}    ${i2_topology}    Prepare Invader Topology  ${resp.json()}  ${server2_id}  ${interface2_name}  192.0.2.101/31
 
         # Update Invader interfaces
         Log    \n Updating invader topology with data = ${sv1_topology} \n    console=yes
