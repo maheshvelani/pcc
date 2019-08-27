@@ -253,7 +253,8 @@ Update Server information added after PXE boot
         Log    \n Response = ${resp.json()}    console=yes
 
         ${i1_interface}  ${i2_interface}  Get_booted_server_interface_2  ${resp.json()}  ${server1_id}
-        Log    \n\nBooted server Interface = ${i_interface}  console=yes
+        Log    \n\nBooted server Interface = ${i1_interface}  console=yes
+        Log    \n\nBooted server Interface = ${i2_interface}  console=yes
 
         # Get Booted server details
         ${resp}  Get Request    platina   ${get_node_list}/${server1_id}    headers=${headers}
