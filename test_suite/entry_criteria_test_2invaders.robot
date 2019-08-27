@@ -221,11 +221,14 @@ Validate Interface Mode - Expected Inventory Mode
         Log    \n Status code = ${resp.status_code}    console=yes
         Log    \n Response = ${resp.json()}    console=yes
         Should Be Equal As Strings    ${resp.status_code}    200
-        ${interface_sv2}    Get Interface Name    ${resp.json()}  ${invader1_node_name}  ${server1_node_name}
+        ${interface_sv1}    Get Interface Name    ${resp.json()}  ${invader1_node_name}  ${server1_node_name}
+        ${interface_sv2}    Get Interface Name    ${resp.json()}  ${invader2_node_name}  ${server1_node_name}
+        Set Suite Variable    ${interface_sv1}
         Set Suite Variable    ${interface_sv2}
 
         # verify Mode into Inventory
-        Validate server Mode    inventory
+        Validate server Mode 1    inventory
+        Validate server Mode 2    inventory
 
 
 Update Server information added after PXE boot
@@ -249,7 +252,7 @@ Update Server information added after PXE boot
         Log    \n Status code = ${resp.status_code}    console=yes
         Log    \n Response = ${resp.json()}    console=yes
 
-        ${i_interface}  Get_booted_server_interface  ${resp.json()}  ${server1_id}
+        ${i1_interface}  ${i2_interface}  Get_booted_server_interface_2  ${resp.json()}  ${server1_id}
         Log    \n\nBooted server Interface = ${i_interface}  console=yes
 
         # Get Booted server details
@@ -258,7 +261,7 @@ Update Server information added after PXE boot
         Log    \n Response = ${resp.json()}    console=yes
 
         # Get valid server interface to set management IP
-        ${mngmt_interface}    get management ip interface    ${resp.json()}  ${i_interface}
+        ${mngmt_interface}    get management ip interface_2    ${resp.json()}  ${i1_interface}  ${i2_interface}
         Log    \nFound Suitable interface to assign management Ip = ${mngmt_interface}  console=yes
 
         # Set Management Ip
@@ -267,9 +270,8 @@ Update Server information added after PXE boot
         Log    \nAssigning management ip with params = ${data}    console=yes
         ${resp}  Post Request    platina    ${add_interface}    json=${data}     headers=${headers}
         Log    \n MGT IP Assign status Code = ${resp.status_code}    console=yes
-        Should Be Equal As Strings  ${resp.status_code}    200
+        # Should Be Equal As Strings  ${resp.status_code}    200
         Sleep    1 minutes
-
 
         # Update Server Node with proper information
         @{server1_bmc_users}    Create List    ${server1_bmc_user}
@@ -336,7 +338,7 @@ OS Deployment over Server machine
         Run Keyword And Ignore Error    Verify CentOS installed in server machine
 
 
-Assign LLDP role to Server - 2
+Assign LLDP role to Server
         [Tags]    Entry Criteria
         [Documentation]    Assign LLDP to Server - 2
 
@@ -387,10 +389,10 @@ Assign Interface Ip to node to form Topology
         Log  \n\nInterface Between ${server1_node_name} and ${invader1_node_name} = ${interface1_name}  console=yes
         Log  \n\nInterface Between ${server1_node_name} and ${invader2_node_name} = ${interface2_name}  console=yes
 
-        Set Suite Variable    ${interface_sv1}
-        Set Suite Variable    ${interface_sv2}
-        Set Suite Variable    ${interface1_name}
-        Set Suite Variable    ${interface2_name}
+#        Set Suite Variable    ${interface_sv1}
+#        Set Suite Variable    ${interface_sv2}
+#        Set Suite Variable    ${interface1_name}
+#        Set Suite Variable    ${interface2_name}
 
         # Get Invader Topology
         ${status}    ${sv1_topology}    Prepare Invader Topology  ${resp.json()}  ${invader1_id}  ${interface_sv1}  192.0.2.102/31
@@ -428,7 +430,7 @@ Assign Interface Ip to node to form Topology
         Log    \n Status Code = ${resp.status_code}    console=yes
         Log    \n JSON RESP = ${resp.json()}    console=yes
         #Should Be Equal As Strings  ${resp.status_code}  200
-        Sleep    25s
+        Sleep    30s
 
 
 Validate Interface Mode - Expected user mode
@@ -436,7 +438,8 @@ Validate Interface Mode - Expected user mode
         [Documentation]    Verify that Server is in inventory mode
 
         # verify Mode into Inventory
-        Validate server Mode    user
+        Validate server Mode 1  user
+        Validate server Mode 2  user
 
 
 Create Kubernetes Cluster
@@ -533,7 +536,7 @@ Update k8s and verify version updated
         Log To Console    K8s Upgrading........
         Sleep    5 minutes
         Log To Console    K8s Upgrading........
-        Sleep    5 minutes
+        Sleep    2 minutes
         Log To Console    K8s Upgrading........
 
         # Verify K8s Upgradded
@@ -603,7 +606,7 @@ SSH into Invader and Verify mass installation started
 
 Verify CentOS installed in server machine
         # Get OS release data from server
-        ${server_ip}    get ip   ${server2_node_host}
+        ${server_ip}    get ip   ${server1_node_host}
         SSHLibrary.Open Connection     ${server_ip}    timeout=1 hour
         SSHLibrary.Login               root        plat1na
         Sleep    2s
@@ -630,10 +633,25 @@ Verify K8s installed
         SSHLibrary.Close All Connections
 
 
-Validate server Mode
+Validate server Mode 1
         [Arguments]    ${mode}
         # Get OS release data from server
         ${i_ip}    get ip   ${invader1_node_host}
+        SSHLibrary.Open Connection     ${i_ip}    timeout=1 hour
+        SSHLibrary.Login               ${invader_usr_name}  ${invader_usr_pwd }
+        Sleep    2s
+        ${output}    SSHLibrary.Execute Command    sudo grep \'${interface_sv1}\' /srv/maas/state/tenants.json -C 2
+        SSHLibrary.Close All Connections
+        Log    \nINVENTORY DATA = ${output}\n    console=yes
+        Sleep    2s
+        ${status}    Validate Inventory Data    ${output}    ${mode}
+        Should Be Equal As Strings    ${status}  True  msg=Expected mode is = ${mode} but actual mode is different...
+
+
+Validate server Mode 2
+        [Arguments]    ${mode}
+        # Get OS release data from server
+        ${i_ip}    get ip   ${invader2_node_host}
         SSHLibrary.Open Connection     ${i_ip}    timeout=1 hour
         SSHLibrary.Login               ${invader_usr_name}  ${invader_usr_pwd }
         Sleep    2s

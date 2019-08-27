@@ -320,6 +320,17 @@ class Entry_Criteria_Api(OperatingSystem, SSHLibrary):
         except Exception:
             return None
 
+    def Get_booted_server_interface_2(self, resp, node_id):
+        """ Get Server Interface ID
+        """
+        try:
+            for data in eval(str(resp))["Data"]:
+                if str(node_id) == str(data["NodeId"]):
+                    return str(data['links'][0]['interface_name']), str(data['links'][1]['interface_name'])
+            return None, None
+        except Exception:
+            return None, None
+
     def get_management_ip_interface(self, resp, interface):
         """ Get Suitable Management Interface to assign Ip
         """
@@ -329,5 +340,18 @@ class Entry_Criteria_Api(OperatingSystem, SSHLibrary):
                     if str(data["interface"]['status']) == "UP":
                         return str(data["interface"]['name'])
             return None
-	except Exception:
-	    return None
+        except Exception:
+            return None
+
+    def get_management_ip_interface_2(self, resp, interface1, interface2):
+        """ Get Suitable Management Interface to assign Ip
+        """
+        try:
+            for data in eval(str(resp))["Data"]["interfaces"]:
+                if str(interface1) != str(data["interface"]['name']):
+                    if str(interface2) != str(data["interface"]['name']):
+                        if str(data["interface"]['status']) == "UP":
+                            return str(data["interface"]['name'])
+            return None
+        except Exception:
+            return None
