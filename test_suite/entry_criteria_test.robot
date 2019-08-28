@@ -230,7 +230,7 @@ Validate Interface Mode - Expected Inventory Mode
         Log    \n Status code = ${resp.status_code}    console=yes
         Log    \n Response = ${resp.json()}    console=yes
         Should Be Equal As Strings    ${resp.status_code}    200
-        ${interface_sv2}    Get Interface Name    ${resp.json()}  ${invader1_node_name}  ${server2_node_name}
+        ${interface_sv2}    Get Interface Name    ${resp.json()}  ${invader1_node_name}  0123456789
         Set Suite Variable    ${interface_sv2}
 
         # verify Mode into Inventory
