@@ -33,9 +33,9 @@ server1_ssh_keys = "pcc"
 
 # Test Data to Add Server as Node
 # Update This data as per supported Server over PCC
-server2_node_name = "sv10"
-server2_node_host = "172.17.2.110/23"
-server2_bmc_host = "172.17.3.110"
+server2_node_name = "sv24"
+server2_node_host = "172.17.2.124/23"
+server2_bmc_host = "172.17.3.124"
 server2_bmc_user = "ADMIN"
 server2_bmc_pwd = "ADMIN"
 server2_console = "ttyS1"
