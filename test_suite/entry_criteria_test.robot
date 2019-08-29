@@ -182,6 +182,8 @@ Assign LLDP and MaaS Roles to Invader - 1
         ${status}    ${node_id}    Validate Node Roles    ${resp.json()}    ${invader1_node_name}    ${maas_role_id}
         Should Be Equal As Strings    ${status}    True    msg=Node ${invader1_node_name} is not updated with the MaaS Roles
 
+        Run Keyword And Ignore Error	SSH into Invader and Verify mass installation started    ${invader1_node_host}
+
 
 Assign LLDP role to server - 1
         [Tags]    Entry Criteria
@@ -605,9 +607,9 @@ SSH into Invader and Verify mass installation started
         SSHLibrary.Login               ${invader_usr_name}        ${invader_usr_pwd}
         Sleep    2s
         ${output}=         SSHLibrary.Execute Command    ps -aef | grep ROOT
+        SSHLibrary.Close All Connections
         Log    \n\n INVADER DATA = ${output}    console=yes
         Should Contain    ${output}    tinyproxy.conf
-        SSHLibrary.Close All Connections
 
 
 Verify CentOS installed in server machine
@@ -633,10 +635,10 @@ Verify K8s installed
         SSHLibrary.Login               ${invader_usr_name}  ${invader_usr_pwd }
         Sleep    2s
         ${output}    SSHLibrary.Execute Command    sudo kubectl get nodes
-        Log    \n\nK8SDATA = ${output} \n\n    console=yes
+        SSHLibrary.Close All Connections
+        Log    \n\nK8S - DATA = ${output} \n\n    console=yes
         Should Contain  ${output}    Ready
         Should Contain  ${output}    master
-        SSHLibrary.Close All Connections
 
 
 Validate server Mode

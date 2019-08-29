@@ -167,6 +167,10 @@ Assign LLDP and MaaS Roles to Invader - 1
         ${status}    ${node_id}    Validate Node Roles    ${resp.json()}    ${invader1_node_name}    ${maas_role_id}
         Should Be Equal As Strings    ${status}    True    msg=Node ${invader1_node_name} is not updated with the MaaS Roles
 
+        # SSH into invader and verify MaaS installation process status
+        Run Keyword And Ignore Error	SSH into Invader and Verify mass installation started    ${invader1_node_host}
+
+
 
 Assign LLDP and MaaS Roles to Invader - 2
         [Tags]    Entry Criteria
@@ -197,6 +201,9 @@ Assign LLDP and MaaS Roles to Invader - 2
         Should Be Equal As Strings    ${resp.status_code}    200
         ${status}    ${node_id}    Validate Node Roles    ${resp.json()}    ${invader2_node_name}    ${maas_role_id}
         Should Be Equal As Strings    ${status}    True    msg=Node ${invader2_node_name} is not updated with the MaaS Roles
+
+        # SSH into invader and verify MaaS installation process status
+        Run Keyword And Ignore Error	SSH into Invader and Verify mass installation started    ${invader1_node_host}
 
 
 PXE Boot to Server
