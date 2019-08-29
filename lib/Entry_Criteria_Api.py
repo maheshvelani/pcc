@@ -257,17 +257,17 @@ class Entry_Criteria_Api(OperatingSystem, SSHLibrary):
     def prepare_invader_topology(self, resp, i_id, interface_sv, assign_ip):
         """Get Invader Topology
         """
-        topology_str = { "ifName" : None,
-                         "nodeID" : None,
-                         "speed" : 10000,
-                         "ipv4Addresses" : [],
-                         "gateway" : "",
-                         "fecType" : "",
-                         "mediaType" : "copper",
-                         "macAddress" : "50:18:4c:00:0b:f3",
-                         "status" : "up",
-                         "management":False
-                       }
+        topology_str = {"ifName": None,
+                        "nodeID": None,
+                        "speed": 10000,
+                        "ipv4Addresses": [],
+                        "gateway": "",
+                        "fecType": "",
+                        "mediaType": "copper",
+                        "macAddress": "50:18:4c:00:0b:f3",
+                        "status": "up",
+                        "management": False
+                        }
         for data in eval(str(resp))['Data']:
             if int(data["NodeId"]) == int(i_id):
                 for link in data["links"]:
@@ -275,12 +275,20 @@ class Entry_Criteria_Api(OperatingSystem, SSHLibrary):
                         topology_str["ifName"] = interface_sv
                         topology_str["nodeID"] = int(i_id)
                         if link["ipv4_addresses"]:
-                            topology_str["ipv4Addresses"] = link["ipv4_addresses"] + [assign_ip]
+                            ip_list = []
+                            # Remove Previously assigned IP
+                            for ip in range(len(link["ipv4_addresses"])):
+                                if str(list(link["ipv4_addresses"])[ip].split('.')[0]) == "203":
+                                    ip_list.append(str(list(link["ipv4_addresses"])[ip]))
+                            if ip_list:
+                                topology_str["ipv4Addresses"] = ip_list + [assign_ip]
+                            else:
+                                topology_str["ipv4Addresses"] = [assign_ip]
                         else:
                             topology_str["ipv4Addresses"] = [assign_ip]
 
         if topology_str["nodeID"] == None:
-            return False, None 
+            return False, None
         return True, topology_str
 
     def validate_inventory_data(self, resp, expected_mode):
