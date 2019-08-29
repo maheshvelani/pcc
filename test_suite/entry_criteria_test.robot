@@ -439,7 +439,9 @@ Assign Interface Ip to node to form Topology
         Log    \n Status Code = ${resp.status_code}    console=yes
         Log    \n JSON RESP = ${resp.json()}    console=yes
         #Should Be Equal As Strings  ${resp.status_code}  200
-        Sleep    25s
+        
+        # Wait for few minutes to reflect assign IP into topology
+        Sleep  5 minutes
 
 
 Validate Interface Mode - Expected user mode
