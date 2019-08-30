@@ -10,7 +10,7 @@
     if( action.class.simpleName.equals("RobotBuildAction") ) { // hudson.plugins.robot.RobotBuildAction
         robotResults = true %>
 
-      <p><h4>PCC Mini regression Test Summary:</h4></p>
+      <p><h4>PCC Mini Regression Test Summary:</h4></p>
       <table cellspacing="0" cellpadding="4" border="1" align="left">
         <thead>
           <tr bgcolor="#F3F3F3">
@@ -33,6 +33,7 @@
 
         </tbody>
       </table><%
+      <p><h4>Please download attached HTML log reports of Mini Regression Test suite executed over VM-212 for more details.</h4></p>
     } // robot results
  }
  if (!robotResults) { %>
