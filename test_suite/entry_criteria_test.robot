@@ -36,7 +36,7 @@ Invader and Server Cleanup from UI
         \    Log    \n Status code = ${resp.status_code}    console=yes
         \    Log    \n Response = ${resp.json()}    console=yes
         \    Should Be Equal As Strings    ${resp.status_code}    200
-        \    Sleep    60s
+        \    Sleep    3 minutes
 
 
 Add Invader-1 as a Node and Verify Online Status
