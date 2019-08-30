@@ -33,7 +33,13 @@
 
         </tbody>
       </table>
-      <p><h4>Please download attached HTML log reports of Mini Regression Test suite executed over VM-212 for more details.</h4></p><%
+      <p><h4>
+
+      Please download attached HTML log reports of Mini Regression Test suite executed over VM-212 for more details.
+
+      Thank You!!!
+
+      </h4></p><%
     } // robot results
  }
  if (!robotResults) { %>
