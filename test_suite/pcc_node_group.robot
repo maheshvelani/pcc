@@ -243,7 +243,7 @@ Clear exist node group description
 
         # Update Group Information
         &{data}    Create Dictionary  Name=${group7_name}    Description=    Id=${${group_id}}
-	Log    \nUpdating Node Group with empty description..    console=yes
+        Log    \nUpdating Node Group with empty description..    console=yes
         ${resp}     Put Request   platina   ${get_group}${group_id}    json=${data}     headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
         Should Be Equal As Strings    ${resp.status_code}    200
