@@ -86,7 +86,7 @@ PCC Add Site Without Name
         [Tags]    NodeG Mgmt    Sites
         [Documentation]    Adding new Site without name
 
-    	&{data}    Create Dictionary  Name=    Description=${site3_desc}
+        &{data}    Create Dictionary  Description=${site3_desc}
     	Log    \nCreating Site with parameters: \n${data}\n    console=yes
     	${resp}  Post Request    platina   ${add_site}    json=${data}     headers=${headers}
     	Log    \n Status code = ${resp.status_code}    console=yes
@@ -169,7 +169,7 @@ PCC Edit Site Name
         ${status}    ${site_id}    Validate Sites    ${resp.json()}    ${site8_name}
         Should Be Equal As Strings    ${status}    True    msg=Site ${site8_name} is not present in site list
 
-        &{data}    Create Dictionary  Name=${site8_name_update}
+        &{data}    Create Dictionary  Name=${site8_name_update}  Description=${site8_desc}
         ${resp}     Put Request   platina   ${add_site}${site_id}    json=${data}     headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
         Should Be Equal As Strings    ${resp.status_code}    200
@@ -205,7 +205,7 @@ PCC Edit Site Description
         ${status}    ${site_id}    Validate Sites    ${resp.json()}    ${site9_name}
         Should Be Equal As Strings    ${status}    True    msg=Site ${site9_name} is not present in site list
 
-        &{data}    Create Dictionary  Description=${site9_desc_update}
+        &{data}    Create Dictionary  Name=${site9_name}  Description=${site9_desc_update}
         ${resp}     Put Request   platina   ${add_site}${site_id}    json=${data}     headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
         Should Be Equal As Strings    ${resp.status_code}    200
