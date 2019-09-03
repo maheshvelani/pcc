@@ -498,7 +498,7 @@ Create Kubernetes Cluster
 Verify Created K8s Cluster installation from back end
         [Tags]    Entry Criteria
         [Documentation]    Verify Kubernetes Cluster
-        Run Keyword And Ignore Error    Verify K8s installed
+        Verify K8s installed
 
 
 Add an app to k8s
