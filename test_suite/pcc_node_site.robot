@@ -169,9 +169,10 @@ PCC Edit Site Name
         ${status}    ${site_id}    Validate Sites    ${resp.json()}    ${site8_name}
         Should Be Equal As Strings    ${status}    True    msg=Site ${site8_name} is not present in site list
 
-        &{data}    Create Dictionary  Name=${site8_name_update}  Description=${site8_desc}
-        ${resp}     Put Request   platina   ${add_site}${site_id}    json=${data}     headers=${headers}
+        &{data}    Create Dictionary  Name=${site8_name_update}  Description=${site8_desc}  
+        ${resp}     Put Request   platina   ${get_site}${site_id}    json=${data}     headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Status code = ${resp.json()}    console=yes
         Should Be Equal As Strings    ${resp.status_code}    200
         Sleep    10s
 
@@ -206,7 +207,7 @@ PCC Edit Site Description
         Should Be Equal As Strings    ${status}    True    msg=Site ${site9_name} is not present in site list
 
         &{data}    Create Dictionary  Name=${site9_name}  Description=${site9_desc_update}
-        ${resp}     Put Request   platina   ${add_site}${site_id}    json=${data}     headers=${headers}
+        ${resp}     Put Request   platina   ${get_site}${site_id}    json=${data}     headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
         Should Be Equal As Strings    ${resp.status_code}    200
 
@@ -433,7 +434,7 @@ PCC clear Site Name
         Should Be Equal As Strings    ${status}    True    msg=Site ${site15_name} is not present in site list
 
         &{data}    Create Dictionary  Name=    Description=${site15_desc}
-        ${resp}     Put Request   platina   ${add_site}${site_id}    json=${data}     headers=${headers}
+        ${resp}     Put Request   platina   ${get_site}${site_id}    json=${data}     headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
         Should Not Be Equal As Strings    ${resp.status_code}    200    msg=Site updated with Emty name
 
@@ -462,7 +463,7 @@ PCC clear Site Description
         Should Be Equal As Strings    ${status}    True    msg=Site ${site16_name} is not present in site list
 
         &{data}    Create Dictionary  Name=${site16_name}    Description=
-        ${resp}     Put Request   platina   ${add_site}${site_id}    json=${data}     headers=${headers}
+        ${resp}     Put Request   platina   ${get_site}${site_id}    json=${data}     headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
         Should Be Equal As Strings    ${resp.status_code}    200    msg=Site not updated with Emty description
 
