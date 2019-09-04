@@ -10,7 +10,7 @@ Resource        ${CURDIR}/../resource/Resource_Keywords.robot
 
 *** Test Cases ***
 PCC-login-page-testing-with-valid-credentials
-        [Tags]    Login    regression_test
+        [Tags]    Login
         [Documentation]    Test login page of PCC UI with valid username, password and url
         [Setup]    Create Session    platina    ${server_url}    verify=False
         [Teardown]    Delete All Sessions
@@ -27,7 +27,7 @@ PCC-login-page-testing-with-valid-credentials
 
 
 PCC-login-page-testing-with-invalid-username
-        [Tags]    Login    regression_test
+        [Tags]    Login
         [Documentation]    Test login page of PCC UI with invalid username,valid password and valid url
         [Setup]    Create Session    platina    ${server_url}    verify=False
         [Teardown]    Delete All Sessions
@@ -41,7 +41,7 @@ PCC-login-page-testing-with-invalid-username
 
 
 PCC-login-page-testing-with-invalid-password
-        [Tags]    Login    regression_test
+        [Tags]    Login
         [Documentation]    Test login page of PCC UI with valid username, invalid password and valid url
         [Setup]    Create Session    platina    ${server_url}    verify=False
         [Teardown]    Delete All Sessions
@@ -55,7 +55,7 @@ PCC-login-page-testing-with-invalid-password
 
 
 PCC-login-page-testing-with-invalid-credentials
-        [Tags]    Login    regression_test
+        [Tags]    Login
         [Documentation]    Test login page of PCC UI with invalid username,invalid password and valid url
         [Setup]    Create Session    platina    ${server_url}    verify=False
         [Teardown]    Delete All Sessions
@@ -69,7 +69,7 @@ PCC-login-page-testing-with-invalid-credentials
 
 
 PCC-login-page-testing-with-empty-username
-        [Tags]    Login    regression_test
+        [Tags]    Login
         [Documentation]    Test login page of PCC UI with empty username,valid password and valid url
         [Setup]    Create Session    platina    ${server_url}    verify=False
         [Teardown]    Delete All Sessions
@@ -83,7 +83,7 @@ PCC-login-page-testing-with-empty-username
 
 
 PCC-login-page-testing-with-empty-password
-        [Tags]    Login    regression_test
+        [Tags]    Login
         [Documentation]    Test login page of PCC UI with valid username,empty password and valid url
         [Setup]    Create Session    platina    ${server_url}    verify=False
         [Teardown]    Delete All Sessions
@@ -97,7 +97,7 @@ PCC-login-page-testing-with-empty-password
 
 
 PCC-login-page-testing-with-empty-usernameandpassword
-        [Tags]    Login    regression_test
+        [Tags]    Login
         [Documentation]    Test login page of PCC UI with empty username,empty password and valid url
         [Setup]    Create Session    platina    ${server_url}    verify=False
         [Teardown]    Delete All Sessions
@@ -111,7 +111,7 @@ PCC-login-page-testing-with-empty-usernameandpassword
 
 
 PCC-login-page-testing-with-empty-username-and-invald-password
-        [Tags]    Login    regression_test
+        [Tags]    Login
         [Documentation]    Test login page of PCC UI with empty username, invalid password and valid url
         [Setup]    Create Session    platina    ${server_url}    verify=False
         [Teardown]    Delete All Sessions
@@ -125,7 +125,7 @@ PCC-login-page-testing-with-empty-username-and-invald-password
 
 
 PCC-login-page-testing-with-invalid-username-and-empty-password
-        [Tags]    Login    regression_test
+        [Tags]    Login
         [Documentation]    Test login page of PCC UI with invalid username, empty password and valid url
         [Setup]    Create Session    platina    ${server_url}    verify=False
         [Teardown]    Delete All Sessions
@@ -153,7 +153,7 @@ PCC Node Group
 
 
 PCC Node Group Create
-        [Tags]    NodeG Mgmt    Groups
+        [Tags]    Node Mgmt    Groups
         [Documentation]    Adding new node group
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
@@ -183,7 +183,7 @@ PCC Node Group Create
 
 
 PCC Node group creation without description
-        [Tags]    NodeG Mgmt  Groups
+        [Tags]    Node Mgmt  Groups
         [Documentation]    Adding new node group without description
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
@@ -243,7 +243,7 @@ PCC Node group creation without name
 #
 
 PCc Node group deletion
-        [Tags]    NodeG Mgmt    Groups
+        [Tags]    Node Mgmt    Groups
         [Documentation]    Deleting a node group
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
@@ -285,7 +285,7 @@ PCc Node group deletion
 
 
 PCC Node Group Edit
-        [Tags]    NodeG Mgmt    Groups
+        [Tags]    Node Mgmt    Groups
         [Documentation]    Edit node group
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
@@ -325,7 +325,7 @@ PCC Node Group Edit
 
 
 PCC Duplicate Node Group Creation
-        [Tags]    NodeG Mgmt    Groups
+        [Tags]    Node Mgmt    Groups
         [Documentation]    Create a Duplicate Node
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
@@ -359,7 +359,7 @@ PCC Duplicate Node Group Creation
 
 
 Clear exist node group description
-        [Tags]    NodeG Mgmt    Groups
+        [Tags]    Node Mgmt    Groups
         [Documentation]    Clear Node Group description
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
@@ -400,7 +400,7 @@ Clear exist node group description
 
 
 PCC Node Group Name Change
-        [Tags]    NodeG Mgmt    Groups
+        [Tags]    Node Mgmt    Groups
         [Documentation]    Update node group name
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
@@ -440,7 +440,7 @@ PCC Node Group Name Change
 
 
 PCC Node Group Description Change
-        [Tags]    NodeG Mgmt    Groups
+        [Tags]    Node Mgmt    Groups
         [Documentation]    Update node group description
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
@@ -480,7 +480,7 @@ PCC Node Group Description Change
 
 
 Create Node Group with Special Characters Only
-        [Tags]    NodeG Mgmt    Groups
+        [Tags]    Node Mgmt    Groups
         [Documentation]    Create Node Groups with Special Character Only
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
@@ -504,7 +504,7 @@ Create Node Group with Special Characters Only
 
 
 Create Node Group with Numerics Characters Only
-        [Tags]    NodeG Mgmt    Groups
+        [Tags]    Node Mgmt    Groups
         [Documentation]    Create Node Group with Numerics Characters Only
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
@@ -528,7 +528,7 @@ Create Node Group with Numerics Characters Only
 
 
 Node group name contain only space
-        [Tags]    NodeG Mgmt    Groups
+        [Tags]    Node Mgmt    Groups
         [Documentation]    Create Node Group with Space as Name Only
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
@@ -552,7 +552,7 @@ Node group name contain only space
 
 
 Create 100 node groups
-        [Tags]    NodeG Mgmt    Groups
+        [Tags]    Node Mgmt    Groups
         [Documentation]    Create Multiple Node Group
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
@@ -576,7 +576,7 @@ Create 100 node groups
 
 
 Delete 100 node groups
-        [Tags]    NodeG Mgmt    Groups
+        [Tags]    Node Mgmt    Groups
         [Documentation]    Delete Multiple Node Group
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
@@ -607,7 +607,7 @@ Delete 100 node groups
 
 
 Update PCC Node Group Name with Existing Group Name
-        [Tags]    NodeG Mgmt  Groups
+        [Tags]    Node Mgmt  Groups
         [Documentation]    Update Node With Existing One
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
@@ -637,7 +637,7 @@ Update PCC Node Group Name with Existing Group Name
 
 
 Clear exist node group name
-        [Tags]    NodeG Mgmt    Groups
+        [Tags]    Node Mgmt    Groups
         [Documentation]    Clear Node Group Name
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
@@ -667,7 +667,7 @@ Clear exist node group name
 
 
 Verify the UI Node Role Information
-        [Tags]    NodeR Mgmt    Roles
+        [Tags]    Node Mgmt    Roles
         [Documentation]    Verify the UI information on node role
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
@@ -682,7 +682,7 @@ Verify the UI Node Role Information
 
 
 PCC Node Role Creation
-        [Tags]    NodeR Mgmt    Roles
+        [Tags]    Node Mgmt    Roles
         [Documentation]    Adding new node role
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
@@ -711,7 +711,7 @@ PCC Node Role Creation
 
 
 PCC Node Role Creation Without Name
-        [Tags]    NodeR Mgmt    Roles
+        [Tags]    Node Mgmt    Roles
         [Documentation]    Adding new node role without name
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
@@ -740,7 +740,7 @@ PCC Node Role Creation Without Name
 
 
 PCC Node Role Creation Without Description
-        [Tags]    NodeR Mgmt    Roles
+        [Tags]    Node Mgmt    Roles
         [Documentation]    Adding new node role without description
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
@@ -769,7 +769,7 @@ PCC Node Role Creation Without Description
 
 
 Node Role Creation Without Application
-        [Tags]    NodeR Mgmt    Roles
+        [Tags]    Node Mgmt    Roles
         [Documentation]    Adding new node role without Application
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
@@ -797,7 +797,7 @@ Node Role Creation Without Application
 
 
 Node Role Creation Without Tenant
-        [Tags]    NodeR Mgmt    Roles
+        [Tags]    Node Mgmt    Roles
         [Documentation]    Adding new node role without Tenant
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
@@ -826,7 +826,7 @@ Node Role Creation Without Tenant
 
 
 PCC Node Role Creation With All Fields Empty
-        [Tags]    NodeR Mgmt  Roles
+        [Tags]    Node Mgmt  Roles
         [Documentation]    Adding new node role with empty fields
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
@@ -841,7 +841,7 @@ PCC Node Role Creation With All Fields Empty
 
 
 PCC Edit Node Role
-        [Tags]    NodeG Mgmt    Roles
+        [Tags]    Node Mgmt    Roles
         [Documentation]    Updating node roles
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
@@ -880,7 +880,7 @@ PCC Edit Node Role
 
 
 PCC Node Role Creation with More Than One App
-        [Tags]    NodeG Mgmt    Roles
+        [Tags]    Node Mgmt    Roles
         [Documentation]    Create Node Role with More Than one App
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
@@ -906,7 +906,7 @@ PCC Node Role Creation with More Than One App
 
 
 PCC Node-Role deletion
-        [Tags]    NodeR Mgmt    Roles
+        [Tags]    Node Mgmt    Roles
         [Documentation]    Deleting a node role
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
@@ -945,7 +945,7 @@ PCC Node-Role deletion
 
 
 Create Duplicate Node
-        [Tags]    NodeR Mgmt    Roles
+        [Tags]    Node Mgmt    Roles
         [Documentation]    Create a Duplicate Node
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
@@ -960,7 +960,7 @@ Create Duplicate Node
 
 
 Clear Exist Node Role Description
-        [Tags]    NodeR Mgmt    Roles
+        [Tags]    Node Mgmt    Roles
         [Documentation]    Create Role Description
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
@@ -998,7 +998,7 @@ Clear Exist Node Role Description
 
 
 PCC Node Role Creation With Space Only
-        [Tags]    NodeR Mgmt    Roles
+        [Tags]    Node Mgmt    Roles
         [Documentation]    Adding node role with space in name
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
@@ -1086,7 +1086,7 @@ Delete 100 node roles
 
 
 Clear exist node role tenant
-        [Tags]    NodeG Mgmt  Roles
+        [Tags]    Node Mgmt  Roles
         [Documentation]    Changing tenant of node role
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
@@ -1133,7 +1133,7 @@ Clear exist node role tenant
 
 
 Change node role name to other exist node role name
-        [Tags]    NodeG Mgmt  Roles
+        [Tags]    Node Mgmt  Roles
         [Documentation]    Change node role name to other exist node role name
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
@@ -1169,7 +1169,7 @@ Change node role name to other exist node role name
 
 
 PCC- node role name change
-        [Tags]    NodeG Mgmt  Roles
+        [Tags]    Node Mgmt  Roles
         [Documentation]    PCC- node role name change
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
@@ -1213,9 +1213,8 @@ PCC- node role name change
         Should Be Equal As Strings    ${status}    True    msg=Role Not Updated......
 
 
-*** Test Cases ***
 Verify the information on Sites
-        [Tags]    NodeG Mgmt    Sites
+        [Tags]    Node Mgmt    Sites
         [Documentation]    verify User Should Be able to access Sites
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
@@ -1229,7 +1228,7 @@ Verify the information on Sites
 
 
 PCC Add Site
-        [Tags]    NodeG Mgmt    Sites
+        [Tags]    Node Mgmt    Sites
         [Documentation]    Adding new Site
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
@@ -1259,7 +1258,7 @@ PCC Add Site
 
 
 PCC Add Site Without Description
-        [Tags]    NodeG Mgmt    Sites
+        [Tags]    Node Mgmt    Sites
         [Documentation]    Adding new Site without description
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
@@ -1289,7 +1288,7 @@ PCC Add Site Without Description
 
 
 PCC Add Site Without Name
-        [Tags]    NodeG Mgmt    Sites
+        [Tags]    Node Mgmt    Sites
         [Documentation]    Adding new Site without name
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
@@ -1304,7 +1303,7 @@ PCC Add Site Without Name
 
 
 PCC Add Site With Special Character Only
-        [Tags]    NodeG Mgmt    Sites
+        [Tags]    Node Mgmt    Sites
         [Documentation]    Add Site in the PCC - name contain only special characters
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
@@ -1319,7 +1318,7 @@ PCC Add Site With Special Character Only
 
 
 PCC Add Site With Numeric Value Only
-        [Tags]    NodeG Mgmt    Sites
+        [Tags]    Node Mgmt    Sites
         [Documentation]    Add Site in the PCC - name contain only numeric value
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
@@ -1334,7 +1333,7 @@ PCC Add Site With Numeric Value Only
 
 
 PCC Add Site With Blank Space Only
-        [Tags]    NodeG Mgmt    Sites
+        [Tags]    Node Mgmt    Sites
         [Documentation]    Add Site in the PCC - name contain only numeric value
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
@@ -1349,7 +1348,7 @@ PCC Add Site With Blank Space Only
 
 
 PCC Add Site with name contain mixture of special character, numerical value, alphabet
-        [Tags]    NodeG Mgmt    Sites
+        [Tags]    Node Mgmt    Sites
         [Documentation]    Add Site in the PCC- name contain mixture of special character, numerical value, alphabet
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
@@ -1364,7 +1363,7 @@ PCC Add Site with name contain mixture of special character, numerical value, al
 
 
 PCC Edit Site Name
-        [Tags]    NodeG Mgmt    Sites
+        [Tags]    Node Mgmt    Sites
         [Documentation]    Updating Sites
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
@@ -1403,7 +1402,7 @@ PCC Edit Site Name
 
 
 PCC Edit Site Description
-        [Tags]    NodeG Mgmt    Sites
+        [Tags]    Node Mgmt    Sites
         [Documentation]    Updating Sites
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
@@ -1442,7 +1441,7 @@ PCC Edit Site Description
 
 
 PCC Add Duplicate Site
-        [Tags]    NodeG Mgmt    Sites
+        [Tags]    Node Mgmt    Sites
         [Documentation]    Creating Duplicate Site
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
@@ -1476,7 +1475,7 @@ PCC Add Duplicate Site
 
 
 PCC Delete Single Site
-        [Tags]    NodeG Mgmt    Sites
+        [Tags]    Node Mgmt    Sites
         [Documentation]    Deleting Single Site
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
@@ -1520,7 +1519,7 @@ PCC Delete Single Site
 
 
 PCC Delete Multiple Site
-        [Tags]    NodeG Mgmt    Sites
+        [Tags]    Node Mgmt    Sites
         [Documentation]    Deleting Multiple Site
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
@@ -1585,7 +1584,7 @@ PCC Delete Multiple Site
 
 
 Create 100 Sites
-        [Tags]    NodeG Mgmt    Sites
+        [Tags]    Node Mgmt    Sites
         [Documentation]    Create Multiple Node Site
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
@@ -1609,7 +1608,7 @@ Create 100 Sites
 
 
 Delete 100 Sites
-        [Tags]    NodeG Mgmt    Sites
+        [Tags]    Node Mgmt    Sites
         [Documentation]    Delete Multiple Sites
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
@@ -1641,7 +1640,7 @@ Delete 100 Sites
 
 
 PCC clear Site Name
-        [Tags]    NodeG Mgmt    Sites
+        [Tags]    Node Mgmt    Sites
         [Documentation]    Clear Existing Site
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
@@ -1672,7 +1671,7 @@ PCC clear Site Name
 
 
 PCC clear Site Description
-        [Tags]    NodeG Mgmt    Sites
+        [Tags]    Node Mgmt    Sites
         [Documentation]    Clear Existing Site description
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
@@ -1711,7 +1710,7 @@ PCC clear Site Description
 
 
 PCC Change Site Name into existing site name in the PCC
-        [Tags]    NodeG Mgmt    Sites
+        [Tags]    Node Mgmt    Sites
         [Documentation]    Clear Existing Site description
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
