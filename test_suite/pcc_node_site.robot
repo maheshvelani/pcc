@@ -362,7 +362,7 @@ Create 100 Sites
         [Tags]    NodeG Mgmt    Sites
         [Documentation]    Create Multiple Node Site
 
-        : FOR    ${index}    IN RANGE    1    101
+        : FOR    ${index}    IN RANGE    1    11
         \   &{data}    Create Dictionary  Name=${site14_name}${index}    Description=${site14_name}${index}
         \   ${resp}  Post Request    platina   ${add_site}    json=${data}    headers=${headers}
         \   Log    \n Status code = ${resp.status_code}    console=yes
@@ -384,7 +384,7 @@ Delete 100 Sites
         [Tags]    NodeG Mgmt    Sites
         [Documentation]    Delete Multiple Sites
 
-        FOR    ${index}    IN RANGE    1    101
+        FOR    ${index}    IN RANGE    1    11
         \   # Get Node ID
         \   ${resp}  Get Request    platina   ${get_site}    headers=${headers}
         \   Log    \n Status code = ${resp.status_code}    console=yes
