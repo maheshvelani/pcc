@@ -83,7 +83,7 @@ PCC Node group creation without description
 
 
 PCC Node group creation without name
-        [Tags]    NodeG Mgmt    Groups
+        [Tags]    Node Mgmt    Groups
         [Documentation]    Adding new node group without name
 
         &{data}    Create Dictionary  Description=${group2_desc}
