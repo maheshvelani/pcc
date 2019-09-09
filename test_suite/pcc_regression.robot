@@ -1982,34 +1982,34 @@ Pcc-Node-Site-Assignment
 
 PCC-Node-Tenant-Assignment
         [Tags]    Node Mgmt    Tenant
-	    [Documentation]    Assign a tenant to Node
-	    [Setup]  Verify User Login
-	    [Teardown]  Delete All Sessions
+	[Documentation]    Assign a tenant to Node
+	[Setup]  Verify User Login
+	[Teardown]  Delete All Sessions
 
-	    # Create Tenant
-	    &{data}    Create Dictionary    name=Tenant_7   description=Tenant_7
-	    ${resp}    Post Request    platina    ${add_tenant}    json=${data}     headers=${headers}
-	    Log    \n Status code = ${resp.status_code}    console=yes
-	    # Log    \n Response = ${resp.json()}    console=yes
-	    Should Be Equal As Strings  ${resp.status_code}    200
-	    Sleep    10s
+	# Create Tenant
+	&{data}    Create Dictionary    name=Tenant_7   description=Tenant_7
+	${resp}    Post Request    platina    ${add_tenant}    json=${data}     headers=${headers}
+	Log    \n Status code = ${resp.status_code}    console=yes
+	# Log    \n Response = ${resp.json()}    console=yes
+	Should Be Equal As Strings  ${resp.status_code}    200
+	Sleep    10s
 
-	    # Get Tenant Id
-	    ${resp}  Get Request    platina   ${tenant_list}    params=${data}  headers=${headers}
-	    Log    \n Status code = ${resp.status_code}    console=yes
-	    Log    \n Response = ${resp.json()}    console=yes
-	    Should Be Equal As Strings  ${resp.status_code}    200
-	    ${status}    ${tenant1_id}    Get Tenant Id    ${resp.json()}    Tenant_7
-	    Log    \n tenant ID = ${tenant1_id}    console=yes
+	# Get Tenant Id
+	${resp}  Get Request    platina   ${tenant_list}    params=${data}  headers=${headers}
+	Log    \n Status code = ${resp.status_code}    console=yes
+	Log    \n Response = ${resp.json()}    console=yes
+	Should Be Equal As Strings  ${resp.status_code}    200
+	${status}    ${tenant1_id}    Get Tenant Id    ${resp.json()}    Tenant_7
+	Log    \n tenant ID = ${tenant1_id}    console=yes
 
-	    # Update Node With Tenants
-	    @{node_id_list}    Create List    ${invader1_id}
-	    &{data}    Create Dictionary    tenant=${tenant1_id}    ids=@{node_id_list}
-	    ${resp}    Post Request    platina    ${node_tenant_assignment}    json=${data}     headers=${headers}
-	    Log    \n Status code = ${resp.status_code}    console=yes
-	    # Log    \n Response = ${resp.json()}    console=yes
-	    Should Be Equal As Strings  ${resp.status_code}    200
-	    Sleep    10s
+	# Update Node With Tenants
+	@{node_id_list}    Create List    ${invader1_id}
+	&{data}    Create Dictionary    tenant=${tenant1_id}    ids=@{node_id_list}
+	${resp}    Post Request    platina    ${node_tenant_assignment}    json=${data}     headers=${headers}
+	Log    \n Status code = ${resp.status_code}    console=yes
+	# Log    \n Response = ${resp.json()}    console=yes
+	Should Be Equal As Strings  ${resp.status_code}    200
+	Sleep    10s
 
 
 Pcc-Node-Group-Assignment
