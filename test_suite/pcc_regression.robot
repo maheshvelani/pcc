@@ -1933,12 +1933,132 @@ Add Invader-1 as a Node and Verify Online Status
         Should Be Equal As Strings    ${status}    True    msg=Invader ${invader1_node_name} added successfully but it is offline
 
 
+Pcc-Node-Site-Assignment
+        [Tags]    Node Mgmt    Site
+        [Documentation]    Assign a site to Node
+        [Setup]  Verify User Login
+        [Teardown]  Delete All Sessions
+
+        &{data}    Create Dictionary  Name=Site_7    Description=Site_7
+        Log    \nCreating Site with parameters: \n${data}\n    console=yes
+        ${resp}  Post Request    platina   ${add_site}    json=${data}     headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings    ${resp.status_code}    200
+
+        # Wait for few seconds to reflect Site over UI
+        Sleep    5s
+
+        # Validate added Site present in Site List
+        ${resp}  Get Request    platina   ${get_site}    headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings    ${resp.status_code}    200
+
+        # Parse fetched site list and verify added Site availability from response data
+        ${status}    ${id}    Validate Sites    ${resp.json()}    Site_7
+        Should Be Equal As Strings    ${status}    True    msg=Site Site_7 is not present in Site list
+        Log    \nSite Site_7 ID = ${id}   console=yes
+        Sleep    2s
+
+        # Update Site With Node
+        &{data}    Create Dictionary  Id=${invader1_id}    Site_Id=${id}
+        ${resp}  Put Request    platina    ${add_site_to_node}    json=${data}     headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings  ${resp.status_code}    200
+
+        Sleep    60s
+
+        # Validated Updated Site
+        &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
+        ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings    ${resp.status_code}    200
+        ${status}    ${node_id}    Validate Node Site    ${resp.json()}    ${invader1_node_name}    ${id}
+        Should Be Equal As Strings    ${status}    True    msg=Node ${invader1_node_name} is not updated with the site Site_7
+
+
+PCC-Node-Tenant-Assignment
+        [Tags]    Node Mgmt    Tenant
+	    [Documentation]    Assign a tenant to Node
+	    [Setup]  Verify User Login
+	    [Teardown]  Delete All Sessions
+
+	    # Create Tenant
+	    &{data}    Create Dictionary    name=Tenant_7   description=Tenant_7
+	    ${resp}    Post Request    platina    ${add_tenant}    json=${data}     headers=${headers}
+	    Log    \n Status code = ${resp.status_code}    console=yes
+	    # Log    \n Response = ${resp.json()}    console=yes
+	    Should Be Equal As Strings  ${resp.status_code}    200
+	    Sleep    10s
+
+	    # Get Tenant Id
+	    ${resp}  Get Request    platina   ${tenant_list}    params=${data}  headers=${headers}
+	    Log    \n Status code = ${resp.status_code}    console=yes
+	    Log    \n Response = ${resp.json()}    console=yes
+	    Should Be Equal As Strings  ${resp.status_code}    200
+	    ${status}    ${tenant1_id}    Get Tenant Id    ${resp.json()}    Tenant_7
+	    Log    \n tenant ID = ${tenant1_id}    console=yes
+
+	    # Update Node With Tenants
+	    @{node_id_list}    Create List    ${invader1_id}
+	    &{data}    Create Dictionary    tenant=${tenant1_id}    ids=@{node_id_list}
+	    ${resp}    Post Request    platina    ${node_tenant_assignment}    json=${data}     headers=${headers}
+	    Log    \n Status code = ${resp.status_code}    console=yes
+	    # Log    \n Response = ${resp.json()}    console=yes
+	    Should Be Equal As Strings  ${resp.status_code}    200
+	    Sleep    10s
+
+
+Pcc-Node-Group-Assignment
+        [Tags]    Node Attributes    regression_test
+        [Documentation]    Node to Group Assignment
+        [Setup]  Verify User Login
+        [Teardown]  Delete All Sessions
+
+        # Add Group
+        &{data}    Create Dictionary  Name=Group_7    Description=Group_7
+        ${resp}  Post Request    platina   ${add_group}    json=${data}     headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings    ${resp.status_code}    200
+
+        Sleep    5s
+
+        # Validate added group
+        ${resp}  Get Request    platina   ${get_group}    headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings    ${resp.status_code}    200
+        ${status}    ${group_id}    Validate Group    ${resp.json()}    Group_7
+        Log    \n Group Group_7 ID = ${group_id}   console=yes
+        Should Be Equal As Strings    ${status}    True    msg=Group Group_7 is not present in Groups list
+
+        # Assign Group to Node
+        &{data}    Create Dictionary  Id=${invader1_id}    ClusterId=${group_id}
+        ${resp}  Put Request    platina    ${add_group_to_node}    json=${data}     headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+
+        Sleep    60s
+
+        # Validated Assigned Group
+        &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
+        ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings    ${resp.status_code}    200
+        ${status}    ${node_id}    Validate Node Group    ${resp.json()}    ${invader1_node_name}    ${group_id}
+        Should Be Equal As Strings    ${status}    True    msg=Node ${invader1_node_name} is not updated with the Group_7
+
+
 Add Server-1 as a Node and Verify Online Status
         [Tags]    Entry Criteria
         [Documentation]    Add Server-1 as a Node and Verify Online Status
         [Setup]    Verify User Login
         [Teardown]    Delete All Sessions
-
 
         # Add Server Node
         ${name}    Set Variable  ${server1_node_name}
