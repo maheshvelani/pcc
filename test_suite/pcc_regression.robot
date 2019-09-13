@@ -560,7 +560,7 @@ Create 100 node groups
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
 
-        : FOR    ${index}    IN RANGE    1    6
+        : FOR    ${index}    IN RANGE    1    101
         \   &{data}    Create Dictionary  Name=${group13_name}${index}    Description=${group13_desc}${index}
         \   ${resp}  Post Request    platina   ${add_group}    json=${data}     headers=${headers}
         \   Log    \n Status code = ${resp.status_code}    console=yes
@@ -584,7 +584,7 @@ Delete 100 node groups
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
 
-        FOR    ${index}    IN RANGE    1    6
+        FOR    ${index}    IN RANGE    1    101
         \   # Get Node ID
         \   ${resp}  Get Request    platina   ${get_group}    headers=${headers}
         \   Log    \n Status code = ${resp.status_code}    console=yes
@@ -1070,7 +1070,7 @@ Delete 100 node roles
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
 
-        : FOR    ${index}    IN RANGE    1    6
+        : FOR    ${index}    IN RANGE    1    101
         \   ${resp}  Get Request    platina   ${add_role}    headers=${headers}
         \   ${status}    ${role_id}    Validate Roles    ${resp.json()}    Test_${index}
         \   Should Be Equal As Strings    ${status}    True    msg=Role Test_${index} is not present in role list
@@ -1592,7 +1592,7 @@ Create 100 Sites
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
 
-        : FOR    ${index}    IN RANGE    1    6
+        : FOR    ${index}    IN RANGE    1    101
         \   &{data}    Create Dictionary  Name=${site14_name}${index}    Description=${site14_name}${index}
         \   ${resp}  Post Request    platina   ${add_site}    json=${data}    headers=${headers}
         \   Log    \n Status code = ${resp.status_code}    console=yes
@@ -1616,7 +1616,7 @@ Delete 100 Sites
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
 
-        FOR    ${index}    IN RANGE    1    6
+        FOR    ${index}    IN RANGE    1    101
         \   # Get Node ID
         \   ${resp}  Get Request    platina   ${get_site}    headers=${headers}
         \   Log    \n Status code = ${resp.status_code}    console=yes
