@@ -15,13 +15,92 @@ Test Teardown   Delete All Sessions
 
 
 *** Test Cases ***
-Deploy CentOS 7.6.1810(AMD64) in a node
+Add Invader and install LLDP and Maas
+        [Tags]  Node Add
+        [Documentation]   Add Invader and install LLDP and Maas
+
+        # Add Invader Node
+        &{data}    Create Dictionary  	Name=${invader1_node_name}  Host=${invader1_node_host}  managed=${false}
+        Log    \nCreating Invader Node with parameters : \n${data}\n    console=yes
+        ${resp}    Post Request    platina    ${add_node}    json=${data}   headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings    ${resp.status_code}    200
+
+        # wait for few seconds to add Invader into Node List
+        Sleep    90s
+
+        # Validate Added Node Present in Node List
+        &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
+        # Hit get_node_list API for few times to refresh the node list
+        # And verify Node availability from the latest fetched node data
+        ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
+        Sleep    3s
+        ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
+        Sleep    3s
+        ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings    ${resp.status_code}    200
+
+        # Parse fetched node list and verify added Node availability from response data
+        ${status}    ${node_id}    Validate Node    ${resp.json()}    ${invader1_node_name}
+        Should Be Equal As Strings    ${status}    True    msg=Invader ${invader1_node_name} is not present in node list
+        Log    \n Invader ${invader1_node_name} ID = ${node_id}   console=yes
+        Set Suite Variable    ${invader1_id}    ${node_id}
+
+        # Verify Online Status of Added Invader
+        ${status}    Validate Node Online Status    ${resp.json()}    ${invader1_node_name}
+        Should Be Equal As Strings    ${status}    True    msg=Invader ${invader1_node_name} added successfully but it is offline
+
+        # Install LLDP and MaaS
+        ${resp}  Get Request    platina   ${add_role}    headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings  ${resp.status_code}    200
+        ${status}    ${role_id}    Get MaaS Role Id    ${resp.json()}
+        Should Be Equal As Strings    ${status}    True    msg=MaaS Role Not Found in Roles
+        Set Suite Variable    ${maas_role_id}    ${role_id}
+        Log    \n MaaS Role ID = ${maas_role_id}    console=yes
+
+        # Get Id of LLDP role
+        ${resp}  Get Request    platina   ${add_role}    headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings  ${resp.status_code}    200
+        ${status}    ${role_id}    Get LLDP Role Id    ${resp.json()}
+        Should Be Equal As Strings    ${status}    True    msg=LLDP Role Not Found in Roles
+        Set Suite Variable    ${lldp_role_id}    ${role_id}
+        Log    \n LLDP Role ID = ${lldp_role_id}    console=yes
+
+        # Assign MaaS role to node - 1
+        @{roles_group}    create list    ${lldp_role_id}    ${maas_role_id}
+        &{data}    Create Dictionary  Id=${invader1_id}    roles=${roles_group}
+        ${resp}  Put Request    platina    ${add_group_to_node}    json=${data}     headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings  ${resp.status_code}    200
+
+        # Wait for 10 minutes
+        Sleep	10 minutes
+
+        # Verify Maas Installation Complete status
+        &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
+        ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings    ${resp.status_code}    200
+        ${status}    ${node_id}    Validate Node Roles    ${resp.json()}    ${invader1_node_name}    ${maas_role_id}
+        Should Be Equal As Strings    ${status}    True    msg=Node ${invader1_node_name} is not updated with the MaaS Roles
+
+
+Add Server and install LLDP
         [Tags]  OS Deployment
-        [Documentation]   Deploy CentOS 7.6.1810(AMD64) in a node
+        [Documentation]   Add Server and install LLDP
 
         # Add Server-1 as a Node and Verify Online Status
         @{server1_bmc_users}    Create List    ${server1_bmc_user}
-        @{server1_ssh_keys}    Create List    ${server1_ssh_keys}
+        @{server1_ssh_keys}    Create List
         &{data}    Create Dictionary  	Name=${server1_node_name}  Host=${server1_node_host}
         ...    console=${server1_console}  bmc=${server1_bmc_host}  bmcUser=${server1_bmc_user}
         ...    bmcPassword=${server1_bmc_pwd}  bmcUsers=@{server1_bmc_users}
@@ -59,6 +138,36 @@ Deploy CentOS 7.6.1810(AMD64) in a node
         ${status}    Validate Node Online Status    ${resp.json()}    ${server1_node_name}
         Should Be Equal As Strings    ${status}    True    msg=Server ${server1_node_name} added successfully but it is offline
 
+        # Assign Role to Node
+        &{data}    Create Dictionary  Id=${server1_id}    roles=${lldp_role_id}
+        Log    \nAssigning a Roles with parameters: \n${data}\n    console=yes
+        ${resp}  Put Request    platina    ${add_group_to_node}    json=${data}     headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings  ${resp.status_code}    200
+
+        # Wait for few seconds to reflect assign roles over node
+        Sleep	5 minutes
+
+        # Validate Assigned Roles
+        &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
+        ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings    ${resp.status_code}    200
+        ${status}    ${node_id}    Validate Node Roles    ${resp.json()}    ${server1_node_name}    ${lldp_role_id}
+        Should Be Equal As Strings    ${status}    True    msg=Node ${server1_node_name} is not updated with the Roles LLDP
+
+        Sleep	2 minutes
+
+        # Verify Online Status of Added Server
+        ${status}    Validate Node Online Status    ${resp.json()}    ${server1_node_name}
+        Should Be Equal As Strings    ${status}    True    msg=Server ${server1_node_name} added successfully but it is offline
+
+
+Deploy CentOS 7.6.1810(AMD64) in a node
+        [Tags]  OS Deployment
+        [Documentation]   Deploy CentOS 7.6.1810(AMD64) in a node
 
         # Start OS Deployment
         &{data}    Create Dictionary  nodes=[${${server1_id}}]  image=${image1_name}  locale=${en_US}  timezone=${PDT}  adminUser=${mass_user}  sshKeys=${ssh_key}
