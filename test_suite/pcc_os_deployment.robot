@@ -406,7 +406,7 @@ OS deployment without filling mandatory field
         ${resp}  Post Request    platina   ${os_deployment}    json=${data}    headers=${headers}
         Log    \n Status Code = ${resp.status_code}    console=yes
         Log    \n Response Data = ${resp.json()}    console=yes
-    	Should Be Not Equal As Strings  ${resp.status_code}  200
+    	Should Not Be Equal As Strings  ${resp.status_code}  200
 
 #        # Wait for 20 minutes
 #        Log To Console    \nOS Deployment Started...
@@ -439,7 +439,7 @@ OS deployment without locale
         ${resp}  Post Request    platina   ${os_deployment}    json=${data}    headers=${headers}
         Log    \n Status Code = ${resp.status_code}    console=yes
         Log    \n Response Data = ${resp.json()}    console=yes
-    	Should Be Not Equal As Strings  ${resp.status_code}  200
+    	Should Not Equal As Strings  ${resp.status_code}  200
 
         # Wait for 20 minutes
         Log To Console    \nOS Deployment Started...
@@ -472,7 +472,7 @@ OS deployment without timezone
         ${resp}  Post Request    platina   ${os_deployment}    json=${data}    headers=${headers}
         Log    \n Status Code = ${resp.status_code}    console=yes
         Log    \n Response Data = ${resp.json()}    console=yes
-    	Should Be Not Equal As Strings  ${resp.status_code}  200
+    	Should Be Equal As Strings  ${resp.status_code}  200
 
         # Wait for 20 minutes
         Log To Console    \nOS Deployment Started...
