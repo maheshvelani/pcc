@@ -1777,7 +1777,7 @@ PCC-Tenant-Deletion
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
 
-        # Create Tenant
+        # Delete Tenant
         &{data}    Create Dictionary    id=${tenant1_id}
         ${resp}    Post Request    platina    ${delete_tenant}    json=${data}     headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
@@ -1959,6 +1959,8 @@ Pcc-Node-Site-Assignment
         ${status}    ${id}    Validate Sites    ${resp.json()}    Site_7
         Should Be Equal As Strings    ${status}    True    msg=Site Site_7 is not present in Site list
         Log    \nSite Site_7 ID = ${id}   console=yes
+        Set Suite Variable    ${assign_site_id}    ${id}
+
         Sleep    2s
 
         # Update Site With Node
@@ -1980,36 +1982,90 @@ Pcc-Node-Site-Assignment
         Should Be Equal As Strings    ${status}    True    msg=Node ${invader1_node_name} is not updated with the site Site_7
 
 
+Delete Site in the PCC when site is associated with the Node
+        [Tags]    Site
+        [Documentation]    Delete Site in the PCC when site is associated with the Node
+        [Setup]  Verify User Login
+        [Teardown]  Delete All Sessions
+
+        # Delete Site
+        @{data}    Create List  ${assign_site_id}
+        ${resp}  Post Request    platina   ${delete_site}    headers=${headers}    json=${data}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Not Be Equal As Strings    ${resp.status_code}    200
+
+        Sleep    5s
+
+        # Validate Site present in Site List
+        ${resp}  Get Request    platina   ${get_site}    headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings    ${resp.status_code}    200
+
+        # Parse fetched site list and verify added Site availability from response data
+        ${status}    ${id}    Validate Sites    ${resp.json()}    Site_7
+        Should Be Equal As Strings    ${status}    True    msg=Site Site_7 is not present in Site list
+
+
 PCC-Node-Tenant-Assignment
         [Tags]    Node Mgmt    Tenant
-	[Documentation]    Assign a tenant to Node
-	[Setup]  Verify User Login
-	[Teardown]  Delete All Sessions
+        [Documentation]    Assign a tenant to Node
+        [Setup]  Verify User Login
+        [Teardown]  Delete All Sessions
 
-	# Create Tenant
-	&{data}    Create Dictionary    name=Tenant_7   description=Tenant_7
-	${resp}    Post Request    platina    ${add_tenant}    json=${data}     headers=${headers}
-	Log    \n Status code = ${resp.status_code}    console=yes
-	# Log    \n Response = ${resp.json()}    console=yes
-	Should Be Equal As Strings  ${resp.status_code}    200
-	Sleep    10s
+        # Create Tenant
+        &{data}    Create Dictionary    name=Tenant_7   description=Tenant_7
+        ${resp}    Post Request    platina    ${add_tenant}    json=${data}     headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        # Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings  ${resp.status_code}    200
 
-	# Get Tenant Id
-	${resp}  Get Request    platina   ${tenant_list}    params=${data}  headers=${headers}
-	Log    \n Status code = ${resp.status_code}    console=yes
-	Log    \n Response = ${resp.json()}    console=yes
-	Should Be Equal As Strings  ${resp.status_code}    200
-	${status}    ${tenant1_id}    Get Tenant Id    ${resp.json()}    Tenant_7
-	Log    \n tenant ID = ${tenant1_id}    console=yes
+        # Wait for few seconds
+        Sleep    10s
 
-	# Update Node With Tenants
-	@{node_id_list}    Create List    ${invader1_id}
-	&{data}    Create Dictionary    tenant=${tenant1_id}    ids=@{node_id_list}
-	${resp}    Post Request    platina    ${node_tenant_assignment}    json=${data}     headers=${headers}
-	Log    \n Status code = ${resp.status_code}    console=yes
-	# Log    \n Response = ${resp.json()}    console=yes
-	Should Be Equal As Strings  ${resp.status_code}    200
-	Sleep    10s
+        # Get Tenant Id
+        ${resp}  Get Request    platina   ${tenant_list}    params=${data}  headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings  ${resp.status_code}    200
+        ${status}    ${tenant1_id}    Get Tenant Id    ${resp.json()}    Tenant_7
+        Set Suite Variable    ${assign_tenant_id}    ${tenant1_id}
+        Log    \n tenant ID = ${tenant1_id}    console=yes
+
+        # Update Node With Tenants
+        @{node_id_list}    Create List    ${invader1_id}
+        &{data}    Create Dictionary    tenant=${tenant1_id}    ids=@{node_id_list}
+        ${resp}    Post Request    platina    ${node_tenant_assignment}    json=${data}     headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        # Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings  ${resp.status_code}    200
+        Sleep    10s
+
+
+Delete Tenant in the PCC when tenant is associated with the Node
+        [Tags]    Tenant
+        [Documentation]    Delete Tenant in the PCC when Tenant is associated with the Node
+        [Setup]  Verify User Login
+        [Teardown]  Delete All Sessions
+
+        # Delete Tenant
+        &{data}    Create Dictionary    id=${assign_tenant_id}
+        ${resp}    Post Request    platina    ${delete_tenant}    json=${data}     headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Not Be Equal As Strings  ${resp.status_code}    200
+
+        # Wait for few seconds
+        Sleep    10s
+
+        # Get Tenant Id
+        ${resp}  Get Request    platina   ${tenant_list}    params=${data}  headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings  ${resp.status_code}    200
+        ${status}    ${tenant_id}    Get Tenant Id    ${resp.json()}    Tenant_7
+        Should Be Equal As Strings    ${status}    True    msg=Tenant Tenant_7 deleted successfully
 
 
 Pcc-Node-Group-Assignment
@@ -2034,6 +2090,7 @@ Pcc-Node-Group-Assignment
         Should Be Equal As Strings    ${resp.status_code}    200
         ${status}    ${group_id}    Validate Group    ${resp.json()}    Group_7
         Log    \n Group Group_7 ID = ${group_id}   console=yes
+        Set Suite Variable    ${assign_group_id}    ${group_id}
         Should Be Equal As Strings    ${status}    True    msg=Group Group_7 is not present in Groups list
 
         # Assign Group to Node
@@ -2052,6 +2109,29 @@ Pcc-Node-Group-Assignment
         Should Be Equal As Strings    ${resp.status_code}    200
         ${status}    ${node_id}    Validate Node Group    ${resp.json()}    ${invader1_node_name}    ${group_id}
         Should Be Equal As Strings    ${status}    True    msg=Node ${invader1_node_name} is not updated with the Group_7
+
+
+Delete Group in the PCC when group is associated with the Node
+        [Tags]    Group
+        [Documentation]    Delete Group in the PCC when Group is associated with the Node
+        [Setup]  Verify User Login
+        [Teardown]  Delete All Sessions
+
+        # Delete Group
+        ${resp}  Delete Request    platina   ${get_group}${assign_group_id}    headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Should Not Be Equal As Strings    ${resp.status_code}    200
+
+        # Wait for few seconds to reflect changes over UI
+        Sleep    5s
+
+        # Validate group present
+        ${resp}  Get Request    platina   ${get_group}    headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings    ${resp.status_code}    200
+        ${status}    ${group_id}    Validate Group    ${resp.json()}    Group_7
+        Should Be Equal As Strings    ${status}    True    msg=Group Group_7 is not present in Groups list
 
 
 Add Server-1 as a Node and Verify Online Status
@@ -2612,6 +2692,91 @@ Delete K8s Cluster
         Should Be Equal As Strings    ${resp.status_code}    200
         ${status}    Verify Cluster Deleted    ${resp.json()}    ${cluster_name}
         Should Be Equal As Strings    ${status}    True    msg=Cluster ${cluster_name} not deleted
+
+
+PCC_Add_Existing_Invader
+        [Tags]    Node Mgmt
+        [Documentation]    Add Existing Node
+        [Setup]    Verify User Login
+        [Teardown]    Delete All Sessions
+
+        # Add Invader Node
+        &{data}    Create Dictionary  	Name=${invader1_node_name}  Host=${invader1_node_host}  managed=${${status_false}}
+        Log    \nCreating Invader Node with parameters : \n${data}\n    console=yes
+        ${resp}    Post Request    platina    ${add_node}    json=${data}   headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings    ${resp.status_code}    200
+
+        # wait for few seconds to add Invader into Node List
+        Sleep    90s
+
+        # Validate Added Node Present in Node List
+        &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
+        # Hit get_node_list API for few times to refresh the node list
+        # And verify Node availability from the latest fetched node data
+        ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
+        Sleep    3s
+        ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
+        Sleep    3s
+        ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings    ${resp.status_code}    200
+
+        # Parse fetched node list and verify added Node availability from response data
+        ${status}    Validate Node 2    ${resp.json()}    ${invader1_node_name}
+        Should Be Equal As Strings    ${status}    True    msg=Invader ${invader1_node_name} is not present twice in node list
+
+
+PCC_Add_Existing_Server
+        [Tags]    Node Mgmt
+        [Documentation]    PCC_Add_Existing_Server
+        [Setup]    Verify User Login
+        [Teardown]    Delete All Sessions
+
+        # Add Server Node
+        ${name}    Set Variable  ${server1_node_name}
+        ${host}   Set Variable   ${server1_node_host}
+        ${bmc_host}   Set Variable  ${server1_bmc_host}
+        ${bmc_user}   Set Variable  ${server1_bmc_user}
+        ${bmc_pwd}   Set Variable  ${server1_bmc_pwd}
+        ${console}   Set Variable  ${server1_console}
+        ${manage_pcc}    Set Variable  ${server1_managed_by_pcc}
+        ${ssh_key}    Set Variable  ${server1_ssh_keys}
+
+        @{server1_bmc_users}    Create List    ${bmc_user}
+        @{server1_ssh_keys}    Create List    ${ssh_key}
+        &{data}    Create Dictionary  	Name=${name}  Host=${host}
+        ...    console=${console}  bmc=${bmc_host}  bmcUser=${bmc_user}
+        ...    bmcPassword=${bmc_pwd}  bmcUsers=@{server1_bmc_users}
+        ...    sshKeys=@{server1_ssh_keys}  managed=${${server1_managed_by_pcc}}
+
+        Log    \nCreating Server node with parameters : \n${data}\n    console=yes
+        ${resp}    Post Request    platina    ${add_node}    json=${data}   headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+#        Should Be Equal As Strings    ${resp.status_code}    200
+
+        # wait for few seconds to add Server into Node List
+        Sleep    90s
+
+        # Validate Added Node Present in Node List
+        &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
+        # Hit get_node_list API for few times to refresh the node list
+        # And verify Node availability from the latest fetched node data
+        ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
+        Sleep    3s
+        ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
+        Sleep    3s
+        ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings    ${resp.status_code}    200
+
+        # Parse fetched node list and verify added Node availability from response data
+        ${status}    Validate Node 2    ${resp.json()}    ${name}
+        Should Be Equal As Strings    ${status}    True    msg=Server ${name} is not present twice in node list
 
 
 *** keywords ***

@@ -391,3 +391,21 @@ class Data_Parser:
             return False
         except Exception:
             return False
+
+    @staticmethod
+    def validate_node_2(resp_data, node_name, host=None):
+        """ find added node from node list
+        """
+        try:
+            node_cnt = 0
+            if resp_data['Data'] != None:
+                for data in eval(str(resp_data))['Data']:
+                    if str(data['Name']) == str(node_name):
+                        node_cnt += 1
+            if node_cnt == 2:
+                return True
+            else:
+                return False
+        except Exception:
+            return False
+
