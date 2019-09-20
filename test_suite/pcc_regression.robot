@@ -2789,7 +2789,11 @@ SSH into Invader and Verify mass installation started
         ${output}=         SSHLibrary.Execute Command    ps -aef | grep ROOT
         SSHLibrary.Close All Connections
         Log    \n\n INVADER DATA = ${output}    console=yes
+	Should Contain    ${output}    lighttpd.conf
         Should Contain    ${output}    tinyproxy.conf
+        Should Contain    ${output}    dnsmasq
+
+
 
 
 Verify CentOS installed in server machine
