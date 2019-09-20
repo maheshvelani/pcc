@@ -1,0 +1,49 @@
+---
+- hosts: invader
+  ignore_errors: yes
+
+  tasks:
+    - name: Execute cleanup command over invader
+      shell: "{{ item }}"
+      become: yes
+      with_items:
+      - 'crontab -r'
+      - 'ps -aef | grep supervisord | awk '{print $2}' | xargs kill -9'
+      - 'ps -aef | grep tinyproxy | awk '{print $2}' | xargs kill -9'
+      - 'ps -aef | grep dnsmasq | awk '{print $2}' | xargs kill -9'
+      - 'ps -aef | grep dnsmasq | awk '{print $2}' | xargs kill -9'
+      - 'ps -aef | grep pccagent | awk '{print $2}' | xargs kill -9'
+      - 'ps -aef | grep collector | awk '{print $2}' | xargs kill –9'
+      - 'sudo service maas-ROOT stop'
+      - 'sudo apt-get remove -y dnsmasq tinyproxy supervisor lighttpd'
+      - 'rm -rf /srv/maas/'
+      - 'rm -rf /etc/network/interfaces.d/xeth*'
+      - 'rm -rf /etc/network/interfaces.d/maas-xeth*'
+
+- hosts: server
+  become: false
+  ignore_errors: yes
+
+  tasks:
+    - name: Execute cleanup command over server
+      shell: "{{ item }}"
+      become: yes
+      with_items:
+      - 'crontab -r'
+      - 'ps -aef | grep pccagent | awk '{print $2}' | xargs kill -9'
+      - 'ps -aef | grep collector | awk '{print $2}' | xargs kill  -9'
+
+
+#######################
+# Sample Inventory File
+#######################
+#
+#pcc@invader28:~/cleanup_pcc$ cat 212-inventory
+#[invader]
+#172.17.2.43
+#172.17.2.42
+#[server]
+#172.17.2.110
+#172.17.2.111
+#172.17.2.124
+#172.17.2.125
