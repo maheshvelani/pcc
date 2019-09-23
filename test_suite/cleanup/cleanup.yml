@@ -1,0 +1,34 @@
+---
+- hosts: invader
+  ignore_errors: yes
+
+  tasks:
+    - name: Execute cleanup command over invader
+      shell: "{{ item }}"
+      become: yes
+      with_items:
+      - "crontab -r"
+      - "ps -aef | grep supervisord | awk '{print $2}' | xargs kill -9"
+      - "ps -aef | grep tinyproxy | awk '{print $2}' | xargs kill -9"
+      - "ps -aef | grep dnsmasq | awk '{print $2}' | xargs kill -9"
+      - "ps -aef | grep dnsmasq | awk '{print $2}' | xargs kill -9"
+      - "ps -aef | grep pccagent | awk '{print $2}' | xargs kill -9"
+      - "ps -aef | grep collector | awk '{print $2}' | xargs kill -9"
+      - "sudo service maas-ROOT stop"
+      - "sudo apt-get remove -y dnsmasq tinyproxy supervisor lighttpd"
+      - "rm -rf /srv/maas/"
+      - "rm -rf /etc/network/interfaces.d/xeth*"
+      - "rm -rf /etc/network/interfaces.d/maas-xeth*"
+
+- hosts: server
+  become: false
+  ignore_errors: yes
+
+  tasks:
+    - name: Execute cleanup command over server
+      shell: "{{ item }}"
+      become: yes
+      with_items:
+      - "crontab -r"
+      - "ps -aef | grep pccagent | awk '{print $2}' | xargs kill -9"
+      - "ps -aef | grep collector | awk '{print $2}' | xargs kill  -9"
