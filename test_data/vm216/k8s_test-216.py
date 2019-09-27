@@ -19,6 +19,12 @@ invader1_node_name = "i58"
 invader1_node_host = "172.17.2.58/23"
 
 
+node1_id = 1
+node2_id = 2
+node3_id = 3
+run_cnt  = 2
+
+
 # Test Data to Add Server as Node
 # Update This data as per supported Server over PCC
 server1_node_name = "sv09"

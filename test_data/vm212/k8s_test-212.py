@@ -12,12 +12,15 @@ server_url = "https://172.17.2.212:9999"
 user_name = "admin"
 user_pwd = "admin"
 
+node1_id = 1
+node2_id = 2
+node3_id = 3
+run_cnt  = 2
 
 # Test Data for Invader as Node
 # Update This data as per supported Invader over PCC server
 invader1_node_name = "i42"
 invader1_node_host = "172.17.2.42/23"
-
 
 # Test Data to Add Server as Node
 # Update This data as per supported Server over PCC

@@ -14,13 +14,6 @@ Test Setup      Verify User Login
 Test Teardown   Delete All Sessions
 
 
-*** variables ***
-${node1_id}    1
-${node2_id}    2
-${node3_id}    3
-${run_cnt}     2
-
-
 *** Test Cases ***
 Install K8s Multiple time
         [Tags]    K8S test
