@@ -64,6 +64,8 @@ Install k8s
         Set Suite Variable    ${cluster_id}    ${id}
         ${status}    Validate Cluster Deploy Status    ${resp.json()}
         Should Be Equal As Strings    ${status}    True    msg=Cluster installation failed
+        ${status}    Validate Cluster Health Status    ${resp.json()}
+        Should Be Equal As Strings    ${status}    True    msg=Cluster installed but Health status is not good
 
 
 Delete k8s
