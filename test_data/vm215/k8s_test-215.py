@@ -16,7 +16,7 @@ user_pwd = "admin"
 node1_id = 1
 node2_id = 2
 node3_id = 3
-run_cnt  = 2
+run_cnt  = 100
 
 
 # Test Data for Invader as Node

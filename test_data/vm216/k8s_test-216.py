@@ -22,7 +22,7 @@ invader1_node_host = "172.17.2.58/23"
 node1_id = 1
 node2_id = 2
 node3_id = 3
-run_cnt  = 2
+run_cnt  = 100
 
 
 # Test Data to Add Server as Node
