@@ -10,7 +10,7 @@ Library         ${CURDIR}/../lib/Data_Parser.py
 Library         ${CURDIR}/../lib/Entry_Criteria_Api.py
 Resource        ${CURDIR}/../resource/Resource_Keywords.robot
 
-Test Setup      Verify User Login
+Test Setup      Verify User Login1
 Test Teardown   Delete All Sessions
 
 
