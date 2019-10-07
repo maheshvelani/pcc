@@ -1,5 +1,5 @@
 *** Keywords ***
-test
+
 First keyword
     Do something
 
