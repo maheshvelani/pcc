@@ -259,12 +259,12 @@ class Data_Parser:
                 for data in eval(str(resp_data))['Data']:
                     if str(data['Name']) == str(node_name):
                         if str(data['nodeAvailabilityStatus']['connectionStatus']) == "online":
-                            return True
+                            return True, str(data['Id'])
                         else:
-                            return False
-            return False
+                            return False, None
+            return False, None
         except Exception:
-            return False
+            return False, None
 
     @staticmethod
     def validate_node_provision_status(resp_data, node_name):
@@ -409,3 +409,15 @@ class Data_Parser:
         except Exception:
             return False
 
+    @staticmethod
+    def get_node_host_ip(resp_data, node):
+        """ Get HOST IP of Node
+        """
+        try:
+            if resp_data['Data'] != None:
+                for data in eval(str(resp_data))['Data']:
+                    if str(data['Name']) == str(node):
+                        return True, data["Host"]
+            return False, None
+        except Exception:
+            return False, None

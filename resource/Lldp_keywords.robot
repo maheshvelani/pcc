@@ -1,6 +1,76 @@
 *** Keywords ***
-First keyword
-    Do something
+Install LLDP Role
+        [Arguments]    ${node_name}=${EMPTY}
 
-Second keyword
-    Do more
+        ${id}    Get LLDP role Id
+        ${node_id}    Get Node Id    ${node_name}
+        # Assign LLDP role to node
+        @{roles_group}    create list    ${id}
+        &{data}    Create Dictionary  Id=${node_id}    roles=${roles_group}
+        ${resp}  Put Request    platina    ${add_group_to_node}    json=${data}     headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        ${status}    run keyword and return status    Should Be Equal As Strings    ${resp.status_code}    200
+        Return From Keyword If    '${status}'==False    False
+        [Return]    True
+
+
+Verify LLDP Installed
+        [Arguments]    ${node_name}=${EMPTY}    ${timeout}=500
+
+        ${id}    Get LLDP role Id
+        ${iteration}    devide num    ${timeout}    50
+        :FOR    ${index}    IN RANGE    1    ${iteration}
+        \    Sleep    50 seconds
+        \    &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
+        \    ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
+        \    Log    \nStatus code = ${resp.status_code}    console=yes
+        \    Log    \nResponse = ${resp.json()}    console=yes
+        \    Should Be Equal As Strings    ${resp.status_code}    200
+        \    ${status}    ${node_id}    Validate Node Roles    ${resp.json()}    ${node_name}    ${id}
+        \    Exit For Loop IF    "${status}"==True
+        Return From Keyword If    '${status}'==False    False
+        [Return]    True
+
+
+Remove LLDP Role
+        [Arguments]    ${node_name}=${EMPTY}
+
+        ${id}    Get LLDP role Id
+        ${node_id}    Get Node Id    ${node_name}
+
+#        # Delete LLDP Role
+#        ${resp}  Delete Request    platina   ${add_role}${id}    headers=${headers}
+#        Log    \n Status code = ${resp.status_code}    console=yes
+#        Log    \n Response = ${resp.json()}    console=yes
+#        Should Be Equal As Strings    ${resp.status_code}    200
+#
+
+
+Verify LLDP Role is Removed
+        [Arguments]    ${node_name}=${EMPTY}    ${timeout}=300
+
+        ${id}    Get LLDP role Id
+        ${iteration}    devide num    ${timeout}    30
+        :FOR    ${index}    IN RANGE    1    ${iteration}
+        \    Sleep    30 seconds
+        \    &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
+        \    ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
+        \    Log    \nStatus code = ${resp.status_code}    console=yes
+        \    Log    \nResponse = ${resp.json()}    console=yes
+        \    Should Be Equal As Strings    ${resp.status_code}    200
+        \    ${status}    ${node_id}    Validate Node Roles    ${resp.json()}    ${node_name}    ${id}
+        \    Exit For Loop IF    "${status}"==False
+        Return From Keyword If    '${status}'==False    True
+        [Return]    False
+
+
+Get LLDP role Id
+        # Get LLDP Role ID
+        ${resp}  Get Request    platina   ${add_role}    headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings  ${resp.status_code}    200
+        ${status}    ${role_id}    Get LLDP Role Id    ${resp.json()}
+        Should Be Equal As Strings    ${status}    True    msg=LLDP Role Not Found in Roles
+        [Return]    ${role_id}

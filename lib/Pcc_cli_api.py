@@ -26,6 +26,11 @@ class Entry_Criteria_Api(OperatingSystem, SSHLibrary):
     def __init__(self):
         self.master_node = None
 
+    def devide_num(self, a, b):
+        """ return number division
+        """
+        return int(int(a) / int(b))
+
     def get_available_node_data(self, resp_data):
         """Check any Invader or Server is available in node list
            if yes then return node with attached IP
