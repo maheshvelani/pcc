@@ -10,7 +10,7 @@ Library         ${CURDIR}/../lib/Data_Parser.py
 Library         ${CURDIR}/../lib/Entry_Criteria_Api.py
 Resource        ${CURDIR}/../resource/Resource_Keywords.robot
 
-Test Setup      Verify User Login1
+Test Setup      Verify User Login
 Test Teardown   Delete All Sessions
 
 
@@ -18,7 +18,7 @@ Test Teardown   Delete All Sessions
 Invader and Server Cleanup from UI
         [Tags]    Entry Criteria
         [Documentation]    Get and Delete available Invader and Server from the PCC
-
+headers
         &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
         ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
         Log    \n Get Nodes Status code = ${resp.status_code}    console=yes
