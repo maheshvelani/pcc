@@ -2,7 +2,7 @@
 Install LLDP Role
         [Arguments]    ${node_name}=${EMPTY}
 
-        ${id}    Get LLDP role Id
+        ${id}    Get LLDP Id
         ${node_id}    Get Node Id    ${node_name}
         # Assign LLDP role to node
         @{roles_group}    create list    ${id}
@@ -11,14 +11,13 @@ Install LLDP Role
         Log    \n Status code = ${resp.status_code}    console=yes
         Log    \n Response = ${resp.json()}    console=yes
         ${status}    run keyword and return status    Should Be Equal As Strings    ${resp.status_code}    200
-        Return From Keyword If    '${status}'==False    False
-        [Return]    True
+        [Return]    ${status}
 
 
 Verify LLDP Installed
         [Arguments]    ${node_name}=${EMPTY}    ${timeout}=500
 
-        ${id}    Get LLDP role Id
+        ${id}    Get LLDP Id
         ${iteration}    devide num    ${timeout}    50
         :FOR    ${index}    IN RANGE    1    ${iteration}
         \    Sleep    50 seconds
@@ -29,14 +28,13 @@ Verify LLDP Installed
         \    Should Be Equal As Strings    ${resp.status_code}    200
         \    ${status}    ${node_id}    Validate Node Roles    ${resp.json()}    ${node_name}    ${id}
         \    Exit For Loop IF    "${status}"==True
-        Return From Keyword If    '${status}'==False    False
-        [Return]    True
+        [Return]    ${status}
 
 
 Remove LLDP Role
         [Arguments]    ${node_name}=${EMPTY}
 
-        ${id}    Get LLDP role Id
+        ${id}    Get LLDP Id
         ${node_id}    Get Node Id    ${node_name}
 
 #        # Delete LLDP Role
@@ -50,7 +48,7 @@ Remove LLDP Role
 Verify LLDP Role is Removed
         [Arguments]    ${node_name}=${EMPTY}    ${timeout}=300
 
-        ${id}    Get LLDP role Id
+        ${id}    Get LLDP Id
         ${iteration}    devide num    ${timeout}    30
         :FOR    ${index}    IN RANGE    1    ${iteration}
         \    Sleep    30 seconds
@@ -65,7 +63,7 @@ Verify LLDP Role is Removed
         [Return]    False
 
 
-Get LLDP role Id
+Get LLDP Id
         # Get LLDP Role ID
         ${resp}  Get Request    platina   ${add_role}    headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes

@@ -13,8 +13,7 @@ Add Server
         Log    \n Status code = ${resp.status_code}    console=yes
         Log    \n Response = ${resp.json()}    console=yes
         ${status}    run keyword and return status    Should Be Equal As Strings    ${resp.status_code}    200
-        Return From Keyword If    '${status}'==False    False
-        [Return]    True
+        [Return]    ${status}
 
 
 Verify Server is present in Node List
@@ -30,8 +29,7 @@ Verify Server is present in Node List
         \    Should Be Equal As Strings    ${resp.status_code}    200
         \    ${status}    ${node_id}    Validate Node    ${resp.json()}    ${name}
         \    Exit For Loop IF    "${status}"==True
-        Return From Keyword If    '${status}'==True    True
-        [Return]    False
+        [Return]    ${status}
 
 
 Verify Server is Online
@@ -61,8 +59,7 @@ Delete Server
         Log    \nStatus code = ${resp.status_code}    console=yes
         Log    \nResponse = ${resp.json()}    console=yes
         ${status}    run keyword and return status    Should Be Equal As Strings    ${resp.status_code}    200
-        Return From Keyword If    '${status}'==False    False
-        [Return]    True
+        [Return]    ${status}
 
 
 Verify Server is Deleted
@@ -78,5 +75,5 @@ Verify Server is Deleted
         \    Should Be Equal As Strings    ${resp.status_code}    200
         \    ${status}    ${sv_id}    Validate Node    ${resp.json()}    ${name}
         \    Exit For Loop IF    "${status}"==False
-        Return From Keyword If    "${status}"==False    True
+        Return From Keyword If    '${status}'==False    True
         [Return]    False

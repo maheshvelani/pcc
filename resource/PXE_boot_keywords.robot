@@ -1,41 +1,36 @@
-*** Settings ***
-Library         ${CURDIR}/../lib/Entry_Criteria_Api.py
-Library         BuiltIn
-
 *** Keywords ***
 PXE Boot the server
         [Arguments]     ${bmc_ip}=${Empty}
+
         ${status}    Server PXE boot    ${bmc_ip}
         ${status}=      Run Keyword And Return Status   Should Be Equal As Strings    ${status}    True    msg=PXE boot Failed Over Server ${bmc_ip}
         [Return]    ${status}
 
 
-
 Verify Booted server reflected over PCC UI
         [Arguments]     ${bmc_ip}=${Empty}
+
+        ${result}=	Wait Until Keyword Succeeds     10 minutes      1 minutes       Verify Booted server reflected over PCC UI with intervals      ${bmc_ip}
+        [Return]    ${result}
+
+
+Verify Booted server reflected over PCC UI with intervals
+        [Arguments]     ${bmc_ip}
+
         &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
         ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
         Log    \n Response = ${resp.json()}    console=yes
-        ${result}=	Wait Until Keyword Succeeds     10 minutes      1 minutes       Verify Booted server reflected over PCC UI with intervals      ${bmc_ip}    ${resp}
-        [Return]    ${result}
-
-
-
-Verify Booted server reflected over PCC UI with intervals
-        [Arguments]     ${bmc_ip}   ${resp}
         Should Be Equal As Strings    ${resp.status_code}    200
         ${status}    ${node_id}    Get Server Id    ${resp.json()}    ${bmc_ip}
         ${result}=      Should Be Equal As Strings    ${status}    True    msg=Booted Server ${bmc_ip} is not present in node list
-        Log    \n Server ${server2_node_name} ID = ${node_id}   console=yes
-        Set Suite Variable    ${server2_id}    ${node_id}
         [Return]    ${result}
 
 
-
 Assign Management IP to PXE booted Server
-        [Arguments]     ${server_id }=${Empty}
+        [Arguments]     ${name}=${pxe_booted_server}
 
+        ${server_id}    Get Node Id    ${name}
         # Get server Interface from topology
         Log    \nGetting Topology Data...    console=yes
         ${resp}    Get request    platina    ${get_topology}    headers=${headers}
@@ -64,8 +59,6 @@ Assign Management IP to PXE booted Server
         [Return]    ${status}
 
 
-
-
 Update Booted Server Information
         [Arguments]     ${id}=${Empty}      ${name}=${Empty}    ${host}=${Empty}    ${console}=${Empty}     ${bmc}=${Empty}     ${bmc_user}=${Empty}    ${bmc_password}=${Empty}    ${bmc_users}=${Empty}
         ...                ${ssh_key}=${Empty}     ${managed_by_pcc}=${Empty}
@@ -82,9 +75,5 @@ Update Booted Server Information
         ${resp}  Put Request    platina    ${update_node}    json=${data}     headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
         og    \n Response = ${resp.json()}    console=yes
-        ${status}=      Should Be Equal As Strings  ${resp.status_code}    200
+        ${status}    Should Be Equal As Strings  ${resp.status_code}    200
         [Return]    ${status}
-
-
-
-

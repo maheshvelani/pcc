@@ -1,9 +1,3 @@
-*** Settings ***
-Library         ${CURDIR}/../lib/Data_Parser.py
-Library         BuiltIn
-
-
-
 *** Keywords ***
 OS Deployment
         [Arguments]      ${node}=${EMPTY}     ${image}=${Empty}     ${locale}=${Empty}    ${time_zone}=${Empty}     ${admin_user}=${Empty}    ${ssh_key}=${Empty}
@@ -14,49 +8,48 @@ OS Deployment
         ${resp}  Post Request    platina   ${os_deployment}    json=${data}    headers=${headers}
         Log    \n Status Code = ${resp.status_code}    console=yes
         Log    \n Response Data = ${resp.json()}    console=yes
-        ${status}=      Run Keyword And Return Status   Should Be Equal As Strings  ${resp.status_code}  200
+        ${status}    Run Keyword And Return Status   Should Be Equal As Strings  ${resp.status_code}  200
         [Return]    ${status}
 
 
-
-
-
-
-
 Verify OS installed
-        [Arguments]     ${node_name}=${EMPTY}       ${timeout}=20 minutes
+        [Arguments]     ${node_name}=${EMPTY}       ${os_name}=${EMPTY}    ${timeout}=20 minutes
+
         ${result}=	Wait Until Keyword Succeeds     20 minutes      2 minutes       Verify OS installed with intervals      ${node_name}
-        ${result}=      Run Keyword If    '${result}' == 'True'     Verify OS installed in server machine
+        ${result}=      Run Keyword If    '${result}' == 'True'     Verify OS installed in server machine    ${node_name}    ${os_name}
         [Return]    ${result}
 
 
-
 Verify OS installed with intervals
-        [Arguments]  ${node_name}
+        [Arguments]    ${node_name}
+
         # Verify Provision Status over server
         &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
         ${resp}  Get Request    platina   ${node_name}    params=${data}  headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
         Log    \n Response = ${resp.json()}    console=yes
         Should Be Equal As Strings    ${resp.status_code}    200
-        ${status}    Validate OS Provision Status    ${resp.json()}    ${server1_node_name}
+        ${status}    Validate OS Provision Status    ${resp.json()}    ${node_name}
         ${result}=      Run Keyword And Return Status   Should Be Equal As Strings    ${status}    True    msg=Provision Status of server ${server1_node_name} is not Finished
         [Return]    ${result}
 
 
 Verify OS installed in server machine
-
+        [Arguments]    ${node_name}    ${os_name}
 
         # Get OS release data from server
-        ${server_ip}    get ip   ${server1_node_host}
+        ${host_ip}    get node host ip    ${node_name}
+        ${server_ip}    get ip   ${host_ip}
         SSHLibrary.Open Connection     ${server_ip}    timeout=1 hour
-        SSHLibrary.Login               root        plat1na
+        SSHLibrary.Login               ${server_usr}        ${server_pwd}
         Sleep    2s
         ${output}=        SSHLibrary.Execute Command    cat /etc/os-release
         Log    \n\nSERVER RELEASE DATA = ${output}    console=yes
-        Should Contain    ${output}    ${os_name}
+        ${status_1}    Should Contain    ${output}    ${os_name}
         ${output}    SSHLibrary.Execute Command    uptime -p
         Log    \n\nSERVER UP Time Data DATA = ${output} \n\n    console=yes
         ${status}    Verify server up time     ${output}
-        Should Be Equal As Strings    ${status}    True    msg=There are no new OS deployed in last few minutes
+        ${status_2}    Should Be Equal As Strings    ${status}    True    msg=There are no new OS deployed in last few minutes
         SSHLibrary.Close All Connections
+        Return from Keyword If    "${status_1}"==True  and  "${status_2}"==True    True
+        [Return]    False

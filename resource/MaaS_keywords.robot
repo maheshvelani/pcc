@@ -2,7 +2,7 @@
 Install MaaS Role
         [Arguments]    ${node_name}=${EMPTY}
 
-        ${id}    Get MaaS Role Id
+        ${id}    Get MaaS Id
         ${node_id}    Get Node Id    ${node_name}
         # Assign MaaS role to node
         @{roles_group}    create list    ${id}
@@ -11,15 +11,13 @@ Install MaaS Role
         Log    \n Status code = ${resp.status_code}    console=yes
         Log    \n Response = ${resp.json()}    console=yes
         ${status}    run keyword and return status    Should Be Equal As Strings    ${resp.status_code}    200
-        Return From Keyword If    '${status}'==False    False
-
-        [Return]    True
+        [Return]    ${status}
 
 
 Verify MaaS Installed
         [Arguments]    ${node_name}=${EMPTY}    ${timeout}=600
 
-        ${id}    Get MaaS role Id
+        ${id}    Get MaaS Id
         ${iteration}    devide num    ${timeout}    60
         :FOR    ${index}    IN RANGE    1    ${iteration}
         \    Sleep    60 seconds
@@ -32,14 +30,13 @@ Verify MaaS Installed
         \    Exit For Loop IF    "${status}"==True
         Return From Keyword If    '${status}'==False    False
         ${status}    Verify mass installation from backend    ${node_name}
-        Return From Keyword If    '${status}'==False    False
-        [Return]    True
+        [Return]    ${status}
 
 
 Remove MaaS Role
         [Arguments]    ${node_name}=${EMPTY}
 
-        ${id}    Get MaaS role Id
+        ${id}    Get MaaS Id
         ${node_id}    Get Node Id    ${node_name}
 #        # Delete LLDP Role
 #        ${resp}  Delete Request    platina   ${add_role}${id}    headers=${headers}
@@ -51,7 +48,7 @@ Remove MaaS Role
 Verify MaaS Role is Removed
         [Arguments]    ${node_name}=${EMPTY}    ${timeout}=300
 
-        ${id}    Get MaaS role Id
+        ${id}    Get MaaS Id
         ${iteration}    devide num    ${timeout}    30
         :FOR    ${index}    IN RANGE    1    ${iteration}
         \    Sleep    30 seconds
@@ -66,7 +63,7 @@ Verify MaaS Role is Removed
         [Return]    False
 
 
-Get MaaS Role Id
+Get MaaS Id
         # Get Id of MaaS role
         ${resp}  Get Request    platina   ${add_role}    headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
@@ -81,17 +78,21 @@ Verify mass installation from backend
         [Arguments]    ${node}=${EMPTY}
 
         ${host_ip}    get node host ip    ${node}
-        ${i_ip}    get ip   ${invader_ip}
+        ${i_ip}    get ip   ${host_ip}
         SSHLibrary.Open Connection     ${i_ip}    timeout=1 hour
-        SSHLibrary.Login               pcc        cals0ft
+        SSHLibrary.Login               ${invader_usr}      ${invader_pwd}
         Sleep    2s
         ${output}=         SSHLibrary.Execute Command    ps -aef | grep ROOT
         SSHLibrary.Close All Connections
         Log    \n\nINVADER DATA = ${output}    console=yes
         ${status}    run keyword and return status    Should Contain    ${output}    lighttpd.conf
+        Run Keyword If    '${status}'==False    Log    \nLightHttpd Service is not running    console=yes
         Return From Keyword If    '${status}'==False    False
         ${status}    run keyword and return status    Should Contain    ${output}    tinyproxy.conf
+        Run Keyword If    '${status}'==False    Log    \nTinyProxy Service is not running    console=yes
         Return From Keyword If    '${status}'==False    False
         ${status}    run keyword and return status    Should Contain    ${output}    dnsmasq
+        Run Keyword If    '${status}'==False    Log    \ndnsmasq Service is not running    console=yes
         Return From Keyword If    '${status}'==False    False
+        Log    \nAll MaaS services are running on back-end    console=yes
         [Return]    True

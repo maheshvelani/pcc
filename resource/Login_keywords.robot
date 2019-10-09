@@ -16,5 +16,4 @@ Login into PCC
 
 Logout from PCC
         ${status}    run keyword and return status    Request.Delete All Sessions
-        Return From Keyword If    '${status}'==False    False
-        [Return]    True
+        [Return]    ${status}
