@@ -8,7 +8,7 @@
 ###########################################
 
 
-class Data_Parser:
+class Json_validator:
 
     @staticmethod
     def validate_node(resp_data, node_name, host=None):

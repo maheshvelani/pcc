@@ -8,7 +8,7 @@ Resource        ${CURDIR}/../resource/Common_api.robot
 
 Test Setup      Login into PCC    host_url=${server_url}    user_name=${user_name}    password=${user_pwd}
 Test Teardown   Logout from PCC
-Set Tags        Mini Regression
+Suite Setup    Set Tags        Mini Regression
 
 *** Test Cases ***
 Add Invader as a Node and Verify Online Status

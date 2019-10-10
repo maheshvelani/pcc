@@ -21,7 +21,7 @@ def robot_logger(msg):
     logger.info(str(msg_str), html=True, also_console = True)
 
 
-class Entry_Criteria_Api(OperatingSystem, SSHLibrary):
+class Pcc_cli_api(OperatingSystem, SSHLibrary):
 
     def __init__(self):
         self.master_node = None
