@@ -2,7 +2,9 @@
 Install MaaS Role
         [Arguments]    ${node_name}=${EMPTY}
 
+	Log    \nGetting MaaS Role Id...    console=yes
         ${id}    Get MaaS Id
+	Log    \nGetting Node Id...    console=yes
         ${node_id}    Get Node Id    ${node_name}
         # Assign MaaS role to node
         @{roles_group}    create list    ${id}
@@ -17,10 +19,11 @@ Install MaaS Role
 Verify MaaS Installed
         [Arguments]    ${node_name}=${EMPTY}    ${timeout}=600
 
+	Log    \nGetting MaaS Role Id...    console=yes
         ${id}    Get MaaS Id
         ${iteration}    devide num    ${timeout}    60
         :FOR    ${index}    IN RANGE    1    ${iteration}
-        \    Sleep    60 seconds
+#        \    Sleep    60 seconds
         \    &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
         \    ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
         \    Log    \nVerifying MaaS is installed...    console=yes
@@ -28,7 +31,7 @@ Verify MaaS Installed
         \    ${status}    ${node_id}    Validate Node Roles    ${resp.json()}    ${node_name}    ${id}
         \    Exit For Loop IF    "${status}"=="True"
         Return From Keyword If    "${status}"=="False"    False
-        ${status}    Verify mass installation from backend    ${node_name}
+        ${status}    Verify mass installation from backend    ${resp.json()}    ${node_name}
         [Return]    ${status}
 
 
@@ -73,12 +76,12 @@ Get MaaS Id
 
 
 Verify mass installation from backend
-        [Arguments]    ${node}=${EMPTY}
+        [Arguments]    ${resp}=${EMPTY}    ${node}=${EMPTY}
 
-        ${host_ip}    get node host ip    ${node}
+        ${host_ip}    get node host ip    ${resp}    ${node}
         ${i_ip}    get ip   ${host_ip}
-        SSHLibrary.Open Connection     ${i_ip}    timeout=1 hour
-        SSHLibrary.Login               ${invader_usr}      ${invader_pwd}
+	SSHLibrary.Open Connection     ${i_ip}    timeout=1 hour
+        SSHLibrary.Login               ${invader_usr_name}      ${invader_usr_pwd}
         Sleep    2s
         ${output}=         SSHLibrary.Execute Command    ps -aef | grep ROOT
         SSHLibrary.Close All Connections

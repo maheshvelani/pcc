@@ -20,7 +20,6 @@ Add Invader as a Node and Verify Online Status
 
 
 Add Server-1 as a Node and Verify Online Status
-        [Tags]    test_1
         [Documentation]    Add Server-1 as a Node and Verify Online Status
 
 	Add Server    name=${server1_node_name}  host=${server1_node_host}  console=${server1_console}  bmc=${server1_bmc_host}/23  bmc_user=${server1_bmc_user}  bmc_password=${server1_bmc_pwd}  bmc_users=${server1_bmc_user}    ssh_key=${server1_ssh_keys}  managed_by_pcc=${True}
@@ -28,82 +27,23 @@ Add Server-1 as a Node and Verify Online Status
 	Verify Server is Online    name=${server1_node_name}
 
 
-Assign LLDP and MaaS Roles to Invader - 1
-        [Tags]    Entry Criteria
+Assign LLDP Role to Invader
         [Documentation]    Assign LLDP and MaaS Role to Invader - 1
+	Install LLDP Role    node_name=${invader1_node_name}
+	Verify LLDP Installed    node_name=${invader1_node_name}
+	
 
-        # Get Id of MaaS role
-        ${resp}  Get Request    platina   ${add_role}    headers=${headers}
-        Log    \n Status code = ${resp.status_code}    console=yes
-        Log    \n Response = ${resp.json()}    console=yes
-        Should Be Equal As Strings  ${resp.status_code}    200
-        ${status}    ${role_id}    Get MaaS Role Id    ${resp.json()}
-        Should Be Equal As Strings    ${status}    True    msg=MaaS Role Not Found in Roles
-        Set Suite Variable    ${maas_role_id}    ${role_id}
-        Log    \n MaaS Role ID = ${maas_role_id}    console=yes
-
-        # Get Id of LLDP role
-        ${resp}  Get Request    platina   ${add_role}    headers=${headers}
-        Log    \n Status code = ${resp.status_code}    console=yes
-        Log    \n Response = ${resp.json()}    console=yes
-        Should Be Equal As Strings  ${resp.status_code}    200
-        ${status}    ${role_id}    Get LLDP Role Id    ${resp.json()}
-        Should Be Equal As Strings    ${status}    True    msg=LLDP Role Not Found in Roles
-        Set Suite Variable    ${lldp_role_id}    ${role_id}
-        Log    \n LLDP Role ID = ${lldp_role_id}    console=yes
-
-        # Assign MaaS role to node - 1
-        @{roles_group}    create list    ${lldp_role_id}    ${maas_role_id}
-        &{data}    Create Dictionary  Id=${invader1_id}    roles=${roles_group}
-        ${resp}  Put Request    platina    ${add_group_to_node}    json=${data}     headers=${headers}
-        Log    \n Status code = ${resp.status_code}    console=yes
-        Log    \n Response = ${resp.json()}    console=yes
-        Should Be Equal As Strings  ${resp.status_code}    200
-
-        # Wait for few Seconds
-        Sleep    150s
-
-        # SSH into invader and verify MaaS installation process started
-        Run Keyword And Ignore Error	SSH into Invader and Verify mass installation started    ${invader1_node_host}
-
-        # Wait for 10 minutes
-        Sleep	10 minutes
-
-        # Verify Maas Installation Complete status
-        &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
-        ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
-        Log    \n Status code = ${resp.status_code}    console=yes
-        Log    \n Response = ${resp.json()}    console=yes
-        Should Be Equal As Strings    ${resp.status_code}    200
-        ${status}    ${node_id}    Validate Node Roles    ${resp.json()}    ${invader1_node_name}    ${maas_role_id}
-        Should Be Equal As Strings    ${status}    True    msg=Node ${invader1_node_name} is not updated with the MaaS Roles
-
-        Run Keyword And Ignore Error	SSH into Invader and Verify mass installation started    ${invader1_node_host}
-
-
-Assign LLDP role to server - 1
-        [Tags]    Entry Criteria
+Assign LLDP role to server
         [Documentation]    Assign LLDP Role to Server - 1
+	Install LLDP Role    node_name=${server1_node_name}
+        Verify LLDP Installed    node_name=${server1_node_name}
 
-        # Assign MaaS role to node - 2
-        @{roles_group}    create list    ${lldp_role_id}
-        &{data}    Create Dictionary  Id=${server1_id}    roles=${roles_group}
-        ${resp}  Put Request    platina    ${add_group_to_node}    json=${data}     headers=${headers}
-        Log    \n Status code = ${resp.status_code}    console=yes
-        Log    \n Response = ${resp.json()}    console=yes
-        Should Be Equal As Strings  ${resp.status_code}    200
 
-        # Wait for few Seconds
-        Sleep	5 minutes
-
-        # Verify Maas Installation Complete status
-        &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
-        ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
-        Log    \n Status code = ${resp.status_code}    console=yes
-        Log    \n Response = ${resp.json()}    console=yes
-        Should Be Equal As Strings    ${resp.status_code}    200
-        ${status}    ${node_id}    Validate Node Roles    ${resp.json()}    ${server1_node_name}    ${lldp_role_id}
-        Should Be Equal As Strings    ${status}    True    msg=Node ${server1_node_name} is not updated with the LLDP Role
+Assign MaaS Role to Invader
+        [Tags]    test_1
+	[Documentation]    Assign LLDP and MaaS Role to Invader - 1
+#	Install MaaS Role    node_name=${invader1_node_name}
+	Verify MaaS Installed    node_name=${invader1_node_name}
 
 
 PXE Boot to Server

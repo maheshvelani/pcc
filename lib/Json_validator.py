@@ -415,9 +415,10 @@ class Json_validator:
         """
         try:
             if resp_data['Data'] != None:
+		
                 for data in eval(str(resp_data))['Data']:
                     if str(data['Name']) == str(node):
-                        return True, data["Host"]
-            return False, None
+                        return data["Host"]
+            returnNone
         except Exception:
-            return False, None
+            return None

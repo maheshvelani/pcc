@@ -1,12 +1,15 @@
 *** Keywords ***
 Install LLDP Role
         [Arguments]    ${node_name}=${EMPTY}
-
+        
+	Log    \nGetting LLDP role ID...    console=yes
         ${id}    Get LLDP Id
+	Log    \nGetting Node ID...    console=yes
         ${node_id}    Get Node Id    ${node_name}
         # Assign LLDP role to node
         @{roles_group}    create list    ${id}
         &{data}    Create Dictionary  Id=${node_id}    roles=${roles_group}
+	Log    \nInstalling LLDP with parameters : ${data}    console=yes
         ${resp}  Put Request    platina    ${add_group_to_node}    json=${data}     headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
         Log    \n Response = ${resp.json()}    console=yes
@@ -16,7 +19,8 @@ Install LLDP Role
 
 Verify LLDP Installed
         [Arguments]    ${node_name}=${EMPTY}    ${timeout}=500
-
+	
+	Log    \nGetting LLDP role ID...    console=yes
         ${id}    Get LLDP Id
         ${iteration}    devide num    ${timeout}    50
         :FOR    ${index}    IN RANGE    1    ${iteration}
