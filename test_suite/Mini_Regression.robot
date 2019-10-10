@@ -13,68 +13,19 @@ Suite Setup    Set Tags        Mini Regression
 *** Test Cases ***
 Add Invader as a Node and Verify Online Status
         [Documentation]    Add Invader as a Node and Verify Online Status
-        [Tags]  test_1
 
         Add Invader    name=${invader1_node_name}    host=${invader1_node_host}    managed_by_pcc=${False}
         Verify Invader is present in Node List    name=${invader1_node_name}
         Verify Invader is Online    name=${invader1_node_name}
 
 
-
-
-
 Add Server-1 as a Node and Verify Online Status
-        [Tags]    Entry Criteria
+        [Tags]    test_1
         [Documentation]    Add Server-1 as a Node and Verify Online Status
 
-        # Add Server Node
-        ${name}    Set Variable  ${server1_node_name}
-        ${host}   Set Variable   ${server1_node_host}
-        ${bmc_host}   Set Variable  ${server1_bmc_host}
-        ${bmc_user}   Set Variable  ${server1_bmc_user}
-        ${bmc_pwd}   Set Variable  ${server1_bmc_pwd}
-        ${console}   Set Variable  ${server1_console}
-        ${manage_pcc}    Set Variable  ${server1_managed_by_pcc}
-        ${ssh_key}    Set Variable  ${server1_ssh_keys}
-
-        @{server1_bmc_users}    Create List    ${bmc_user}
-        @{server1_ssh_keys}    Create List    ${ssh_key}
-        &{data}    Create Dictionary  	Name=${name}  Host=${host}
-        ...    console=${console}  bmc=${bmc_host}  bmcUser=${bmc_user}
-        ...    bmcPassword=${bmc_pwd}  bmcUsers=@{server1_bmc_users}
-        ...    sshKeys=@{server1_ssh_keys}  managed=${${server1_managed_by_pcc}}
-
-        Log    \nCreating Server node with parameters : \n${data}\n    console=yes
-        ${resp}    Post Request    platina    ${add_node}    json=${data}   headers=${headers}
-        Log    \n Status code = ${resp.status_code}    console=yes
-        Log    \n Response = ${resp.json()}    console=yes
-#        Should Be Equal As Strings    ${resp.status_code}    200
-
-        # wait for few seconds to add Server into Node List
-        Sleep    90s
-
-        # Validate Added Node Present in Node List
-        &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
-        # Hit get_node_list API for few times to refresh the node list
-        # And verify Node availability from the latest fetched node data
-        ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
-        Sleep    3s
-        ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
-        Sleep    3s
-        ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
-        Log    \n Status code = ${resp.status_code}    console=yes
-        Log    \n Response = ${resp.json()}    console=yes
-        Should Be Equal As Strings    ${resp.status_code}    200
-
-        # Parse fetched node list and verify added Node availability from response data
-        ${status}    ${node_id}    Validate Node    ${resp.json()}    ${name}
-        Should Be Equal As Strings    ${status}    True    msg=Server ${name} is not present in node list
-        Log    \n Server ID = ${node_id}   console=yes
-        Set Suite Variable    ${server1_id}    ${node_id}
-
-        # Verify Online Status of Added Server
-        ${status}    Validate Node Online Status    ${resp.json()}    ${name}
-        Should Be Equal As Strings    ${status}    True    msg=Server ${name} added successfully but it is offline
+	Add Server    name=${server1_node_name}  host=${server1_node_host}  console=${server1_console}  bmc=${server1_bmc_host}/23  bmc_user=${server1_bmc_user}  bmc_password=${server1_bmc_pwd}  bmc_users=${server1_bmc_user}    ssh_key=${server1_ssh_keys}  managed_by_pcc=${True}
+	Verify Server is present in Node List    name=${server1_node_name}
+	Verify Server is Online    name=${server1_node_name}
 
 
 Assign LLDP and MaaS Roles to Invader - 1
