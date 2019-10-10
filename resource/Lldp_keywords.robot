@@ -23,11 +23,10 @@ Verify LLDP Installed
         \    Sleep    50 seconds
         \    &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
         \    ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
-        \    Log    \nStatus code = ${resp.status_code}    console=yes
-        \    Log    \nResponse = ${resp.json()}    console=yes
+        \    Log    \nVerifying LLDP is installed...    console=yes
         \    Should Be Equal As Strings    ${resp.status_code}    200
         \    ${status}    ${node_id}    Validate Node Roles    ${resp.json()}    ${node_name}    ${id}
-        \    Exit For Loop IF    "${status}"==True
+        \    Exit For Loop IF    "${status}"=="True"
         [Return]    ${status}
 
 
@@ -54,12 +53,11 @@ Verify LLDP Role is Removed
         \    Sleep    30 seconds
         \    &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
         \    ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
-        \    Log    \nStatus code = ${resp.status_code}    console=yes
-        \    Log    \nResponse = ${resp.json()}    console=yes
+        \    Log    \nVerifying LLDP removed...    console=yes
         \    Should Be Equal As Strings    ${resp.status_code}    200
         \    ${status}    ${node_id}    Validate Node Roles    ${resp.json()}    ${node_name}    ${id}
-        \    Exit For Loop IF    "${status}"==False
-        Return From Keyword If    '${status}'==False    True
+        \    Exit For Loop IF    "${status}"=="False"
+        Return From Keyword If    '${status}'=="False"    True
         [Return]    False
 
 

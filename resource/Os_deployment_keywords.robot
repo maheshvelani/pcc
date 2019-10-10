@@ -16,7 +16,7 @@ Verify OS installed
         [Arguments]     ${node_name}=${EMPTY}       ${os_name}=${EMPTY}    ${timeout}=20 minutes
 
         ${result}=	Wait Until Keyword Succeeds     20 minutes      2 minutes       Verify OS installed with intervals      ${node_name}
-        ${result}=      Run Keyword If    '${result}' == 'True'     Verify OS installed in server machine    ${node_name}    ${os_name}
+        ${result}=      Run Keyword If    "${result}" == "True"     Verify OS installed in server machine    ${node_name}    ${os_name}
         [Return]    ${result}
 
 
@@ -51,5 +51,5 @@ Verify OS installed in server machine
         ${status}    Verify server up time     ${output}
         ${status_2}    Should Be Equal As Strings    ${status}    True    msg=There are no new OS deployed in last few minutes
         SSHLibrary.Close All Connections
-        Return from Keyword If    "${status_1}"==True  and  "${status_2}"==True    True
+        Return from Keyword If    "${status_1}"=="True"  and  "${status_2}"=="True"    True
         [Return]    False

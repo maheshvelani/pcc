@@ -23,12 +23,11 @@ Verify MaaS Installed
         \    Sleep    60 seconds
         \    &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
         \    ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
-        \    Log    \nStatus code = ${resp.status_code}    console=yes
-        \    Log    \nResponse = ${resp.json()}    console=yes
+        \    Log    \nVerifying MaaS is installed...    console=yes
         \    Should Be Equal As Strings    ${resp.status_code}    200
         \    ${status}    ${node_id}    Validate Node Roles    ${resp.json()}    ${node_name}    ${id}
-        \    Exit For Loop IF    "${status}"==True
-        Return From Keyword If    '${status}'==False    False
+        \    Exit For Loop IF    "${status}"=="True"
+        Return From Keyword If    "${status}"=="False"    False
         ${status}    Verify mass installation from backend    ${node_name}
         [Return]    ${status}
 
@@ -54,12 +53,11 @@ Verify MaaS Role is Removed
         \    Sleep    30 seconds
         \    &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
         \    ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
-        \    Log    \nStatus code = ${resp.status_code}    console=yes
-        \    Log    \nResponse = ${resp.json()}    console=yes
+        \    Log    \nVerifying MaaS role is removed...    console=yes
         \    Should Be Equal As Strings    ${resp.status_code}    200
         \    ${status}    ${node_id}    Validate Node Roles    ${resp.json()}    ${node_name}    ${id}
-        \    Exit For Loop IF    "${status}"==False
-        Return From Keyword If    '${status}'==False    True
+        \    Exit For Loop IF    "${status}"=="False"
+        Return From Keyword If    "${status}"=="False"    True
         [Return]    False
 
 
@@ -86,13 +84,13 @@ Verify mass installation from backend
         SSHLibrary.Close All Connections
         Log    \n\nINVADER DATA = ${output}    console=yes
         ${status}    run keyword and return status    Should Contain    ${output}    lighttpd.conf
-        Run Keyword If    '${status}'==False    Log    \nLightHttpd Service is not running    console=yes
-        Return From Keyword If    '${status}'==False    False
+        Run Keyword If    "${status}"=="False"    Log    \nLightHttpd Service is not running    console=yes
+        Return From Keyword If    "${status}"=="False"    False
         ${status}    run keyword and return status    Should Contain    ${output}    tinyproxy.conf
-        Run Keyword If    '${status}'==False    Log    \nTinyProxy Service is not running    console=yes
-        Return From Keyword If    '${status}'==False    False
+        Run Keyword If    "${status}"=="False"    Log    \nTinyProxy Service is not running    console=yes
+        Return From Keyword If    "${status}"=="False"    False
         ${status}    run keyword and return status    Should Contain    ${output}    dnsmasq
-        Run Keyword If    '${status}'==False    Log    \ndnsmasq Service is not running    console=yes
-        Return From Keyword If    '${status}'==False    False
+        Run Keyword If    "${status}"=="False"    Log    \ndnsmasq Service is not running    console=yes
+        Return From Keyword If    "${status}"=="False"    False
         Log    \nAll MaaS services are running on back-end    console=yes
         [Return]    True

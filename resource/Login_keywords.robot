@@ -5,7 +5,7 @@ Login into PCC
         &{data}    Create Dictionary   username=${user_name}    password=${password}
         ${resp}  Post Request    platina   ${login}    json=${data}
         ${status}    run keyword and return status    Should Be Equal As Strings  ${resp.status_code}  200
-        Return From Keyword If    '${status}'==False    False
+        Return From Keyword If    "${status}"=="False"    False
         Log    \nUser Logged in successfully...    console=yes
         ${bearer_token}    Catenate    Bearer    ${resp.json()['token']}
         Set Suite Variable    ${sec_token}    ${bearer_token}
