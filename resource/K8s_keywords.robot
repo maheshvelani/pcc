@@ -10,7 +10,7 @@ Install K8s Cluster
         Log    \n Status Code = ${resp.status_code}    console=yes
         Log    \n JSON RESP = ${resp.json()}    console=yes
         ${status}    run keyword and return status     Should Be Equal As Strings  ${resp.status_code}  200
-        Return From Keyword If    '${status}'==False    False
+        Return From Keyword If    "${status}"=="False"    False
         [Return]    True
 
 
@@ -24,13 +24,13 @@ Verify K8s installed  # cluster createt verification
         \   Log    \n Status code = ${resp.status_code}    console=yes
         \   Should Be Equal As Strings  ${resp.status_code}  200
         \   ${status}    ${id}    Validate Cluster    ${resp.json()}    ${cluster_name}
-        \   Exit For Loop If    '${status}'==True
+        \   Exit For Loop If    "${status}"=="True"
 
-        Return From Keyword If    '${status}'==False    False
+        Return From Keyword If    "${status}"=="False"    False
         ${status}    Validate Cluster Deploy Status    ${resp.json()}
-        Return From Keyword If    '${status}'==False    False
+        Return From Keyword If    "${status}"=="False"    False
         ${status}    Validate Cluster Health Status    ${resp.json()}
-        Return From Keyword If    '${status}'==False    False
+        Return From Keyword If    "${status}"=="False"    False
         [Return]    True
 
 
@@ -44,7 +44,7 @@ Add an Application to K8s
         Log    \n Status Code = ${resp.status_code}    console=yes
         Log    \n JSON RESP = ${resp.json()}    console=yes
         ${status}    run keyword and return status    Should Be Equal As Strings  ${resp.status_code}  200
-        Return From Keyword If    '${status}'==False    False
+        Return From Keyword If    "${status}"=="False"    False
         [Return]    True
 
 Verify App installed over K8s Cluster
@@ -55,12 +55,11 @@ Verify App installed over K8s Cluster
         \   sleep 120
         \   ${resp}  Get Request    platina   ${add_kubernetes_cluster}/${${cluster_id}}    headers=${headers}
         \   Log    \n Status code = ${resp.status_code}    console=yes
-        \   Log    \n Response = ${resp.json()}    console=yes
         \   Should Be Equal As Strings  ${resp.status_code}  200
         \   ${status}    Verify App Present in Cluster    ${resp.json()}    ${app_name}
-        \   Exit For Loop If    '${status}'==True
+        \   Exit For Loop If    "${status}"=="True"
 
-         Return From Keyword If    '${status}'==False    False
+         Return From Keyword If    "${status}"=="False"    False
          [Return]    True
 
 
@@ -73,7 +72,7 @@ Upgrade K8s Cluster
         Log    \n Status Code = ${resp.status_code}    console=yes
         Log    \n RESP = ${resp.json()}    console=yes
         ${status}    run keyword and return status     Should Be Equal As Strings  ${resp.status_code}  200
-        Return From Keyword If    '${status}'==False    False
+        Return From Keyword If    "${status}"=="False"    False
         [Return]    True
 
 
@@ -84,12 +83,11 @@ Verify k8s Upgraded
         :FOR    ${index}    IN RANGE    1    ${iteration}
         \   ${resp}  Get Request    platina   ${add_kubernetes_cluster}/${${cluster_id}}    headers=${headers}
         \   Log    \n Status code = ${resp.status_code}    console=yes
-        \   Log    \n Response = ${resp.json()}    console=yes
         \   Should Be Equal As Strings    ${resp.status_code}    200
         \  ${status}    Verify Cluster Version    ${resp.json()}    ${version}
-        \   Exit For Loop If    '${status}'==True
+        \   Exit For Loop If    "${status}"=="True"
 
-        Return From Keyword If    '${status}'==False    False
+        Return From Keyword If    "${status}"=="False"    False
         [Return]    True
 
 
@@ -99,7 +97,7 @@ Delete K8s Cluster
         ${resp}    Delete Request    platina    ${add_kubernetes_cluster}/${cluster_id}    headers=${headers}
         Log    \n Status Code = ${resp.status_code}    console=yes
         ${status}    run keyword and return status     Should Be Equal As Strings  ${resp.status_code}  200
-        Return From Keyword If    '${status}'==False    False
+        Return From Keyword If    "${status}"=="False"    False
         [Return]    True
 
 
@@ -110,12 +108,11 @@ Verify K8s Cluster Deleted
         :FOR    ${index}    IN RANGE    1    ${iteration}
         \   ${resp}  Get Request    platina   ${add_kubernetes_cluster}    headers=${headers}
         \   Log    \n Status code = ${resp.status_code}    console=yes
-        \   Log    \n Response = ${resp.json()}    console=yes
         \   ${status}    Verify Cluster Deleted    ${resp.json()}    ${cluster_name}
-        \   Exit For Loop If    '${status}'==True
+        \   Exit For Loop If    "${status}"=="True"
 
         ${status}    run keyword and return status     Should Be Equal As Strings  ${resp.status_code}  200
-        Return From Keyword If    '${status}'==False    False
+        Return From Keyword If    "${status}"=="False"    False
         [Return]    True
 
 
