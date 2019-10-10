@@ -1,81 +1,26 @@
 *** Settings ***
-Library  	    OperatingSystem
-Library  	    Collections
-Library  	    String
 Library         SSHLibrary
-
 Library    	    ${CURDIR}/../lib/Request.py
 Variables       ${CURDIR}/../test_data/Url_Paths.py
-Library         ${CURDIR}/../lib/Data_Parser.py
-Library         ${CURDIR}/../lib/Entry_Criteria_Api.py
-Resource        ${CURDIR}/../resource/Resource_Keywords.robot
+Library         ${CURDIR}/../lib/Json_validator.py
+Library         ${CURDIR}/../lib/Pcc_cli_api.py
+Resource        ${CURDIR}/../resource/Common_api.robot
 
-Test Setup      Verify User Login
-Test Teardown   Delete All Sessions
-
+Test Setup      Login into PCC    host_url=${server_url}    user_name=${user_name}    password=${user_pwd}
+Test Teardown   Logout from PCC
+Set Tags        Mini Regression
 
 *** Test Cases ***
-Invader and Server Cleanup from UI
-        [Tags]    Entry Criteria
-        [Documentation]    Get and Delete available Invader and Server from the PCC
-headers
-        &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
-        ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
-        Log    \n Get Nodes Status code = ${resp.status_code}    console=yes
-        Log    \n Get Nodes Response = ${resp.json()}    console=yes
-        Should Be Equal As Strings    ${resp.status_code}    200
-        ${status}  ${node_id}  ${node_data}  Get Available Node Data  ${resp.json()}
-        Set Suite Variable    ${node_host}    ${node_data}
-        Set Suite Variable    ${node_avail_status}    ${status}
-        Pass Execution If	${node_avail_status}==False    No Nodes are available over PCC
-        Log    \nDeleting the Node's from UI......     console=yes
-        :FOR    ${id}    IN    @{node_id}
-        \    @{data}    Create List    ${id}
-        \    Log    \nDeleting Node with ID = ${id}    console=yes
-        \    ${resp}    Post Request    platina    ${delete_node}    headers=${headers}    json=${data}
-        \    Log    \n Status code = ${resp.status_code}    console=yes
-        \    Log    \n Response = ${resp.json()}    console=yes
-        \    Should Be Equal As Strings    ${resp.status_code}    200
-        \    Sleep    3 minutes
+Add Invader as a Node and Verify Online Status
+        [Documentation]    Add Invader as a Node and Verify Online Status
+        [Tags]  test_1
+
+        Add Invader    name=${invader1_node_name}    host=${invader1_node_host}    managed_by_pcc=${False}
+        Verify Invader is present in Node List    name=${invader1_node_name}
+        Verify Invader is Online    name=${invader1_node_name}
 
 
-Add Invader-1 as a Node and Verify Online Status
-        [Tags]    Entry Criteria
-        [Documentation]    Add Invader-1 as a Node and Verify Online Status
 
-        # Add Invader Node
-        &{data}    Create Dictionary  	Name=${invader1_node_name}  Host=${invader1_node_host}  managed=${${status_false}}
-        Log    \nCreating Invader Node with parameters : \n${data}\n    console=yes
-        ${resp}    Post Request    platina    ${add_node}    json=${data}   headers=${headers}
-        Log    \n Status code = ${resp.status_code}    console=yes
-        Log    \n Response = ${resp.json()}    console=yes
-        Should Be Equal As Strings    ${resp.status_code}    200
-
-        # wait for few seconds to add Invader into Node List
-        Sleep    90s
-
-        # Validate Added Node Present in Node List
-        &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
-        # Hit get_node_list API for few times to refresh the node list
-        # And verify Node availability from the latest fetched node data
-        ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
-        Sleep    3s
-        ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
-        Sleep    3s
-        ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
-        Log    \n Status code = ${resp.status_code}    console=yes
-        Log    \n Response = ${resp.json()}    console=yes
-        Should Be Equal As Strings    ${resp.status_code}    200
-
-        # Parse fetched node list and verify added Node availability from response data
-        ${status}    ${node_id}    Validate Node    ${resp.json()}    ${invader1_node_name}
-        Should Be Equal As Strings    ${status}    True    msg=Invader ${invader1_node_name} is not present in node list
-        Log    \n Invader ${invader1_node_name} ID = ${node_id}   console=yes
-        Set Suite Variable    ${invader1_id}    ${node_id}
-
-        # Verify Online Status of Added Invader
-        ${status}    Validate Node Online Status    ${resp.json()}    ${invader1_node_name}
-        Should Be Equal As Strings    ${status}    True    msg=Invader ${invader1_node_name} added successfully but it is offline
 
 
 Add Server-1 as a Node and Verify Online Status

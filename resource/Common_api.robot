@@ -5,7 +5,7 @@ Resource    Server_keywords.robot
 Resource    K8s_keywords.robot
 Resource    Lldp_keywords.robot
 Resource    MaaS_keywords.robot
-Resource    Ssh_lib.robot
+Resource    PXE_boot_keywords.robot
 Resource    Os_deployment_keywords.robot
 
 

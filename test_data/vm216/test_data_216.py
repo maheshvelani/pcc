@@ -21,9 +21,9 @@ invader1_node_host = "172.17.2.58/23"
 
 # Test Data to Add Server as Node
 # Update This data as per supported Server over PCC
-server1_node_name = "sv09"
-server1_node_host = "172.17.2.102/23"
-server1_bmc_host = "172.17.3.102/23"
+server1_node_name = "sv01"
+server1_node_host = "172.17.2.101/23"
+server1_bmc_host = "172.17.3.101"
 server1_bmc_user = "ADMIN"
 server1_bmc_pwd = "ADMIN"
 server1_console = "ttyS1"
@@ -33,9 +33,9 @@ server1_ssh_keys = "pcc"
 
 # Test Data to Add Server as Node
 # Update This data as per supported Server over PCC
-server2_node_name = "sv08"
-server2_node_host = "172.17.2.101/23"
-server2_bmc_host = "172.17.3.101"
+server2_node_name = "sv02"
+server2_node_host = "172.17.2.102/23"
+server2_bmc_host = "172.17.3.102"
 server2_bmc_user = "ADMIN"
 server2_bmc_pwd = "ADMIN"
 server2_console = "ttyS1"
@@ -73,7 +73,6 @@ app2_name = "nginxapp"
 git2_url = " https://github.com/platinasystems/devops"
 git2_branch = "master"
 git2_repo_path = "helm-charts"
-
 
 upgrade_k8_version = "v1.13.5"
 
