@@ -22,41 +22,38 @@ Add Invader as a Node and Verify Online Status
 Add Server-1 as a Node and Verify Online Status
         [Documentation]    Add Server-1 as a Node and Verify Online Status
 
-	Add Server    name=${server1_node_name}  host=${server1_node_host}  console=${server1_console}  bmc=${server1_bmc_host}/23  bmc_user=${server1_bmc_user}  bmc_password=${server1_bmc_pwd}  bmc_users=${server1_bmc_user}    ssh_key=${server1_ssh_keys}  managed_by_pcc=${True}
-	Verify Server is present in Node List    name=${server1_node_name}
-	Verify Server is Online    name=${server1_node_name}
+	    Add Server    name=${server1_node_name}  host=${server1_node_host}  console=${server1_console}  bmc=${server1_bmc_host}/23  bmc_user=${server1_bmc_user}  bmc_password=${server1_bmc_pwd}  bmc_users=${server1_bmc_user}    ssh_key=${server1_ssh_keys}  managed_by_pcc=${True}
+	    Verify Server is present in Node List    name=${server1_node_name}
+	    Verify Server is Online    name=${server1_node_name}
 
 
 Assign LLDP Role to Invader
         [Documentation]    Assign LLDP and MaaS Role to Invader - 1
-	Install LLDP Role    node_name=${invader1_node_name}
-	Verify LLDP Installed    node_name=${invader1_node_name}
+	    Install LLDP Role    node_name=${invader1_node_name}
+	    Verify LLDP Installed    node_name=${invader1_node_name}
 	
 
 Assign LLDP role to server
         [Documentation]    Assign LLDP Role to Server - 1
-	Install LLDP Role    node_name=${server1_node_name}
+	    Install LLDP Role    node_name=${server1_node_name}
         Verify LLDP Installed    node_name=${server1_node_name}
 
 
 Assign MaaS Role to Invader
         [Tags]    test_1
-	[Documentation]    Assign LLDP and MaaS Role to Invader - 1
-#	Install MaaS Role    node_name=${invader1_node_name}
-	Verify MaaS Installed    node_name=${invader1_node_name}
+	    [Documentation]    Assign LLDP and MaaS Role to Invader - 1
+	    Install MaaS Role    node_name=${invader1_node_name}
+	    Verify MaaS Installed    node_name=${invader1_node_name}
 
 
 PXE Boot to Server
         [Tags]    Entry Criteria
         [Documentation]    Server PXE Boot
-        ${status}    Server PXE boot    ${server2_bmc_host}
-        Should Be Equal As Strings    ${status}    True    msg=PXE boot Failed Over Server ${server2_node_host}
-        # Wait till Server Get Booted
-        Log    \nPXE boot Started......    console=yes
-        Sleep   5 minutes
-        Log    \nPXE boot Started......    console=yes
-        Sleep   5 minutes
-
+        PXE Boot the server    bmc_ip=${server1_bmc_ip}
+        Verify Booted server reflected over PCC UI   bmc_ip=${server1_bmc_ip}
+        Assign Management IP to PXE booted Server
+        Update Booted Server Information    server_name=${server1_node_name}    host=${server1_node_host}    console=${server1_console}     bmc_ip=${server1_bmc_ip}     bmc_user=${server1_bmc_user}    bmc_password=${Empty}    bmc_users=${Empty}
+        ...                ssh_key=${server1_ssh_keys}     managed_by_pcc=${server1_managed_by_pcc}
 
 Validate Interface Mode - Expected Inventory Mode
         [Tags]    Entry Criteria
@@ -154,33 +151,8 @@ OS Deployment over Server machine
         [Tags]    Entry Criteria
         [Documentation]    OS Deployment
 
-        # Start OS Deployment
-        &{data}    Create Dictionary  nodes=[${${server2_id}}]  image=${image_name}  locale=${en_US}  timezone=${PDT}  adminUser=${mass_user}  sshKeys=${ssh_key}
-        Log    \n Deploying OS with params = ${data}    console=yes
-        ${resp}  Post Request    platina   ${os_deployment}    json=${data}    headers=${headers}
-        Log    \n Status Code = ${resp.status_code}    console=yes
-        Log    \n Response Data = ${resp.json()}    console=yes
-    	Should Be Equal As Strings  ${resp.status_code}  200
-
-        # Wait for 15 minutes
-        Log To Console    \nOS Deployment Started...
-        Sleep	7 minutes
-        Log To Console    \nOS Deployment Started...
-        Sleep	7 minutes
-        Log To Console    \nOS Deployment Started...
-        Sleep	7 minutes
-
-        # Verify Provision Status over server
-        &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
-        ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
-        Log    \n Status code = ${resp.status_code}    console=yes
-        Log    \n Response = ${resp.json()}    console=yes
-        Should Be Equal As Strings    ${resp.status_code}    200
-        ${status}    Validate OS Provision Status    ${resp.json()}    ${server2_node_name}
-        Should Be Equal As Strings    ${status}    True    msg=Provision Status of server ${server2_node_name} is not Finished
-
-        # Verify CentOS installed in remote machine
-        Run Keyword And Ignore Error    Verify CentOS installed in server machine
+         OS Deployment    node=${server1_node_name}     image=${image1_name}     locale=${locale}    time_zone=${PDT}     admin_user=${admin_user}    ${ssh_key}
+         Verify OS installed  node_name=${server1_node_name}       os_name=${image1_name}
 
 
 Assign LLDP role to Server - 2
