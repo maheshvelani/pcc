@@ -422,3 +422,23 @@ class Json_validator:
             returnNone
         except Exception:
             return None
+
+    @staticmethod
+    def get_existing_roles_detail(resp_data, node, role):
+        """ Get HOST IP of Node
+        """
+        try:
+            role_list = []
+            if resp_data['Data'] != None:
+                for data in eval(str(resp_data))['Data']:
+                    if str(data['Name']) == str(node):
+                        try:
+                            role_list = list(data["roles"])
+                        except Exception:
+                            role_list = data["roles"]
+                        role_list.append(int(role))
+
+                        return role_list
+            return None
+        except Exception:
+            return None

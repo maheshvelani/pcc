@@ -6,8 +6,12 @@ Install MaaS Role
         ${id}    Get MaaS Id
 	Log    \nGetting Node Id...    console=yes
         ${node_id}    Get Node Id    ${node_name}
+	# Update role list
+        &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
+        ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
+        @{roles_group}    get existing roles detail    ${resp.json()}    ${node_name}    ${id}
         # Assign MaaS role to node
-        @{roles_group}    create list    ${id}
+        # @{roles_group}    create list    ${id}
         &{data}    Create Dictionary  Id=${node_id}    roles=${roles_group}
         ${resp}  Put Request    platina    ${add_group_to_node}    json=${data}     headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
@@ -23,7 +27,7 @@ Verify MaaS Installed
         ${id}    Get MaaS Id
         ${iteration}    devide num    ${timeout}    60
         :FOR    ${index}    IN RANGE    1    ${iteration}
-#        \    Sleep    60 seconds
+        \    Sleep    60 seconds
         \    &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
         \    ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
         \    Log    \nVerifying MaaS is installed...    console=yes
