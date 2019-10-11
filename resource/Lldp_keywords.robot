@@ -6,8 +6,11 @@ Install LLDP Role
         ${id}    Get LLDP Id
 	Log    \nGetting Node ID...    console=yes
         ${node_id}    Get Node Id    ${node_name}
+	&{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
+	${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
+	@{roles_group}    get existing roles detail    ${resp.json()}    ${node_name}    ${id}
         # Assign LLDP role to node
-        @{roles_group}    create list    ${id}
+        #@{roles_group}    create list    ${id}
         &{data}    Create Dictionary  Id=${node_id}    roles=${roles_group}
 	Log    \nInstalling LLDP with parameters : ${data}    console=yes
         ${resp}  Put Request    platina    ${add_group_to_node}    json=${data}     headers=${headers}
