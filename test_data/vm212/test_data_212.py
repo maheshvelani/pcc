@@ -78,7 +78,7 @@ image7_name = "ubuntu-xenial"
 locale = "en_US"
 PDT = "PDT"
 admin_user = "pcc"
-ssh_key = "['pcc']"
+ssh_key = "pcc"
 
 
 # K8S Cluster Test data

@@ -40,7 +40,7 @@ Assign LLDP role to server
 
 
 Assign MaaS Role to Invader
-        [Tags]    test_1
+#        [Tags]    test_1
 	    [Documentation]    Assign LLDP and MaaS Role to Invader - 1
 	    Install MaaS Role    node_name=${invader1_node_name}
 	    Verify MaaS Installed    node_name=${invader1_node_name}
@@ -148,10 +148,11 @@ Update Server information added after PXE boot
 
 
 OS Deployment over Server machine
-        [Tags]    Entry Criteria
+        [Tags]    test_1
         [Documentation]    OS Deployment
 
-         OS Deployment    node=${server1_node_name}     image=${image1_name}     locale=${locale}    time_zone=${PDT}     admin_user=${admin_user}    ${ssh_key}
+
+         OS Deployment    node=${server2_node_name}     image=${image1_name}     locale=${locale}    time_zone=${PDT}     admin_user=${admin_user}    ssh_key=${ssh_key}
          Verify OS installed  node_name=${server1_node_name}       os_name=${image1_name}
 
 

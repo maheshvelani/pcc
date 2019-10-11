@@ -15,7 +15,6 @@ class Request(RequestsLibrary):
             allow_redirects=None,
             timeout=None
             ):
-
         session = self._cache.switch(alias)
         if not files:
             data = self._format_data_according_to_header(session, data, headers)
@@ -27,9 +26,9 @@ class Request(RequestsLibrary):
             if type(json) == list:
                 json = [ int(x) for x in json ]
 
-        if str(uri) == "/maas/deployments/":
-            json['nodes'] = eval(json['nodes'])
-            json['sshKeys'] = eval(json['sshKeys'])
+#        if str(uri) == "/maas/deployments/":
+#            json['nodes'] = eval(json['nodes'])
+#            json['sshKeys'] = eval(json['sshKeys'])
 
         if ("gitUrl" in json) and ("appNamespace" in json):
             json = eval(str(json))

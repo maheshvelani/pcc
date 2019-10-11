@@ -2,8 +2,12 @@
 OS Deployment
         [Arguments]      ${node}=${EMPTY}     ${image}=${Empty}     ${locale}=${Empty}    ${time_zone}=${Empty}     ${admin_user}=${Empty}    ${ssh_key}=${Empty}
 
+	# Get Node Id
+	${id}    Get Node Id    ${node}
         # Start OS Deployment
-        &{data}    Create Dictionary  nodes=[${${node}}]  image=${image}  locale=${locale}  timezone=${time_zone}  adminUser=${admin_user}  sshKeys=${ssh_key}
+	@{node_list}    Create List    ${${id}}
+	@{ssh_key_list}     Create List    ${ssh_key}
+        &{data}    Create Dictionary  nodes=@{node_list}  image=${image}  locale=${locale}  timezone=${time_zone}  adminUser=${admin_user}  sshKeys=@{ssh_key_list}
         Log    \n Deploying OS with params = ${data}    console=yes
         ${resp}  Post Request    platina   ${os_deployment}    json=${data}    headers=${headers}
         Log    \n Status Code = ${resp.status_code}    console=yes
@@ -25,9 +29,8 @@ Verify OS installed with intervals
 
         # Verify Provision Status over server
         &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
-        ${resp}  Get Request    platina   ${node_name}    params=${data}  headers=${headers}
-        Log    \n Status code = ${resp.status_code}    console=yes
-        Log    \n Response = ${resp.json()}    console=yes
+        ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
+        Log    \nVerifying OS deployment status...   console=yes
         Should Be Equal As Strings    ${resp.status_code}    200
         ${status}    Validate OS Provision Status    ${resp.json()}    ${node_name}
         ${result}=      Run Keyword And Return Status   Should Be Equal As Strings    ${status}    True    msg=Provision Status of server ${server1_node_name} is not Finished
