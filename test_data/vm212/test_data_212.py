@@ -42,7 +42,7 @@ invader2_usr_pwd = "cals0ft"
 # Update This data as per supported Server over PCC
 server1_node_name = "sv25"
 server1_node_host = "172.17.2.125/23"
-server1_bmc_host = "172.17.3.125/23"
+server1_bmc_ip = "172.17.3.125/23"
 server1_bmc_user = "ADMIN"
 server1_bmc_pwd = "ADMIN"
 server1_console = "ttyS1"
@@ -75,9 +75,9 @@ image4_name = "ubuntu-cosmic"
 image5_name = "debian-stretch"
 image6_name = "centos75"
 image7_name = "ubuntu-xenial"
-en_US = "en_US"
+locale = "en_US"
 PDT = "PDT"
-mass_user = "pcc"
+admin_user = "pcc"
 ssh_key = "['pcc']"
 
 
@@ -299,3 +299,6 @@ tenant4_desc = "Test_Tenant_4"
 
 tenant5_name = "Test_Tenant_5"
 tenant5_desc = "Test_Tenant_5"
+
+#PXE
+pxe_booted_server = "0123456789"
