@@ -60,12 +60,13 @@ Assign Management IP to PXE booted Server
 
 
 Update Booted Server Information
-        [Arguments]     ${id}=${Empty}      ${name}=${Empty}    ${host}=${Empty}    ${console}=${Empty}     ${bmc}=${Empty}     ${bmc_user}=${Empty}    ${bmc_password}=${Empty}    ${bmc_users}=${Empty}
+        [Arguments]     ${server_name}=${Empty}    ${host}=${Empty}    ${console}=${Empty}     ${bmc_ip}=${Empty}     ${bmc_user}=${Empty}    ${bmc_password}=${Empty}    ${bmc_users}=${Empty}
         ...                ${ssh_key}=${Empty}     ${managed_by_pcc}=${Empty}
 
         # Update Server Node with proper information
         @{server2_bmc_users}    Create List    ${bmc_user}
         @{server2_ssh_keys}    Create List    ${ssh_key}
+        ${id}    Get Node Id    name=${pxe_booted_server}
 
         &{data}    Create Dictionary    Id=${id}  Name=${name}  console=${console}
         ...    managed=${${managed_by_pcc}}  bmc=${bmc}/23  bmcUser=${bmc_user}
