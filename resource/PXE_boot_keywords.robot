@@ -47,10 +47,12 @@ Assign Management IP to PXE booted Server
         # Get valid server interface to set management IP
         ${mngmt_interface}    get management ip interface    ${resp.json()}  ${i_interface}
         Log    \nFound Suitable interface to assign management Ip = ${mngmt_interface}  console=yes
+	Should Not Be Equal As Strings    ${mngmt_interface}    None    msg=Interface Not Found to assign Management IP    
 
         # Set Management Ip
         @{mgt_ip}    Create List    ${server_host}
-        &{data}    Create Dictionary  nodeID=${${server_id}}    ipv4Addresses=@{mgt_ip}  ifName=${mngmt_interface}  gateway=172.17.2.1  management=${true}
+        &{data}    Create Dictionary  nodeID=${${server_id}}    ipv4Addresses=@{mgt_ip}  ifName=${mngmt_interface}  gateway=172.17.2.1  
+        ...    management=${true}  adminStatus=UP
         Log    \nAssigning management ip with params = ${data}    console=yes
         ${resp}  Post Request    platina    ${add_interface}    json=${data}     headers=${headers}
         Log    \n MGT IP Assign status Code = ${resp.status_code}    console=yes
@@ -59,12 +61,11 @@ Assign Management IP to PXE booted Server
 
 
 Update Booted Server Information
-        [Arguments]     ${server_name}=${Empty}    ${host}=${Empty}    ${console}=${Empty}     ${bmc_ip}=${Empty}     ${bmc_user}=${Empty}    ${bmc_password}=${Empty}    ${bmc_users}=${Empty}
-        ...                ${ssh_key}=${Empty}     ${managed_by_pcc}=${Empty}
+        [Arguments]     ${server_name}=${Empty}  ${host}=${Empty}  ${console}=${Empty}  ${bmc_ip}=${Empty}  ${bmc_user}=${Empty}  ${bmc_password}=${Empty}  ${bmc_users}=${Empty}  ${ssh_key}=${Empty}  ${managed_by_pcc}=${Empty}
 
         # Update Server Node with proper information
         @{server_bmc_users}    Create List    ${bmc_user}
-        @{server_ssh_keys}    Create List    
+        @{server_ssh_keys}    Create List
         ${id}    Get Node Id    name=${pxe_booted_server}
 
         &{data}    Create Dictionary    Id=${id}  Name=${server_name}  console=${console}

@@ -32,7 +32,7 @@ Verify MaaS Installed
         \    ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
         \    Log    \nVerifying MaaS is installed...    console=yes
         \    Should Be Equal As Strings    ${resp.status_code}    200
-        \    ${status}    ${node_id}    Validate Node Roles    ${resp.json()}    ${node_name}    ${id}
+        \    ${status}    Validate Node Roles    ${resp.json()}    ${node_name}    ${id}
         \    Exit For Loop IF    "${status}"!="Continue"
         Return From Keyword If    "${status}"=="False"    False
         ${status}    Verify mass installation from backend    ${resp.json()}    ${node_name}

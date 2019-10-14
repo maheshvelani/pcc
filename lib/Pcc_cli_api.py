@@ -229,7 +229,6 @@ class Pcc_cli_api(OperatingSystem, SSHLibrary):
     def verify_kubernetes_cluster_installed(self, ip_addr):
         """Verify Cluster Created
         """
-        import sys, pdb; pdb.Pdb(stdout=sys.__stdout__).set_trace()
         login_op = self.open_connection(ip_addr)
         robot_logger("login over invader Ip = ", ip_addr)
         self.login("pcc", "cals0ft")
@@ -350,7 +349,7 @@ class Pcc_cli_api(OperatingSystem, SSHLibrary):
         try:
             for data in eval(str(resp))["Data"]["interfaces"]:
                 if str(interface) != str(data["interface"]['name']):
-                    if str(data["interface"]['status']) == "UP":
+                    if str(data["interface"]["carrierStatus"]) == "UP":
                         return str(data["interface"]['name'])
             return None
         except Exception:
@@ -363,7 +362,7 @@ class Pcc_cli_api(OperatingSystem, SSHLibrary):
             for data in eval(str(resp))["Data"]["interfaces"]:
                 if str(interface1) != str(data["interface"]['name']):
                     if str(interface2) != str(data["interface"]['name']):
-                        if str(data["interface"]['status']) == "UP":
+                        if str(data["interface"]['carrierStatus']) == "UP":
                             return str(data["interface"]['name'])
             return None
         except Exception:

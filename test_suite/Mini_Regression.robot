@@ -53,8 +53,8 @@ PXE Boot to Server
         Verify Booted server reflected over PCC UI   bmc_ip=${server1_bmc_ip}
         Assign Management IP to PXE booted Server    ${server1_node_host}
         Update Booted Server Information    server_name=${server1_node_name}    host=${server1_node_host}    console=${server1_console}
-        ... bmc_ip=${server1_bmc_ip}     bmc_user=${server1_bmc_user}    bmc_password=${server1_bmc_pwd}    bmc_users=${server1_bmc_user}
-        ... ssh_key=${server1_ssh_keys}     managed_by_pcc=${server1_managed_by_pcc}
+        ...  bmc_ip=${server1_bmc_ip}     bmc_user=${server1_bmc_user}    bmc_password=${server1_bmc_pwd}    bmc_users=${server1_bmc_user}
+        ...  ssh_key=${server1_ssh_keys}     managed_by_pcc=${server1_managed_by_pcc}
 
 #Validate Interface Mode - Expected Inventory Mode
 #        [Tags]    Entr
@@ -74,7 +74,6 @@ PXE Boot to Server
 
 
 OS Deployment over Server machine
-        [Tags]    os
         [Documentation]    OS Deployment
 
 
@@ -84,7 +83,6 @@ OS Deployment over Server machine
 
 
 Assign LLDP role to PXE booted Server
-        [Tags]    lldp
         [Documentation]    Assign LLDP to Server - 2
 	Install LLDP Role    node_name=${server1_node_name}
 	Verify LLDP Installed    node_name=${server1_node_name}
