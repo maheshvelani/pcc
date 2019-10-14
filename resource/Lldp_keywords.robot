@@ -10,7 +10,7 @@ Install LLDP Role
 	${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
 	@{roles_group}    get existing roles detail    ${resp.json()}    ${node_name}    ${id}
         # Assign LLDP role to node
-        #@{roles_group}    create list    ${id}
+        @{roles_group}    create list    ${id}
         &{data}    Create Dictionary  Id=${node_id}    roles=${roles_group}
 	Log    \nInstalling LLDP with parameters : ${data}    console=yes
         ${resp}  Put Request    platina    ${add_group_to_node}    json=${data}     headers=${headers}
@@ -33,7 +33,7 @@ Verify LLDP Installed
         \    Log    \nVerifying LLDP is installed...    console=yes
         \    Should Be Equal As Strings    ${resp.status_code}    200
         \    ${status}    ${node_id}    Validate Node Roles    ${resp.json()}    ${node_name}    ${id}
-        \    Exit For Loop IF    "${status}"=="True"
+        \    Exit For Loop IF    "${status}"!="Continue"
         [Return]    ${status}
 
 

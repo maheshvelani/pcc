@@ -52,99 +52,25 @@ PXE Boot to Server
         PXE Boot the server    bmc_ip=${server1_bmc_ip}
         Verify Booted server reflected over PCC UI   bmc_ip=${server1_bmc_ip}
         Assign Management IP to PXE booted Server    ${server1_node_host}
-        Update Booted Server Information    server_name=${server1_node_name}    host=${server1_node_host}    console=${server1_console}     bmc_ip=${server1_bmc_ip}     bmc_user=${server1_bmc_user}    bmc_password=${server1_bmc_pwd}    bmc_users=${server1_bmc_user}
-        ...                ssh_key=${server1_ssh_keys}     managed_by_pcc=${server1_managed_by_pcc}
+        Update Booted Server Information    server_name=${server1_node_name}    host=${server1_node_host}    console=${server1_console}
+        ... bmc_ip=${server1_bmc_ip}     bmc_user=${server1_bmc_user}    bmc_password=${server1_bmc_pwd}    bmc_users=${server1_bmc_user}
+        ... ssh_key=${server1_ssh_keys}     managed_by_pcc=${server1_managed_by_pcc}
 
-Validate Interface Mode - Expected Inventory Mode
-        [Tags]    Entr
-        [Documentation]    Verify that Server is in inventory mode
-
-        # Get SV2 interface
-        Log    \nGetting Topology Data...    console=yes
-        ${resp}    Get request    platina    ${get_topology}    headers=${headers}
-        Log    \n Status code = ${resp.status_code}    console=yes
-        Log    \n Response = ${resp.json()}    console=yes
-        Should Be Equal As Strings    ${resp.status_code}    200
-        ${interface_sv2}    Get Interface Name    ${resp.json()}  ${invader1_node_name}  0123456789
-        Set Suite Variable    ${interface_sv2}
-
-        # verify Mode into Inventory
-        Validate server Mode    inventory
-
-
-Update Server information added after PXE boot
-        [Tags]    Entry Criteria
-        [Documentation]    Update Server information
-
-        # Get Server ID
-        &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
-        ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
-        Log    \n Status code = ${resp.status_code}    console=yes
-        Log    \n Response = ${resp.json()}    console=yes
-        Should Be Equal As Strings    ${resp.status_code}    200
-        ${status}    ${node_id}    Get Server Id    ${resp.json()}    ${server2_bmc_host}
-        Should Be Equal As Strings    ${status}    True    msg=Booted Server ${server2_bmc_host} is not present in node list
-        Log    \n Server ${server2_node_name} ID = ${node_id}   console=yes
-        Set Suite Variable    ${server2_id}    ${node_id}
-
-        # Get server Interface from topology
-        Log    \nGetting Topology Data...    console=yes
-        ${resp}    Get request    platina    ${get_topology}    headers=${headers}
-        Log    \n Status code = ${resp.status_code}    console=yes
-        Log    \n Response = ${resp.json()}    console=yes
-
-        ${i_interface}  Get_booted_server_interface  ${resp.json()}  ${server2_id}
-        Log    \n\nBooted server Interface = ${i_interface}  console=yes
-
-        # Get Booted server details
-        ${resp}  Get Request    platina   ${get_node_list}/${server2_id}    headers=${headers}
-        Log    \n Status code = ${resp.status_code}    console=yes
-        Log    \n Response = ${resp.json()}    console=yes
-
-        # Get valid server interface to set management IP
-        ${mngmt_interface}    get management ip interface    ${resp.json()}  ${i_interface}
-        Log    \nFound Suitable interface to assign management Ip = ${mngmt_interface}  console=yes
-
-        # Set Management Ip
-        @{mgt_ip}    Create List    ${server2_node_host}
-        &{data}    Create Dictionary  nodeID=${${server2_id}}  ipv4Addresses=@{mgt_ip}  ifName=${mngmt_interface}  gateway=172.17.2.1  management=${true}
-        Log    \nAssigning management ip with params = ${data}    console=yes
-        ${resp}  Post Request    platina    ${add_interface}    json=${data}     headers=${headers}
-        Log    \n MGT IP Assign status Code = ${resp.status_code}    console=yes
-        Should Be Equal As Strings  ${resp.status_code}    200
-        Sleep    1 minutes
-
-
-        # Update Server Node with proper information
-        @{server2_bmc_users}    Create List    ${server2_bmc_user}
-        @{server2_ssh_keys}    Create List    ${server2_ssh_keys}
-
-        &{data}    Create Dictionary    Id=${server2_id}  Name=${server2_node_name}  console=${server2_console}
-        ...    managed=${${server2_managed_by_pcc}}  bmc=${server2_bmc_host}/23  bmcUser=${server2_bmc_user}
-        ...    bmcPassword=${server2_bmc_pwd}  bmcUsers=@{server2_bmc_users}
-        ...    sshKeys=@{server2_ssh_keys}  Host=${server2_node_host}
-        Log    \n Updating Server with Data : \n${data}\n    console=yes
-        ${resp}  Put Request    platina    ${update_node}    json=${data}     headers=${headers}
-        Log    \n Status code = ${resp.status_code}    console=yes
-        # Log    \n Response = ${resp.json()}    console=yes
-        Should Be Equal As Strings  ${resp.status_code}    200
-
-        # wait for few seconds
-        Sleep    90s
-
-        # Validate Updated Server Present in Node List
-        &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
-        # And verify Node availability from the latest fetched node data
-        ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
-        Log    \n Status code = ${resp.status_code}    console=yes
-        Log    \n Response = ${resp.json()}    console=yes
-        Should Be Equal As Strings    ${resp.status_code}    200
-
-        # Parse fetched node list and verify added Node availability from response data
-        ${status}    ${node_id}    Validate Node    ${resp.json()}    ${server2_node_name}
-        Should Be Equal As Strings    ${status}    True    msg=Server ${server2_node_name} is not present in node list
-        Log    \n Server ${server2_node_name} ID = ${node_id}   console=yes
-        Set Suite Variable    ${server2_id}    ${node_id}
+#Validate Interface Mode - Expected Inventory Mode
+#        [Tags]    Entr
+#        [Documentation]    Verify that Server is in inventory mode
+#
+#        # Get SV2 interface
+#        Log    \nGetting Topology Data...    console=yes
+#        ${resp}    Get request    platina    ${get_topology}    headers=${headers}
+#        Log    \n Status code = ${resp.status_code}    console=yes
+#        Log    \n Response = ${resp.json()}    console=yes
+#        Should Be Equal As Strings    ${resp.status_code}    200
+#        ${interface_sv2}    Get Interface Name    ${resp.json()}  ${invader1_node_name}  0123456789
+#        Set Suite Variable    ${interface_sv2}
+#
+#        # verify Mode into Inventory
+#        Validate server Mode    inventory
 
 
 OS Deployment over Server machine
@@ -152,39 +78,16 @@ OS Deployment over Server machine
         [Documentation]    OS Deployment
 
 
-         OS Deployment    node=${server1_node_name}     image=${image1_name}     locale=${locale}    time_zone=${PDT}     admin_user=${admin_user}    ssh_key=${ssh_key}
+         OS Deployment    node=${server1_node_name}     image=${image1_name}     locale=${locale}    time_zone=${PDT}
+         ...  admin_user=${admin_user}    ssh_key=${ssh_key}
          Verify OS installed  node_name=${server1_node_name}       os_name=${image1_name}
 
 
-Assign LLDP role to Server - 2
-        [Tags]    Entry Criteria
+Assign LLDP role to PXE booted Server
+        [Tags]    lldp
         [Documentation]    Assign LLDP to Server - 2
-
-        # Assign Role to Node
-        &{data}    Create Dictionary  Id=${server2_id}    roles=${lldp_role_id}
-        Log    \nAssigning a Roles with parameters: \n${data}\n    console=yes
-        ${resp}  Put Request    platina    ${add_group_to_node}    json=${data}     headers=${headers}
-        Log    \n Status code = ${resp.status_code}    console=yes
-        Log    \n Response = ${resp.json()}    console=yes
-        Should Be Equal As Strings  ${resp.status_code}    200
-
-        # Wait for few seconds to reflect assign roles over node
-        Sleep	5 minutes
-
-        # Validate Assigned Roles
-        &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
-        ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
-        Log    \n Status code = ${resp.status_code}    console=yes
-        Log    \n Response = ${resp.json()}    console=yes
-        Should Be Equal As Strings    ${resp.status_code}    200
-        ${status}    ${node_id}    Validate Node Roles    ${resp.json()}    ${server2_node_name}    ${lldp_role_id}
-        Should Be Equal As Strings    ${status}    True    msg=Node ${server2_node_name} is not updated with the Roles LLDP
-
-        Sleep	2 minutes
-
-        # Verify Online Status of Added Server
-        ${status}    Validate Node Online Status    ${resp.json()}    ${server2_node_name}
-        Should Be Equal As Strings    ${status}    True    msg=Server ${server2_node_name} added successfully but it is offline
+	Install LLDP Role    node_name=${server1_node_name}
+	Verify LLDP Installed    node_name=${server1_node_name}
 
 
 Assign Interface Ip to node to form Topology

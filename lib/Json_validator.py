@@ -207,11 +207,16 @@ class Json_validator:
         try:
             for data in eval(str(resp_data))['Data']:
                 if str(data['Name']) == str(node_name):
-                    if int(role_id) in list(data['roles']):
-                        return True, str(data['Id'])
-            return False, None
+			if (str(data['provisionStatus']) == "Finished") or (str(data['provisionStatus']) == "Ready"):
+                    		if int(role_id) in list(data['roles']):
+                            		return True
+                        elif str(data['provisionStatus']) == "In Progress":
+                        	return "Continue"
+                        else:
+                            	return False
+            return False
         except Exception:
-            return False, None
+            return False
 
     @staticmethod
     def validate_node_tenant(resp_data, node_name, tenant_id):
@@ -290,8 +295,6 @@ class Json_validator:
             if resp_data['Data'] != None:
                 for data in eval(str(resp_data))['Data']:
 			 if str(data['Name']) == str(node_name):
-				import sys, pdb; pdb.Pdb(stdout=sys.__stdout__).set_trace()
-
                          	if (str(data['provisionStatus']) == "Finished") or (str(data['provisionStatus']) == "Ready"):
                             		return True
                         	elif str(data['provisionStatus']) == "In Progress":
