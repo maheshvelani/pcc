@@ -3,7 +3,7 @@
 Install K8s Cluster
         [Arguments]    ${name}=${EMPTY}    ${version}=${EMPTY}    ${cni_plugin}=${EMPTY}    ${node_list}=${EMPTY}
 
-        &{data}    Create Dictionary    name=${name}    k8sVersion=${versiion}    cniPlugin=${cni_plugin}
+        &{data}    Create Dictionary    name=${name}    k8sVersion=${version}    cniPlugin=${cni_plugin}
         ...    nodes=@{node_list}
         Log    \nCreating Cluster with data: ${data}\n    console=yes
         ${resp}  Post Request    platina   ${add_kubernetes_cluster}    json=${data}    headers=${headers}

@@ -42,7 +42,7 @@ invader2_usr_pwd = "cals0ft"
 # Update This data as per supported Server over PCC
 server1_node_name = "sv25"
 server1_node_host = "172.17.2.125/23"
-server1_bmc_ip = "172.17.3.125/23"
+server1_bmc_ip = "172.17.3.125"
 server1_bmc_user = "ADMIN"
 server1_bmc_pwd = "ADMIN"
 server1_console = "ttyS1"

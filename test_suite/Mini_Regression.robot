@@ -51,8 +51,8 @@ PXE Boot to Server
         [Documentation]    Server PXE Boot
         PXE Boot the server    bmc_ip=${server1_bmc_ip}
         Verify Booted server reflected over PCC UI   bmc_ip=${server1_bmc_ip}
-        Assign Management IP to PXE booted Server
-        Update Booted Server Information    server_name=${server1_node_name}    host=${server1_node_host}    console=${server1_console}     bmc_ip=${server1_bmc_ip}     bmc_user=${server1_bmc_user}    bmc_password=${Empty}    bmc_users=${Empty}
+        Assign Management IP to PXE booted Server    ${server1_node_host}
+        Update Booted Server Information    server_name=${server1_node_name}    host=${server1_node_host}    console=${server1_console}     bmc_ip=${server1_bmc_ip}     bmc_user=${server1_bmc_user}    bmc_password=${server1_bmc_pwd}    bmc_users=${server1_bmc_user}
         ...                ssh_key=${server1_ssh_keys}     managed_by_pcc=${server1_managed_by_pcc}
 
 Validate Interface Mode - Expected Inventory Mode

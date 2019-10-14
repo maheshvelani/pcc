@@ -19,8 +19,7 @@ Verify Booted server reflected over PCC UI with intervals
 
         &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
         ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
-        Log    \n Status code = ${resp.status_code}    console=yes
-        Log    \n Response = ${resp.json()}    console=yes
+        Log    \nVerifying booted server reflected over UI...    console=yes
         Should Be Equal As Strings    ${resp.status_code}    200
         ${status}    ${node_id}    Get Server Id    ${resp.json()}    ${bmc_ip}
         ${result}=      Should Be Equal As Strings    ${status}    True    msg=Booted Server ${bmc_ip} is not present in node list
@@ -28,9 +27,9 @@ Verify Booted server reflected over PCC UI with intervals
 
 
 Assign Management IP to PXE booted Server
-        [Arguments]     ${name}=${pxe_booted_server}
+        [Arguments]     ${server_host}=${server_ip}
 
-        ${server_id}    Get Node Id    ${name}
+        ${server_id}    Get Node Id    ${pxe_booted_server}
         # Get server Interface from topology
         Log    \nGetting Topology Data...    console=yes
         ${resp}    Get request    platina    ${get_topology}    headers=${headers}
@@ -50,7 +49,7 @@ Assign Management IP to PXE booted Server
         Log    \nFound Suitable interface to assign management Ip = ${mngmt_interface}  console=yes
 
         # Set Management Ip
-        @{mgt_ip}    Create List    ${server2_node_host}
+        @{mgt_ip}    Create List    ${server_host}
         &{data}    Create Dictionary  nodeID=${${server_id}}    ipv4Addresses=@{mgt_ip}  ifName=${mngmt_interface}  gateway=172.17.2.1  management=${true}
         Log    \nAssigning management ip with params = ${data}    console=yes
         ${resp}  Post Request    platina    ${add_interface}    json=${data}     headers=${headers}
@@ -64,17 +63,18 @@ Update Booted Server Information
         ...                ${ssh_key}=${Empty}     ${managed_by_pcc}=${Empty}
 
         # Update Server Node with proper information
-        @{server2_bmc_users}    Create List    ${bmc_user}
-        @{server2_ssh_keys}    Create List    ${ssh_key}
+        @{server_bmc_users}    Create List    ${bmc_user}
+        @{server_ssh_keys}    Create List    
         ${id}    Get Node Id    name=${pxe_booted_server}
 
-        &{data}    Create Dictionary    Id=${id}  Name=${name}  console=${console}
-        ...    managed=${${managed_by_pcc}}  bmc=${bmc}/23  bmcUser=${bmc_user}
-        ...    bmcPassword=${bmc_password}  bmcUsers=@{bmc_users}
-        ...    sshKeys=@{ssh_key}  Host=${host}
-        Log    \n Updating Server with Data : \n${data}\n    console=yes
+        &{data}    Create Dictionary    Id=${id}  Name=${server_name}  console=${console}
+        ...    managed=${${managed_by_pcc}}  bmc=${bmc_ip}  bmcUser=${bmc_user}
+        ...    bmcPassword=${bmc_password}  bmcUsers=@{server_bmc_users}
+        ...    sshKeys=@{server_ssh_keys}  Host=${host}
+        
+	Log    \n Updating Server with Data : \n${data}\n    console=yes
         ${resp}  Put Request    platina    ${update_node}    json=${data}     headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
-        og    \n Response = ${resp.json()}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
         ${status}    Should Be Equal As Strings  ${resp.status_code}    200
         [Return]    ${status}
