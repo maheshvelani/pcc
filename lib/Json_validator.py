@@ -289,11 +289,15 @@ class Json_validator:
         try:
             if resp_data['Data'] != None:
                 for data in eval(str(resp_data))['Data']:
-                    if str(data['Name']) == str(node_name):
-                        if str(data['provisionStatus']) == "Finished":
-                            return True
-                        else:
-                            return False
+			 if str(data['Name']) == str(node_name):
+				import sys, pdb; pdb.Pdb(stdout=sys.__stdout__).set_trace()
+
+                         	if (str(data['provisionStatus']) == "Finished") or (str(data['provisionStatus']) == "Ready"):
+                            		return True
+                        	elif str(data['provisionStatus']) == "In Progress":
+                        		return "Continue"
+                        	else:
+                            		return False
             return False
         except Exception:
             return False

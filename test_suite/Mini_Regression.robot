@@ -47,7 +47,7 @@ Assign MaaS Role to Invader
 
 
 PXE Boot to Server
-        [Tags]    Entry Criteria
+        [Tags]    pxe
         [Documentation]    Server PXE Boot
         PXE Boot the server    bmc_ip=${server1_bmc_ip}
         Verify Booted server reflected over PCC UI   bmc_ip=${server1_bmc_ip}
@@ -56,7 +56,7 @@ PXE Boot to Server
         ...                ssh_key=${server1_ssh_keys}     managed_by_pcc=${server1_managed_by_pcc}
 
 Validate Interface Mode - Expected Inventory Mode
-        [Tags]    Entry Criteria
+        [Tags]    Entr
         [Documentation]    Verify that Server is in inventory mode
 
         # Get SV2 interface
@@ -148,11 +148,11 @@ Update Server information added after PXE boot
 
 
 OS Deployment over Server machine
-        [Tags]    test_1
+        [Tags]    os
         [Documentation]    OS Deployment
 
 
-         OS Deployment    node=${server2_node_name}     image=${image1_name}     locale=${locale}    time_zone=${PDT}     admin_user=${admin_user}    ssh_key=${ssh_key}
+         OS Deployment    node=${server1_node_name}     image=${image1_name}     locale=${locale}    time_zone=${PDT}     admin_user=${admin_user}    ssh_key=${ssh_key}
          Verify OS installed  node_name=${server1_node_name}       os_name=${image1_name}
 
 

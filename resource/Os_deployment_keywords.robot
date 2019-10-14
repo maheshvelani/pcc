@@ -17,17 +17,17 @@ OS Deployment
 
 
 Verify OS installed
-        [Arguments]     ${node_name}=${EMPTY}       ${os_name}=${EMPTY}    ${timeout}=20 minutes
-         ${iteration}    devide num    ${timeout}    2 minutes
+        [Arguments]     ${node_name}=${EMPTY}       ${os_name}=${EMPTY}    ${timeout}=1200
+         ${iteration}    devide num    ${timeout}    120
         :FOR    ${index}    IN RANGE    1    ${iteration}
+	\   Sleep 	120 seconds
         \   &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
         \   ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
         \   Log    \nVerifying OS deployment status...   console=yes
         \   Should Be Equal As Strings    ${resp.status_code}    200
         \   ${status}    Validate OS Provision Status    ${resp.json()}    ${node_name}
-        \    Exit For Loop IF    "${status}"=="True"
-        #${result}=	Wait Until Keyword Succeeds     20 minutes      2 minutes       Verify OS installed with intervals      ${node_name}
-        Return From Keyword If    "${status}"=="False"    False
+        \    Exit For Loop IF    "${status}"!="Continue"
+	Return From Keyword If    "${status}"=="False"    False
         ${result}    Verify OS installed in server machine    ${node_name}    ${os_name}
         [Return]    ${result}
 
