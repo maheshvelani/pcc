@@ -49,13 +49,18 @@ Assign Management IP to PXE booted Server
         Log    \nFound Suitable interface to assign management Ip = ${mngmt_interface}  console=yes
 	Should Not Be Equal As Strings    ${mngmt_interface}    None    msg=Interface Not Found to assign Management IP    
 
-        # Set Management Ip
+
+	${interface_id}    get interface id    ${resp.json()}    ${mngmt_interface}
+	Log To Console    \nInterface ${mngmt_interface} id = ${interface_id}
+
+	# Set Management Ip
         @{mgt_ip}    Create List    ${server_host}
-        &{data}    Create Dictionary  nodeID=${${server_id}}    ipv4Addresses=@{mgt_ip}  ifName=${mngmt_interface}  gateway=${gateway}  
-        ...    management=${true}  adminStatus=UP
+        &{data}    Create Dictionary  nodeId=${${server_id}}    ipv4Addresses=@{mgt_ip}  ifName=${mngmt_interface}  gateway=${gateway}  
+        ...    management=true    adminStatus=UP  interfaceId=${interface_id}
         Log    \nAssigning management ip with params = ${data}    console=yes
         ${resp}  Post Request    platina    ${add_interface}    json=${data}     headers=${headers}
         Log    \n MGT IP Assign status Code = ${resp.status_code}    console=yes
+        Log    \n MGT IP Assign Resp = ${resp.json()}    console=yes
         ${status}=      Run Keyword And Return Status   Should Be Equal As Strings  ${resp.status_code}    200
         [Return]    ${status}
 

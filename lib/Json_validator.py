@@ -453,3 +453,15 @@ class Json_validator:
             return None
         except Exception:
             return None
+
+    @staticmethod
+    def get_interface_id(resp, interface):
+        """ Get interface ip
+        """
+        try:
+            for data in eval(str(resp))["Data"]["interfaces"]:
+	        if str(data["interface"]["name"]) == str(interface):
+		    return  data["interface"]["id"]
+	    return None
+	except Exception:
+	    return None
