@@ -336,8 +336,12 @@ class Json_validator:
         """
         try:
             for data in eval(str(resp_data))['Data']:
-                if str(data['deployStatus']) == "installed":
+                if str(data['deployStatus']) == "installing":
+                    return "Continue"
+                elif str(data['deployStatus']) == "installed":
                     return True
+                else:
+                    return False
             return False
         except Exception:
             return False

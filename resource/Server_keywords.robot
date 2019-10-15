@@ -19,7 +19,7 @@ Add Server
 Verify Server is present in Node List
         [Arguments]    ${name}=${EMPTY}    ${timeout}=120
 
-        ${iteration}    devide num    ${timeout}    10
+        ${iteration}    divide num    ${timeout}    10
         :FOR    ${index}    IN RANGE    1    ${iteration}
         \    Sleep    10 seconds
         \    &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
@@ -34,7 +34,7 @@ Verify Server is present in Node List
 Verify Server is Online
         [Arguments]    ${name}=${EMPTY}    ${timeout}=180
 
-        ${iteration}    devide num    ${timeout}    20
+        ${iteration}    divide num    ${timeout}    20
         :FOR    ${index}    IN RANGE    1    ${iteration}
         \    Sleep    20 seconds
         \    &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
@@ -63,7 +63,7 @@ Delete Server
 Verify Server is Deleted
         [Arguments]    ${name}=${EMPTY}    ${timeout}=180
 
-        ${iteration}    devide num    ${timeout}    20
+        ${iteration}    divide num    ${timeout}    20
         :FOR    ${index}    IN RANGE    1    ${iteration}
         \    Sleep    20 seconds
         \    &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=

@@ -25,7 +25,7 @@ Verify LLDP Installed
 	
 	Log    \nGetting LLDP role ID...    console=yes
         ${id}    Get LLDP Id
-        ${iteration}    devide num    ${timeout}    50
+        ${iteration}    divide num    ${timeout}    50
         :FOR    ${index}    IN RANGE    1    ${iteration}
         \    Sleep    50 seconds
         \    &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
@@ -55,7 +55,7 @@ Verify LLDP Role is Removed
         [Arguments]    ${node_name}=${EMPTY}    ${timeout}=300
 
         ${id}    Get LLDP Id
-        ${iteration}    devide num    ${timeout}    30
+        ${iteration}    divide num    ${timeout}    30
         :FOR    ${index}    IN RANGE    1    ${iteration}
         \    Sleep    30 seconds
         \    &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=

@@ -25,7 +25,7 @@ Verify MaaS Installed
 
 	Log    \nGetting MaaS Role Id...    console=yes
         ${id}    Get MaaS Id
-        ${iteration}    devide num    ${timeout}    60
+        ${iteration}    divide num    ${timeout}    60
         :FOR    ${index}    IN RANGE    1    ${iteration}
         \    Sleep    60 seconds
         \    &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
@@ -55,7 +55,7 @@ Verify MaaS Role is Removed
         [Arguments]    ${node_name}=${EMPTY}    ${timeout}=300
 
         ${id}    Get MaaS Id
-        ${iteration}    devide num    ${timeout}    30
+        ${iteration}    divide num    ${timeout}    30
         :FOR    ${index}    IN RANGE    1    ${iteration}
         \    Sleep    30 seconds
         \    &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=

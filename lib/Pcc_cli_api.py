@@ -26,7 +26,7 @@ class Pcc_cli_api(OperatingSystem, SSHLibrary):
     def __init__(self):
         self.master_node = None
 
-    def devide_num(self, a, b):
+    def divide_num(self, a, b):
         """ return number division
         """
         return int(int(a) / int(b))

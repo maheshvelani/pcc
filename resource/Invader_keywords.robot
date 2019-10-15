@@ -14,7 +14,7 @@ Add Invader
 Verify Invader is present in Node List
         [Arguments]    ${name}=${EMPTY}    ${timeout}=120
 
-        ${iteration}    devide num    ${timeout}    10
+        ${iteration}    divide num    ${timeout}    10
         :FOR    ${index}    IN RANGE    1    ${iteration}
         \    Sleep    10 seconds
         \    &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
@@ -29,7 +29,7 @@ Verify Invader is present in Node List
 Verify Invader is Online
         [Arguments]    ${name}=${EMPTY}    ${timeout}=180
 
-        ${iteration}    devide num    ${timeout}    20
+        ${iteration}    divide num    ${timeout}    20
         :FOR    ${index}    IN RANGE    1    ${iteration}
         \    Sleep    20 seconds
         \    &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
@@ -58,7 +58,7 @@ Delete Invader
 Verify Invader is Deleted
         [Arguments]    ${name}=${EMPTY}    ${timeout}=180
 
-        ${iteration}    devide num    ${timeout}    30
+        ${iteration}    divide num    ${timeout}    30
         :FOR    ${index}    IN RANGE    1    ${iteration}
         \    Sleep    30 seconds
         \    &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=

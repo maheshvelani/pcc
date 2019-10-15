@@ -18,7 +18,7 @@ OS Deployment
 
 Verify OS installed
         [Arguments]     ${node_name}=${EMPTY}       ${os_name}=${EMPTY}    ${timeout}=1200
-         ${iteration}    devide num    ${timeout}    120
+         ${iteration}    divide num    ${timeout}    120
         :FOR    ${index}    IN RANGE    1    ${iteration}
 	\   Sleep 	120 seconds
         \   &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=

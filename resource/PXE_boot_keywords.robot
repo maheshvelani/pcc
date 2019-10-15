@@ -51,7 +51,7 @@ Assign Management IP to PXE booted Server
 
         # Set Management Ip
         @{mgt_ip}    Create List    ${server_host}
-        &{data}    Create Dictionary  nodeID=${${server_id}}    ipv4Addresses=@{mgt_ip}  ifName=${mngmt_interface}  gateway=172.17.2.1  
+        &{data}    Create Dictionary  nodeID=${${server_id}}    ipv4Addresses=@{mgt_ip}  ifName=${mngmt_interface}  gateway=${gateway}  
         ...    management=${true}  adminStatus=UP
         Log    \nAssigning management ip with params = ${data}    console=yes
         ${resp}  Post Request    platina    ${add_interface}    json=${data}     headers=${headers}

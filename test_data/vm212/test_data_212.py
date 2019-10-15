@@ -302,3 +302,4 @@ tenant5_desc = "Test_Tenant_5"
 
 #PXE
 pxe_booted_server = "0123456789"
+gateway = 172.17.2.1

@@ -20,30 +20,29 @@ Add Invader as a Node and Verify Online Status
 
 
 Add Server-1 as a Node and Verify Online Status
-        [Documentation]    Add Server-1 as a Node and Verify Online Status
-
-	    Add Server    name=${server1_node_name}  host=${server1_node_host}  console=${server1_console}  bmc=${server1_bmc_host}/23  bmc_user=${server1_bmc_user}  bmc_password=${server1_bmc_pwd}  bmc_users=${server1_bmc_user}    ssh_key=${server1_ssh_keys}  managed_by_pcc=${True}
-	    Verify Server is present in Node List    name=${server1_node_name}
-	    Verify Server is Online    name=${server1_node_name}
+	[Documentation]    Add Server-1 as a Node and Verify Online Status
+	Add Server    name=${server1_node_name}  host=${server1_node_host}  console=${server1_console}  bmc=${server1_bmc_host}/23  bmc_user=${server1_bmc_user}  bmc_password=${server1_bmc_pwd}  bmc_users=${server1_bmc_user}    ssh_key=${server1_ssh_keys}  managed_by_pcc=${True}
+	Verify Server is present in Node List    name=${server1_node_name}
+	Verify Server is Online    name=${server1_node_name}
 
 
 Assign LLDP Role to Invader
         [Documentation]    Assign LLDP and MaaS Role to Invader - 1
-	    Install LLDP Role    node_name=${invader1_node_name}
-	    Verify LLDP Installed    node_name=${invader1_node_name}
+	Install LLDP Role    node_name=${invader1_node_name}
+	Verify LLDP Installed    node_name=${invader1_node_name}
 	
 
 Assign LLDP role to server
         [Documentation]    Assign LLDP Role to Server - 1
-	    Install LLDP Role    node_name=${server1_node_name}
+	Install LLDP Role    node_name=${server1_node_name}
         Verify LLDP Installed    node_name=${server1_node_name}
 
 
 Assign MaaS Role to Invader
 #        [Tags]    test_1
-	    [Documentation]    Assign LLDP and MaaS Role to Invader - 1
-	    Install MaaS Role    node_name=${invader1_node_name}
-	    Verify MaaS Installed    node_name=${invader1_node_name}
+	 [Documentation]    Assign LLDP and MaaS Role to Invader - 1
+	 Install MaaS Role    node_name=${invader1_node_name}
+	 Verify MaaS Installed    node_name=${invader1_node_name}
 
 
 PXE Boot to Server
@@ -75,15 +74,15 @@ PXE Boot to Server
 
 OS Deployment over Server machine
         [Documentation]    OS Deployment
-
-
-         OS Deployment    node=${server1_node_name}     image=${image1_name}     locale=${locale}    time_zone=${PDT}
+	
+	OS Deployment    node=${server1_node_name}     image=${image1_name}     locale=${locale}    time_zone=${PDT}
          ...  admin_user=${admin_user}    ssh_key=${ssh_key}
          Verify OS installed  node_name=${server1_node_name}       os_name=${image1_name}
 
 
 Assign LLDP role to PXE booted Server
         [Documentation]    Assign LLDP to Server - 2
+	
 	Install LLDP Role    node_name=${server1_node_name}
 	Verify LLDP Installed    node_name=${server1_node_name}
 
@@ -153,7 +152,6 @@ Assign Interface Ip to node to form Topology
         # Wait for few minutes to reflect assign IP into topology
         Sleep  5 minutes
 
-
 Validate Interface Mode - Expected user mode
         [Tags]    Entry Criteria
         [Documentation]    Verify that Server is in inventory mode
@@ -163,208 +161,35 @@ Validate Interface Mode - Expected user mode
 
 
 Create Kubernetes Cluster
-        [Tags]    Entry Criteria
         [Documentation]    Create Kubernetes Cluster
 
-        # Create Kubernetes cluster
-        &{data1}    Create Dictionary  id=${${invader1_id}}
-        &{data2}    Create Dictionary  id=${${server1_id}}
-        &{data3}    Create Dictionary  id=${${server2_id}}
-        @{json}    Create List    ${data1}  ${data2}  ${data3}
+        Install K8s Cluster    name=${cluster_name}    version=${cluster_version}    cni_plugin=${cni_plugin}    node1_name=${invader1_node_name}    node2_name=${server1_node_name}    node3_name=${server2_node_name}
+        Verify K8s installed    cluster_name=${cluster_name}    node_name=${invader1_node_name}
 
-        &{data}    Create Dictionary  name=${cluster_name}  k8sVersion=${cluster_version}  cniPlugin=${cni_plugin}
-        ...    nodes=@{json}
-        Log    \nCreating Cluster with data: ${data}\n
-        ${resp}  Post Request    platina   ${add_kubernetes_cluster}    json=${data}    headers=${headers}
-        Log    \n Status Code = ${resp.status_code}    console=yes
-        Log    \n JSON RESP = ${resp.json()}    console=yes
-        Should Be Equal As Strings  ${resp.status_code}  200
-
-        # Wait for few seconds
-        Sleep  5 minutes
-        Log To Console    \nK8s is installing.....
-        Sleep  5 minutes
-        Log To Console    \nK8s is installing.....
-        Sleep  5 minutes
-        Log To Console    \nK8s is installing.....
-        Sleep  5 minutes
-        Log To Console    \nK8s is installing.....
-        Sleep  3 minutes
-
-        # Verify cluster created
-        ${resp}  Get Request    platina   ${add_kubernetes_cluster}    headers=${headers}
-        Log    \n Status code = ${resp.status_code}    console=yes
-        Log    \n Response = ${resp.json()}    console=yes
-        Should Be Equal As Strings    ${resp.status_code}    200
-        ${status}    ${id}    Validate Cluster    ${resp.json()}    ${cluster_name}
-        Should Be Equal As Strings    ${status}    True    msg=Created Cluster ${cluster_name} is not present in Cluster list
-        Set Suite Variable    ${cluster_id}    ${id}
-        ${status}    Validate Cluster Deploy Status    ${resp.json()}
-        Should Be Equal As Strings    ${status}    True    msg=Cluster installation failed#
-        ${status}    Validate Cluster Health Status    ${resp.json()}
-        Should Be Equal As Strings    ${status}    True    msg=Cluster installed but Health status is not good
 
 
 Verify Created K8s Cluster installation from back end
-        [Tags]    Entry Criteria
         [Documentation]    Verify Kubernetes Cluster
         Verify K8s installed
 
 
 Add an app to k8s
-        [Tags]    Entry Criteria
         [Documentation]    Add an App to K8S
 
-        # Add an App to Kubernetes cluster
-        &{data}    Create Dictionary  label=${app_name}  appName=${app_name}  appNamespace=${app_name}  gitUrl=${git_url}
-        ...  gitRepoPath=${git_repo_path}  gitBranch=${git_branch}
-        Log    \nAdding App with Data: ${data}\n  console=yes
-        ${resp}  Post Request    platina   ${add_kubernetes_cluster}${cluster_id}/app    json=[${data}]    headers=${headers}
-        Log    \n Status Code = ${resp.status_code}    console=yes
-        Should Be Equal As Strings  ${resp.status_code}  200
-
-        Sleep    2 minutes
-
-        # Verify App Installed Successfully..
-        ${resp}  Get Request    platina   ${add_kubernetes_cluster}/${${cluster_id}}    headers=${headers}
-        Log    \n Status code = ${resp.status_code}    console=yes
-        Log    \n Response = ${resp.json()}    console=yes
-        Should Be Equal As Strings    ${resp.status_code}    200
-        ${status}    Verify App Present in Cluster    ${resp.json()}    ${app_name}
-        Should Be Equal As Strings    ${status}    True    msg=Installed App ${app_name} is not present/installed in cluster
-
+        Add an Application to K8s    cluster_name=${cluster_name}    label=${app_name}    app_name=${app_name}    name_space=${app_name}    git_url=${git_url}    git_repo_path=${git_repo_path}    git_branch=${git_branch}
+        Verify App installed over K8s Cluster    cluster_name=${cluster_name}    app_name=${app_name}
 
 Update k8s and verify version updated
-        [Tags]    Entry Criteria
         [Documentation]    Update K8s version
 
-        # Upgrade K8s Version
-        &{data}    Create Dictionary  k8sVersion=${upgrade_k8_version}
-        Log    \nUpgrading k8s with Data: ${data}\n  console=yes
-        ${resp}  Post Request    platina   ${add_kubernetes_cluster}${cluster_id}/upgrade  json=${data}  headers=${headers}
-        Log    \n Status Code = ${resp.status_code}    console=yes
-        Log    \n RESP = ${resp.json()}    console=yes
-        Should Be Equal As Strings  ${resp.status_code}  200
-
-        Sleep    5 minutes
-        Log To Console    K8s Upgrading........
-        Sleep    5 minutes
-        Log To Console    K8s Upgrading........
-        Sleep    5 minutes
-        Log To Console    K8s Upgrading........
-        Sleep    5 minutes
-        Log To Console    K8s Upgrading........
-        Sleep    5 minutes
-        Log To Console    K8s Upgrading........
-        Sleep    5 minutes
-        Log To Console    K8s Upgrading........
-
-        # Verify K8s Upgradded
-        ${resp}  Get Request    platina   ${add_kubernetes_cluster}/${${cluster_id}}    headers=${headers}
-        Log    \n Status code = ${resp.status_code}    console=yes
-        Log    \n Response = ${resp.json()}    console=yes
-        Should Be Equal As Strings    ${resp.status_code}    200
-        ${status}    Verify Cluster Version    ${resp.json()}    ${upgrade_k8_version}
-        Should Be Equal As Strings    ${status}    True    msg=K8s is not upgradder with version = ${upgrade_k8_version}
+        Upgrade K8s Cluster    cluster_name=${cluster_name}    version=${upgrade_k8_version}
+        Verify k8s Upgraded    cluster_name=${cluster_name}    version=${upgrade_k8_version}
 
 
 Install another app as sanity check
-        [Tags]    Entry Criteria
-        [Documentation]    Insatall Another app as sanity check
+        [Documentation]    Install Another app as sanity check
 
-        # Install an App to K8s Cluster
-        &{data}    Create Dictionary  label=${app2_name}  appName=${app2_name}  appNamespace=${app2_name}  gitUrl=${git2_url}
-        ...  gitRepoPath=${git2_repo_path}  gitBranch=${git2_branch}
-        Log    \nAdding App with Data: ${data}\n  console=yes
-        ${resp}  Post Request    platina   ${add_kubernetes_cluster}${cluster_id}/app    json=[${data}]    headers=${headers}
-        Log    \n Status Code = ${resp.status_code}    console=yes
-        Should Be Equal As Strings  ${resp.status_code}  200
-
-        Sleep    2 minutes
-
-        # Verify App Installed Successfully..
-        ${resp}  Get Request    platina   ${add_kubernetes_cluster}/${${cluster_id}}    headers=${headers}
-        Log    \n Status code = ${resp.status_code}    console=yes
-        Log    \n Response = ${resp.json()}    console=yes
-        Should Be Equal As Strings    ${resp.status_code}    200
-        ${status}    Verify App Present in Cluster    ${resp.json()}    ${app2_name}
-        Should Be Equal As Strings    ${status}    True    msg=Installed App ${app2_name} is not present/installed in cluster
+        Add an Application to K8s    cluster_name=${cluster_name}    label=${app2_name}    app_name=${app2_name}    name_space=${app2_name}    git_url=${git2_url}    git_repo_path=${git2_repo_path}    git_branch=${git2_branch}
+        Verify App installed over K8s Cluster    ${cluster_name}=${cluster_name}    ${app_name}=${app2_name}
 
 
-Delete K8s Cluster
-        # Delete K8s Cluster
-        Log    \n\nDeleting Cluster...    console=yes
-        ${resp}  Delete Request	   platina    ${add_kubernetes_cluster}/${cluster_id}    headers=${headers}
-        Log    \n Status Code = ${resp.status_code}    console=yes
-        Should Be Equal As Strings  ${resp.status_code}  200
-
-        # Wait for few seconds
-        Sleep    5 minutes
-
-        # Verify Cluster Deleted
-        ${resp}  Get Request    platina   ${add_kubernetes_cluster}    headers=${headers}
-        Log    \n Status code = ${resp.status_code}    console=yes
-        Log    \n Response = ${resp.json()}    console=yes
-        Should Be Equal As Strings    ${resp.status_code}    200
-        ${status}    Verify Cluster Deleted    ${resp.json()}    ${cluster_name}
-        Should Be Equal As Strings    ${status}    True    msg=Cluster ${cluster_name} not deleted
-
-
-
-*** keywords ***
-SSH into Invader and Verify mass installation started
-        [Arguments]    ${invader_ip}
-        ${i_ip}    get ip   ${invader_ip}
-        SSHLibrary.Open Connection     ${i_ip}    timeout=1 hour
-        SSHLibrary.Login               ${invader_usr_name}        ${invader_usr_pwd}
-        Sleep    2s
-        ${output}=         SSHLibrary.Execute Command    ps -aef | grep ROOT
-        SSHLibrary.Close All Connections
-        Log    \n\n INVADER DATA = ${output}    console=yes
-        Should Contain    ${output}    lighttpd.conf
-        Should Contain    ${output}    tinyproxy.conf
-        Should Contain    ${output}    dnsmasq
-
-
-Verify CentOS installed in server machine
-        # Get OS release data from server
-        ${server_ip}    get ip   ${server2_node_host}
-        SSHLibrary.Open Connection     ${server_ip}    timeout=1 hour
-        SSHLibrary.Login               root        plat1na
-        Sleep    2s
-        ${output}=        SSHLibrary.Execute Command    cat /etc/os-release
-        Log    \n\nSERVER RELEASE DATA = ${output}    console=yes
-        Should Contain    ${output}    CentOS Linux
-        ${output}    SSHLibrary.Execute Command    uptime -p
-        Log    \n\nSERVER UP Time Data DATA = ${output} \n\n    console=yes
-        ${status}    Verify server up time     ${output}
-        Should Be Equal As Strings    ${status}    True    msg=There are no new OS deployed in last few minutes
-        SSHLibrary.Close All Connections
-
-
-Verify K8s installed
-        # Verify k8s installed
-        ${i_ip}    Get Ip    ${invader1_node_host}
-        SSHLibrary.Open Connection     ${i_ip}    timeout=1 hour
-        SSHLibrary.Login               ${invader_usr_name}  ${invader_usr_pwd }
-        Sleep    2s
-        ${output}    SSHLibrary.Execute Command    sudo kubectl get nodes
-        SSHLibrary.Close All Connections
-        Log    \n\nK8S - DATA = ${output} \n\n    console=yes
-        Should Contain  ${output}    Ready
-        Should Contain  ${output}    master
-
-
-Validate server Mode
-        [Arguments]    ${mode}
-        # Get OS release data from server
-        ${i_ip}    get ip   ${invader1_node_host}
-        SSHLibrary.Open Connection     ${i_ip}    timeout=1 hour
-        SSHLibrary.Login               ${invader_usr_name}  ${invader_usr_pwd }
-        Sleep    2s
-        ${output}    SSHLibrary.Execute Command    sudo grep \'${interface_sv2}\' /srv/maas/state/tenants.json -C 2
-        SSHLibrary.Close All Connections
-        Log    \nINVENTORY DATA = ${output}\n    console=yes
-        Sleep    2s
-        ${status}    Validate Inventory Data    ${output}    ${mode}
-        Should Be Equal As Strings    ${status}  True  msg=Expected mode is = ${mode} but actual mode is different...

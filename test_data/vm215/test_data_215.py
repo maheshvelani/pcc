@@ -78,3 +78,7 @@ git2_repo_path = "helm-charts"
 upgrade_k8_version = "v1.13.5"
 
 status_false = "false"
+
+#PXE
+gateway = 172.17.2.1
+pxe_booted_server = '0123456789'
