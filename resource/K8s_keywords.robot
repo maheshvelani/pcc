@@ -155,62 +155,93 @@ Verify K8s Installed from backend
 Assign Interface Ip to node to form Topology
         [Arguments]    ${node1}=${EMPTY}    ${node2}=${EMPTY}    ${node3}=${EMPTY}
 
+	# Get Nodes ID
+        ${invader1_id}    Get Node Id    ${node1}
+        ${server1_id}    Get Node Id    ${node2}
+        ${server2_id}    Get Node Id    ${node3}
+
         Log    \nGetting Topology Data...    console=yes
         ${resp}    Get request    platina    ${get_topology}    headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
         Log    \n Topology Response = ${resp.json()}    console=yes
         Should Be Equal As Strings    ${resp.status_code}    200
 
-        ${interface_sv1}    Get Interface Name    ${resp.json()}  ${invader1_node_name}  ${server1_node_name}
-        ${interface_sv2}    Get Interface Name    ${resp.json()}  ${invader1_node_name}  ${server2_node_name}
-        ${interface1_name}  Get Interface Name    ${resp.json()}  ${server1_node_name}  ${invader1_node_name}
-        ${interface2_name}  Get Interface Name    ${resp.json()}  ${server2_node_name}  ${invader1_node_name}
+        ${interface_sv1}    Get Interface Name    ${resp.json()}  ${node1}  ${node2}
+        ${interface_sv2}    Get Interface Name    ${resp.json()}  ${node1}  ${node3}
+        ${interface1_name}  Get Interface Name    ${resp.json()}  ${node2}  ${node1}
+        ${interface2_name}  Get Interface Name    ${resp.json()}  ${node3}  ${node1}
 
-        Log  \n\nInterface Between ${invader1_node_name} and ${server1_node_name} = ${interface_sv1}  console=yes
-        Log  \n\nInterface Between ${invader1_node_name} and ${server2_node_name} = ${interface_sv2}  console=yes
-        Log  \n\nInterface Between ${server1_node_name} and ${invader1_node_name} = ${interface1_name}  console=yes
-        Log  \n\nInterface Between ${server2_node_name} and ${invader1_node_name} = ${interface2_name}  console=yes
+        Log  \n\nInterface Between ${node1} and ${node2} = ${interface_sv1}  console=yes
+        Log  \n\nInterface Between ${node1} and ${node3} = ${interface_sv2}  console=yes
+        Log  \n\nInterface Between ${node2} and ${node1} = ${interface1_name}  console=yes
+        Log  \n\nInterface Between ${node3} and ${node1} = ${interface2_name}  console=yes
+
+	# Get Interface ID     
+        ${resp}  Get Request    platina   ${get_node_list}/${invader1_id}    headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        ${interface1_id}    get interface id    ${resp.json()}    ${interface_sv1}
+        Log To Console    \nInterface ${interface_sv1} id = ${interface1_id}
+        ${interface2_id}    get interface id    ${resp.json()}    ${interface_sv2}
+        Log To Console    \nInterface ${interface_sv2} id = ${interface2_id}
+		     
+        ${resp}  Get Request    platina   ${get_node_list}/${server1_id}    headers=${headers}
+        #Log    \n Status code = ${resp.status_code}    console=yes
+        #Log    \n Response = ${resp.json()}    console=yes
+        ${interface3_id}    get interface id    ${resp.json()}    ${interface1_name}
+        Log To Console    \nInterface ${interface1_name} id = ${interface3_id}
+
+        ${resp}  Get Request    platina   ${get_node_list}/${server2_id}    headers=${headers}
+        #Log    \n Status code = ${resp.status_code}    console=yes
+        #Log    \n Response = ${resp.json()}    console=yes
+        ${interface4_id}    get interface id    ${resp.json()}    ${interface2_name}
+        Log To Console    \nInterface ${interface2_name} id = ${interface4_id}
+
+        Log    \nGetting Topology Data...    console=yes
+        ${resp}    Get request    platina    ${get_topology}    headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Topology Response = ${resp.json()}    console=yes
+        Should Be Equal As Strings    ${resp.status_code}    200
 
         # Get Invader Topology
-        ${status}    ${sv1_topology}    Prepare Invader Topology  ${resp.json()}  ${invader1_id}  ${interface_sv1}  192.0.2.102/31
-        ${status}    ${sv2_topology}    Prepare Invader Topology  ${resp.json()}  ${invader1_id}  ${interface_sv2}  192.0.2.100/31
-        ${status}    ${i1_topology}    Prepare Invader Topology  ${resp.json()}  ${server1_id}  ${interface1_name}  192.0.2.103/31
-        ${status}    ${i2_topology}    Prepare Invader Topology  ${resp.json()}  ${server2_id}  ${interface2_name}  192.0.2.101/31
-
+        ${status}    ${sv1_topology}    Prepare Invader Topology  ${resp.json()}  ${invader1_id}  ${interface_sv1}  ${interface1_id}  192.0.2.102/31
+        ${status}    ${sv2_topology}    Prepare Invader Topology  ${resp.json()}  ${invader1_id}  ${interface_sv2}  ${interface2_id}  192.0.2.100/31
+        ${status}    ${i1_topology}    Prepare Invader Topology  ${resp.json()}  ${server1_id}  ${interface1_name}  ${interface3_id}  192.0.2.103/31
+        ${status}    ${i2_topology}    Prepare Invader Topology  ${resp.json()}  ${server2_id}  ${interface2_name}  ${interface4_id}  192.0.2.101/31
 
         # Update Invader interfaces
         Log    \n Updating invader topology with data = ${sv1_topology} \n    console=yes
-#        ${resp}  Post Request    platina   ${add_interface}    json=${sv1_topology}    headers=${headers}
-#        Log    \n Status Code = ${resp.status_code}    console=yes
-#        Log    \n JSON RESP = ${resp.json()}    console=yes
-        #Should Be Equal As Strings  ${resp.status_code}  200
+        ${resp}  Post Request    platina   ${add_interface}    json=${sv1_topology}    headers=${headers}
+        Log    \n Status Code = ${resp.status_code}    console=yes
+        Log    \n JSON RESP = ${resp.json()}    console=yes
+        Should Be Equal As Strings  ${resp.status_code}  200
 
         Sleep    5s
 
         Log    \n Updating invader topology with data = ${sv2_topology} \n    console=yes
-#        ${resp}  Post Request    platina   ${add_interface}    json=${sv2_topology}    headers=${headers}
-#        Log    \n Status Code = ${resp.status_code}    console=yes
-#        Log    \n JSON RESP = ${resp.json()}    console=yes
-        #Should Be Equal As Strings  ${resp.status_code}  200
+        ${resp}  Post Request    platina   ${add_interface}    json=${sv2_topology}    headers=${headers}
+        Log    \n Status Code = ${resp.status_code}    console=yes
+        Log    \n JSON RESP = ${resp.json()}    console=yes
+        Should Be Equal As Strings  ${resp.status_code}  200
 
         Sleep    5s
 
-        Log    \n Updating Server topology with data = ${i1_topology} \n    console=yes
+#        Log    \n Updating Server topology with data = ${i1_topology} \n    console=yes
 #        ${resp}  Post Request    platina   ${add_interface}    json=${i1_topology}    headers=${headers}
 #        Log    \n Status Code = ${resp.status_code}    console=yes
 #        Log    \n JSON RESP = ${resp.json()}    console=yes
-        #Should Be Equal As Strings  ${resp.status_code}  200
-
-        Sleep    5s
-
-        Log    \n Updating Server topology with data = ${i2_topology} \n    console=yes
+#        #Should Be Equal As Strings  ${resp.status_code}  200
+#
+#        Sleep    5s
+#
+#        Log    \n Updating Server topology with data = ${i2_topology} \n    console=yes
 #        ${resp}  Post Request    platina   ${add_interface}    json=${i2_topology}    headers=${headers}
 #        Log    \n Status Code = ${resp.status_code}    console=yes
 #        Log    \n JSON RESP = ${resp.json()}    console=yes
-        #Should Be Equal As Strings  ${resp.status_code}  200
+#        #Should Be Equal As Strings  ${resp.status_code}  200
 
         # Wait for few minutes to reflect assign IP into topology
-        #Sleep  5 minutes
+        Sleep  5 minutes
 
 
 Get Cluster Id

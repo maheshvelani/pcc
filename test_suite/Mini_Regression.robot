@@ -89,7 +89,7 @@ Assign LLDP role to PXE booted Server
 
 Form Topology
         [Tags]    topology
-        Assign Interface Ip to node to form Topology    ${invader1_node_name}  ${server1_node_name}  ${server2_node_name}
+        Assign Interface Ip to node to form Topology    invader42  sv110  sv124
 
 Validate Interface Mode - Expected user mode
         [Tags]    Entry Criteria
