@@ -20,6 +20,15 @@ Install LLDP Role
         [Return]    ${status}
 
 
+Install LLDP On Multiple Nodes
+        [Arguments]     @{node_list}
+
+        :FOR    ${node}    IN    @{node_list}
+        \   Log     \nInstalling LLDP on ${node}
+        \   ${status}    Install LLDP Role    node_name=${node}
+        \   Exit For Loop IF    "${status}"=="False"
+        [Return]    ${status}
+
 Verify LLDP Installed
         [Arguments]    ${node_name}=${EMPTY}    ${timeout}=500
 	
@@ -42,13 +51,27 @@ Remove LLDP Role
 
         ${id}    Get LLDP Id
         ${node_id}    Get Node Id    ${node_name}
+        &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
+	    ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
+	    @{roles_group}    get existing roles detail    ${resp.json()}    ${node_name}    ${id}
+        Remove Values From List    @{roles_group}    ${id}
+        &{data}    Create Dictionary  Id=${node_id}    roles=${roles_group}
+	    Log    \nUninstalling LLDP with parameters : ${data}    console=yes
+        ${resp}  Put Request    platina    ${add_group_to_node}    json=${data}     headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        ${status}    run keyword and return status    Should Be Equal As Strings    ${resp.status_code}    200
+        [Return]    ${status}
 
-#        # Delete LLDP Role
-#        ${resp}  Delete Request    platina   ${add_role}${id}    headers=${headers}
-#        Log    \n Status code = ${resp.status_code}    console=yes
-#        Log    \n Response = ${resp.json()}    console=yes
-#        Should Be Equal As Strings    ${resp.status_code}    200
-#
+
+Remove LLDP From Multiple Node
+        [Arguments]     @{node_list}
+
+        :FOR    ${node}    IN    @{node_list}
+        /   Log     \nRemoving LLDP on ${node}
+        /   ${status}    Remove LLDP Role    node_name=${node}
+        /   Exit For Loop IF    "${status}"=="False"
+        [Return]    ${status}
 
 
 Verify LLDP Role is Removed
@@ -77,3 +100,13 @@ Get LLDP Id
         ${status}    ${role_id}    Get LLDP Role Id    ${resp.json()}
         Should Be Equal As Strings    ${status}    True    msg=LLDP Role Not Found in Roles
         [Return]    ${role_id}
+
+Verify LLDP Events
+        [Arguments]    ${node_name}=${EMPTY}
+
+        ${resp}  Get Request    platina   ${events}    headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        ${status}    Validate Lldp Events    ${resp.json()}    ${node_name}
+        Should Be Equal As Strings    ${status}    True    msg=LLDP Role Found in Events
+        [Return]    ${status}

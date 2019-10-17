@@ -455,13 +455,29 @@ class Json_validator:
             return None
 
     @staticmethod
+    def validate_lldp_events(resp_data, node):
+        try:
+            if resp_data['Data'] != None:
+                for data in eval(str(resp_data))['Data']:
+                    if str(data['targetName']) == str(node):
+                        if str(data['metadata']['AppID']) == 'lldpd':
+                            if '[LLDPD] Installed version' in str(data['metadata']['Message']):
+                                return True
+                            else:
+                                return False
+
+        except Exception:
+            return False
+
+    @staticmethod
     def get_interface_id(resp, interface):
         """ Get interface ip
         """
         try:
             for data in eval(str(resp))["Data"]["interfaces"]:
-	        if str(data["interface"]["name"]) == str(interface):
-		    return  data["interface"]["id"]
-	    return None
-	except Exception:
-	    return None
+                if str(data["interface"]["name"]) == str(interface):
+                    return data["interface"]["id"]
+            return None
+        except Exception:
+            return None
+

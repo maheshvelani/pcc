@@ -7,7 +7,7 @@ Resource    Lldp_keywords.robot
 Resource    MaaS_keywords.robot
 Resource    PXE_boot_keywords.robot
 Resource    Os_deployment_keywords.robot
-
+Library    Collections
 
 *** Keywords ***
 Get Node Id
