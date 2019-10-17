@@ -85,6 +85,19 @@ class Pcc_cli_api(OperatingSystem, SSHLibrary):
         except:
             return node_type_dict
 
+    def execute_commands(self, ip_addr, commands):
+        """ Execute commands on invader or servers
+        """
+        try:
+            login_op = self.open_connection(ip_addr)
+            self.login("pcc", "calsoft")
+            out = self.execute_command(commands)
+            robot_logger("cmd = {} and o/p = {1}".format(commands, out)
+            return out
+        except:
+            return None
+
+
     def clean_invader(self, ip_addr):
         """ Clean Invader from Backend
         """
@@ -261,29 +274,26 @@ class Pcc_cli_api(OperatingSystem, SSHLibrary):
     def prepare_invader_topology(self, resp, i_id, interface_sv, interface_id, assign_ip):
         """Get Invader Topology
         """
-
-#        topology_str = {"ifName": None,
-
-#                        "nodeID": None,
-#                        "speed": 10000,
-#                        "ipv4Addresses": [],
-#                        "gateway": "",
-#                        "fecType": "",
-#                        "mediaType": "copper",
-#                        "macAddress": "50:18:4c:00:0b:f3",
-#                        "status": "up",
-#                        "management": "false",
-#			"interfaceId" : int(interface_id)
-#                        }
-
-
-	topology_str = {"ifName": None, "macAdress":None,
-"nodeID": None,"ipv4Addresses": [],"status": "up","management": "false","interfaceId" : int(interface_id), "managedByPcc":True}
+        # topology_str = {"ifName": None,
+        #                 "nodeID": None,
+        #                 "speed": 10000,
+        #                 "ipv4Addresses": [],
+        #                 "gateway": "",
+        #                 "fecType": "",
+        #                 "mediaType": "copper",
+        #                 "macAddress": "50:18:4c:00:0b:f3",
+        #                 "status": "up",
+        #                 "management": False
+        #                 }
+        topology_str = {"ifName": None, "macAdress": None,
+                        "nodeID": None, "ipv4Addresses": [], "status": "up", "management": "false",
+                        "interfaceId": int(interface_id), "managedByPcc": True
+                        }
         for data in eval(str(resp))['Data']:
             if int(data["NodeId"]) == int(i_id):
                 for link in data["links"]:
                     if interface_sv == link["interface_name"]:
-			topology_str["macAddress"] = link["mac_address"]
+                        topology_str["macAddress"] = link["mac_address"]
                         topology_str["ifName"] = interface_sv
                         topology_str["nodeID"] = int(i_id)
                         if link["ipv4_addresses"]:
@@ -374,4 +384,17 @@ class Pcc_cli_api(OperatingSystem, SSHLibrary):
                             return str(data["interface"]['name'])
             return None
         except Exception:
+            return None
+
+
+    def execute_commands(self, ip_addr, commands):
+        """ Execute commands on invader or servers
+        """
+        try:
+            login_op = self.open_connection(ip_addr)
+            self.login("pcc", "calsoft")
+            out = self.execute_command(commands)
+            robot_logger("cmd = {} and o/p = {1}".format(commands, out)
+            return out
+        except:
             return None

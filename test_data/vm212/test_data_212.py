@@ -40,7 +40,7 @@ invader2_usr_pwd = "cals0ft"
 
 # Test Data to Add Server as Node
 # Update This data as per supported Server over PCC
-server1_node_name = "sv124"
+server1_node_name = "sv25"
 server1_node_host = "172.17.2.125/23"
 server1_bmc_ip = "172.17.3.125"
 server1_bmc_user = "ADMIN"
@@ -52,7 +52,7 @@ server1_ssh_keys = "pcc"
 
 # Test Data to Add Server as Node
 # Update This data as per supported Server over PCC
-server2_node_name = "sv110"
+server2_node_name = "sv10"
 server2_node_host = "172.17.2.110/23"
 server2_bmc_host = "172.17.3.110"
 server2_bmc_user = "ADMIN"
@@ -125,6 +125,10 @@ server3_usr_pwd = "cals0ft"
 server4_ip = "172.17.2.125"
 server4_usr_name = "pcc"
 server4_usr_pwd = "cals0ft"
+
+# CLI Commands to execute
+reboot_command = "reboot"
+shutdown_command = "shutdown"
 
 
 # Node Group data

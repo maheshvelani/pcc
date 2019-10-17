@@ -42,6 +42,10 @@ server2_console = "ttyS1"
 server2_managed_by_pcc = "true"
 server2_ssh_keys = "pcc"
 
+# CLI Commands to execute
+reboot_command = "reboot"
+shutdown_command = "shutdown"
+
 
 # Credentials to access invader via ssh
 invader_usr_name = "pcc"

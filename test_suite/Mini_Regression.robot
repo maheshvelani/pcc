@@ -21,10 +21,11 @@ Add Invader as a Node and Verify Online Status
         ${status}    Verify Invader is Online    name=${invader1_node_name}
         Should Be Equal As Strings    ${status}    True
 
+
 Add Server-1 as a Node and Verify Online Status
 	    [Documentation]    Add Server-1 as a Node and Verify Online Status
 
-	    ${status}    Add Server    name=${server1_node_name}  host=${server1_node_host}  console=${server1_console}  bmc=${server1_bmc_host}/23  bmc_user=${server1_bmc_user}  bmc_password=${server1_bmc_pwd}  bmc_users=${server1_bmc_user}    ssh_key=${server1_ssh_keys}  managed_by_pcc=${True}
+	    ${status}    Add Server    name=${server1_node_name}  host=${server1_node_host}  console=${server1_console}  bmc=${server1_bmc_host}  bmc_user=${server1_bmc_user}  bmc_password=${server1_bmc_pwd}  bmc_users=${server1_bmc_user}    ssh_key=${server1_ssh_keys}  managed_by_pcc=${True}
 	    Should Be Equal As Strings    ${status}    True
 	    ${status}    Verify Server is present in Node List    name=${server1_node_name}
 	    Should Be Equal As Strings    ${status}    True
@@ -40,6 +41,7 @@ Assign LLDP Role to Invader
 	    ${status}    Verify LLDP Installed    node_name=${invader1_node_name}
 	    Should Be Equal As Strings    ${status}    True
 
+
 Assign LLDP role to server
         [Documentation]    Assign LLDP Role to Server - 1
 
@@ -48,14 +50,15 @@ Assign LLDP role to server
         ${status}    Verify LLDP Installed    node_name=${server1_node_name}
         Should Be Equal As Strings    ${status}    True
 
+
 Assign MaaS Role to Invader
-#        [Tags]    test_1
 	    [Documentation]    Assign LLDP and MaaS Role to Invader - 1
 
 	    ${status}    Install MaaS Role    node_name=${invader1_node_name}
 	    Should Be Equal As Strings    ${status}    True
 	    ${status}    Verify MaaS Installed    node_name=${invader1_node_name}
 	    Should Be Equal As Strings    ${status}    True
+
 
 PXE Boot to Server
         [Tags]    pxe
@@ -72,50 +75,29 @@ PXE Boot to Server
         ...  ssh_key=${server1_ssh_keys}     managed_by_pcc=${server1_managed_by_pcc}
         Should Be Equal As Strings    ${status}    True
 
-#Validate Interface Mode - Expected Inventory Mode
-#        [Tags]    Entr
-#        [Documentation]    Verify that Server is in inventory mode
-#
-#        # Get SV2 interface
-#        Log    \nGetting Topology Data...    console=yes
-#        ${resp}    Get request    platina    ${get_topology}    headers=${headers}
-#        Log    \n Status code = ${resp.status_code}    console=yes
-#        Log    \n Response = ${resp.json()}    console=yes
-#        Should Be Equal As Strings    ${resp.status_code}    200
-#        ${interface_sv2}    Get Interface Name    ${resp.json()}  ${invader1_node_name}  0123456789
-#        Set Suite Variable    ${interface_sv2}
-#
-#        # verify Mode into Inventory
-#        Validate server Mode    inventory
-
 
 OS Deployment over Server machine
         [Documentation]    OS Deployment
-	
+
         ${status}    OS Deployment    node=${server1_node_name}     image=${image1_name}     locale=${locale}    time_zone=${PDT}
          ...  admin_user=${admin_user}    ssh_key=${ssh_key}
         Should Be Equal As Strings    ${status}    True
         ${status}    Verify OS installed  node_name=${server1_node_name}       os_name=${image1_name}
         Should Be Equal As Strings    ${status}    True
 
+
 Assign LLDP role to PXE booted Server
         [Documentation]    Assign LLDP to Server - 2
-	
+
 	    ${status}    Install LLDP Role    node_name=${server1_node_name}
 	    Should Be Equal As Strings    ${status}    True
 	    ${status}    Verify LLDP Installed    node_name=${server1_node_name}
         Should Be Equal As Strings    ${status}    True
 
+
 Form Topology
         [Tags]    topology
         Assign Interface Ip to node to form Topology    ${invader1_node_name}  ${server1_node_name}  ${server2_node_name}
-
-Validate Interface Mode - Expected user mode
-        [Tags]    Entry Criteria
-        [Documentation]    Verify that Server is in inventory mode
-
-        # verify Mode into Inventory
-        Validate server Mode    user
 
 
 Create Kubernetes Cluster
@@ -140,6 +122,7 @@ Add an app to k8s
         ${status}    Verify App installed over K8s Cluster    cluster_name=${cluster_name}    app_name=${app_name}
         Should Be Equal As Strings    ${status}    True
 
+
 Update k8s and verify version updated
         [Documentation]    Update K8s version
 
@@ -148,6 +131,7 @@ Update k8s and verify version updated
         ${status}    Verify k8s Upgraded    cluster_name=${cluster_name}    version=${upgrade_k8_version}
         Should Be Equal As Strings    ${status}    True
 
+
 Install another app as sanity check
         [Documentation]    Install Another app as sanity check
 
@@ -155,4 +139,3 @@ Install another app as sanity check
         Should Be Equal As Strings    ${status}    True
         ${status}    Verify App installed over K8s Cluster    ${cluster_name}=${cluster_name}    ${app_name}=${app2_name}
         Should Be Equal As Strings    ${status}    True
-
