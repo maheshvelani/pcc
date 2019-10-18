@@ -45,7 +45,7 @@ Shutdown Node
         [Return]    True
 
 Reboot Node Multiple Times
-        [Arguments]    ${node_name}=${EMPTY}  ${${iteration}}=${EMPTY}
+        [Arguments]    ${node_name}=${EMPTY}  ${iteration}=${EMPTY}
 
         Log    /nRestarting the invader ${ip_addr} for ${${iteration}} times  console=yes
         :FOR    ${index}    IN RANGE    1    ${iteration}

@@ -210,7 +210,7 @@ class Json_validator:
 			if (str(data['provisionStatus']) == "Finished") or (str(data['provisionStatus']) == "Ready"):
                     		if int(role_id) in list(data['roles']):
                             		return True
-                        elif str(data['provisionStatus']) == "In Progress":
+                        elif str(data['provisionStatus']) == "In progress":
                         	return "Continue"
                         else:
                             	return False

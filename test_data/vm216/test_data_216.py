@@ -23,7 +23,7 @@ invader1_node_host = "172.17.2.58/23"
 # Update This data as per supported Server over PCC
 server1_node_name = "sv01"
 server1_node_host = "172.17.2.101/23"
-server1_bmc_host = "172.17.3.101"
+server1_bmc_ip = "172.17.3.101"
 server1_bmc_user = "ADMIN"
 server1_bmc_pwd = "ADMIN"
 server1_console = "ttyS1"
@@ -35,7 +35,7 @@ server1_ssh_keys = "pcc"
 # Update This data as per supported Server over PCC
 server2_node_name = "sv02"
 server2_node_host = "172.17.2.102/23"
-server2_bmc_host = "172.17.3.102"
+server2_bmc_ip = "172.17.3.102"
 server2_bmc_user = "ADMIN"
 server2_bmc_pwd = "ADMIN"
 server2_console = "ttyS1"
@@ -53,7 +53,7 @@ invader_usr_pwd = "cals0ft"
 
 
 # OS Deployment data
-image_name = "centos76"
+image1_name = "centos76"
 en_US = "en_US"
 PDT = "PDT"
 mass_user = "pcc"
@@ -84,5 +84,5 @@ status_false = "false"
 
 #PXE
 pxe_booted_server = "0123456789"
-gateway = 172.17.2.1
+gateway = "172.17.2.1"
 

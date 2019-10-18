@@ -8,10 +8,12 @@ Install LLDP Role
         ${node_id}    Get Node Id    ${node_name}
 	&{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
 	${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
+	${node_ip}    Get Node Host Ip    ${resp.json()}    ${node_name}
+	${host_ip}    Get Ip    ${node_ip}
 	@{roles_group}    get existing roles detail    ${resp.json()}    ${node_name}    ${id}
         # Assign LLDP role to node
         @{roles_group}    create list    ${id}
-        &{data}    Create Dictionary  Id=${node_id}    roles=${roles_group}
+        &{data}    Create Dictionary  Id=${node_id}    roles=${roles_group}    Host=${host_ip}
 	Log    \nInstalling LLDP with parameters : ${data}    console=yes
         ${resp}  Put Request    platina    ${add_group_to_node}    json=${data}     headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
@@ -30,7 +32,7 @@ Install LLDP On Multiple Nodes
         [Return]    ${status}
 
 Verify LLDP Installed
-        [Arguments]    ${node_name}=${EMPTY}    ${timeout}=500
+        [Arguments]    ${node_name}=${EMPTY}    ${timeout}=900
 	
 	Log    \nGetting LLDP role ID...    console=yes
         ${id}    Get LLDP Id
@@ -43,7 +45,11 @@ Verify LLDP Installed
         \    Should Be Equal As Strings    ${resp.status_code}    200
         \    ${status}    Validate Node Roles    ${resp.json()}    ${node_name}    ${id}
         \    Exit For Loop IF    "${status}"!="Continue"
-        [Return]    ${status}
+        Return From Keyword If    '${status}'=="False"    True
+        Log    \nLLDP Installed successfully    console=yes
+        Log    \nVerifying LLDP Events   console=yes
+        ${event_status}    Verify LLDP Events    node_name=${node_name}
+        [Return]    ${event_status}
 
 
 Remove LLDP Role

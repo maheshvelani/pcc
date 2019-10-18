@@ -18,19 +18,20 @@ Add Invader as a Node and Verify Online Status
         Should Be Equal As Strings    ${status}    True
         ${status}    Verify Invader is present in Node List    name=${invader1_node_name}
         Should Be Equal As Strings    ${status}    True
-        ${status}    Verify Invader is Online    name=${invader1_node_name}
-        Should Be Equal As Strings    ${status}    True
+        ${id}    Verify Invader is Online    name=${invader1_node_name}
+        Should Not Be Equal As Strings    ${id}    None
 
 
 Add Server-1 as a Node and Verify Online Status
 	    [Documentation]    Add Server-1 as a Node and Verify Online Status
 
-	    ${status}    Add Server    name=${server1_node_name}  host=${server1_node_host}  console=${server1_console}  bmc=${server1_bmc_host}  bmc_user=${server1_bmc_user}  bmc_password=${server1_bmc_pwd}  bmc_users=${server1_bmc_user}    ssh_key=${server1_ssh_keys}  managed_by_pcc=${True}
+	    ${status}    Add Server    name=${server1_node_name}  host=${server1_node_host}  console=${server1_console}  bmc=${server1_bmc_ip}  bmc_user=${server1_bmc_user}  bmc_password=${server1_bmc_pwd}  bmc_users=${server1_bmc_user}    ssh_key=${server1_ssh_keys}  managed_by_pcc=${True}
 	    Should Be Equal As Strings    ${status}    True
 	    ${status}    Verify Server is present in Node List    name=${server1_node_name}
 	    Should Be Equal As Strings    ${status}    True
 	    ${status}    Verify Server is Online    name=${server1_node_name}
-	    Should Be Equal As Strings    ${status}    True
+	    Should Not Be Equal As Strings    ${status}    None
+
 
 
 Assign LLDP Role to Invader

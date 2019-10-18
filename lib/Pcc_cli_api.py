@@ -92,7 +92,7 @@ class Pcc_cli_api(OperatingSystem, SSHLibrary):
             login_op = self.open_connection(ip_addr)
             self.login("pcc", "calsoft")
             out = self.execute_command(commands)
-            robot_logger("cmd = {} and o/p = {1}".format(commands, out)
+            robot_logger("cmd = {} and o/p = {1}".format(commands, out))
             return out
         except:
             return None
@@ -394,7 +394,7 @@ class Pcc_cli_api(OperatingSystem, SSHLibrary):
             login_op = self.open_connection(ip_addr)
             self.login("pcc", "calsoft")
             out = self.execute_command(commands)
-            robot_logger("cmd = {} and o/p = {1}".format(commands, out)
+            robot_logger("cmd = {} and o/p = {1}".format(commands, out))
             return out
         except:
             return None
