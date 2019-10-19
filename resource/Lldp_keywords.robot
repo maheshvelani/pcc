@@ -10,10 +10,10 @@ Install LLDP Role
 	${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
 	${node_ip}    Get Node Host Ip    ${resp.json()}    ${node_name}
 	${host_ip}    Get Ip    ${node_ip}
-	@{roles_group}    get existing roles detail    ${resp.json()}    ${node_name}    ${id}
+	&{data}    get existing roles detail    ${resp.json()}    ${node_name}    ${id}
         # Assign LLDP role to node
-        @{roles_group}    create list    ${id}
-        &{data}    Create Dictionary  Id=${node_id}    roles=${roles_group}    Host=${host_ip}
+#        @{roles_group}    create list    ${id}
+#        &{data}    Create Dictionary  Id=${node_id}    roles=${roles_group}    Host=${host_ip}
 	Log    \nInstalling LLDP with parameters : ${data}    console=yes
         ${resp}  Put Request    platina    ${add_group_to_node}    json=${data}     headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes

@@ -438,21 +438,21 @@ class Json_validator:
     def get_existing_roles_detail(resp_data, node, role):
         """ Get HOST IP of Node
         """
+
         try:
-            role_list = []
             if resp_data['Data'] != None:
                 for data in eval(str(resp_data))['Data']:
                     if str(data['Name']) == str(node):
-                        try:
-                            role_list = list(data["roles"])
-                        except Exception:
-                            role_list = data["roles"]
-                        role_list.append(int(role))
-
-                        return role_list
+                        if not data["roles"]:
+                            data["roles"] = [int(role)]
+                            return data
+                        else:
+                            data["roles"].append(int(role))
+                            return data
             return None
         except Exception:
             return None
+    
 
     @staticmethod
     def validate_lldp_events(resp_data, node):

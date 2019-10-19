@@ -9,12 +9,12 @@ Install MaaS Role
 	# Update role list
         &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
         ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
-        ${node_ip}    Get Node Host Ip    ${resp.json()}    ${node_name}
-        ${host_ip}    Get Ip    ${node_ip}
-        @{roles_group}    get existing roles detail    ${resp.json()}    ${node_name}    ${id}
+#        ${node_ip}    Get Node Host Ip    ${resp.json()}    ${node_name}
+#        ${host_ip}    Get Ip    ${node_ip}
+        &{data}    get existing roles detail    ${resp.json()}    ${node_name}    ${id}
         # Assign MaaS role to node
         # @{roles_group}    create list    ${id}
-        &{data}    Create Dictionary  Id=${node_id}    roles=${roles_group}    Host=${host_ip}
+        #&{data}    Create Dictionary  Id=${node_id}    roles=${roles_group}    Host=${host_ip}
         ${resp}  Put Request    platina    ${add_group_to_node}    json=${data}     headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
         Log    \n Response = ${resp.json()}    console=yes
