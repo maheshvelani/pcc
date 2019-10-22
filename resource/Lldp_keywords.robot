@@ -49,7 +49,10 @@ Verify LLDP Installed
         Log    \nLLDP Installed successfully    console=yes
         Log    \nVerifying LLDP Events   console=yes
         ${event_status}    Verify LLDP Events    node_name=${node_name}
-        [Return]    ${event_status}
+	Return From Keyword If    '${event_status}'=="False"    False
+        ${status}    Verify topology formation    ${node_name}    ${id}
+	${status}    run keyword and return status    Should be Equal As Strings    ${status}    True
+        [Return]    ${status}
 
 
 Remove LLDP Role
@@ -116,3 +119,25 @@ Verify LLDP Events
         ${status}    Validate Lldp Events    ${resp.json()}    ${node_name}
         Should Be Equal As Strings    ${status}    True    msg=LLDP Role Found in Events
         [Return]    ${status}
+
+
+Verify topology formation
+        [Arguments]    ${node}=${EMPTY}    ${role_id}=${EMPTY}
+
+        # Read Topology
+        Log    \nGetting Topology Data...    console=yes
+        ${topology_resp}    Get request    platina    ${get_topology}    headers=${headers}
+        Log    \n Status code = ${topology_resp.status_code}    console=yes
+        Log    \n Topology Response = ${topology_resp.json()}    console=yes
+        Should Be Equal As Strings    ${topology_resp.status_code}    200    msg=Failed to Read Topology...
+
+        # Read Node data
+        &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
+	${node_resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
+	Log    \n Status code = ${node_resp.status_code}    console=yes
+        Log    \n Topology Response = ${node_resp.json()}    console=yes
+        Should Be Equal As Strings    ${node_resp.status_code}    200    msg=Failed to Read Node data
+        @{node_list}    get_node_name_list    ${node_resp.json()}    ${role_id}
+        ${status}    Check Topology Connection    ${topology_resp.json()}    ${node_list}    ${node}
+	[Return]    ${status}
+

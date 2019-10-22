@@ -398,3 +398,47 @@ class Pcc_cli_api(OperatingSystem, SSHLibrary):
             return out
         except:
             return None
+
+
+    def get_node_name_list(self, resp_data, lldp_role):
+        """Check any Invader or Server is available in node list
+           if yes then return node with attached IP
+        """
+        node_name_lst = []
+
+        try:
+            if not resp_data['Data']:
+                return []
+            else:
+                for index, data in enumerate(eval(str(resp_data))['Data']):
+		    if str(data['nodeAvailabilityStatus']['connectionStatus']) == "online":
+			if int(lldp_role) in data["roles"]:
+                    	    node_name_lst.append(data['Name'])
+                robot_logger("Available Nodes are : {0}".format(str(node_name_lst)))
+                return node_name_lst
+            return []
+        except Exception as err:
+            return []
+
+
+    def check_topology_connection(self, topology_data, node_list, main_node):
+        """ Check Node connections
+        """
+	
+	# Remove main node from list
+        node_list.pop(node_list.index(main_node))
+	
+	for node in node_list:
+	    connection_status = False
+
+	    for node_data in eval(str(topology_data))['Data']:
+            	if node_data["NodeName"] == main_node:
+		    for link in node_data["links"]:
+		        if link["remote_node_name"] == node:
+			    connection_status = True
+
+	    if not connection_status:
+		robot_logger("Connectivity not found between {0} and {1}".format(main_node, node))
+		return False
+	
+	return True
