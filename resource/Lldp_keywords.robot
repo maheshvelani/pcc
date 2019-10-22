@@ -58,11 +58,11 @@ Remove LLDP Role
         ${id}    Get LLDP Id
         ${node_id}    Get Node Id    ${node_name}
         &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
-	    ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
-	    @{roles_group}    get existing roles detail    ${resp.json()}    ${node_name}    ${id}
-        Remove Values From List    @{roles_group}    ${id}
+	      ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
+	      @{roles_group}    get existing roles detail    ${resp.json()}    ${node_name}    ${id}
+        @{roles_group}    Delete Roles    ${roles_group}    ${id} 
         &{data}    Create Dictionary  Id=${node_id}    roles=${roles_group}
-	    Log    \nUninstalling LLDP with parameters : ${data}    console=yes
+	      Log    \nUninstalling LLDP with parameters : ${data}    console=yes
         ${resp}  Put Request    platina    ${add_group_to_node}    json=${data}     headers=${headers}
         Log    \n Status code = ${resp.status_code}    console=yes
         Log    \n Response = ${resp.json()}    console=yes

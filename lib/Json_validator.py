@@ -448,11 +448,22 @@ class Json_validator:
                             return data
                         else:
                             data["roles"].append(int(role))
+                            data["roles"] = list(set(data["roles"]))
                             return data
             return None
         except Exception:
             return None
     
+    @staticmethod
+    def delete_roles(role_list, delete_role):
+        """ Get HOST IP of Node
+        """
+        try:
+            import sys, pdb; pdb.Pdb(stdout=sys.__stdout__).set_trace()
+            role_list.remove(int(delete_role))
+            return list(role_list)
+        except Exception:
+            return None
 
     @staticmethod
     def validate_lldp_events(resp_data, node):
