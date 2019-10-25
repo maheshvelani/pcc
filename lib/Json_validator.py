@@ -459,7 +459,6 @@ class Json_validator:
         """ Get HOST IP of Node
         """
         try:
-            import sys, pdb; pdb.Pdb(stdout=sys.__stdout__).set_trace()
             role_list.remove(int(delete_role))
             return list(role_list)
         except Exception:

@@ -46,11 +46,17 @@ Remove MaaS Role
 
         ${id}    Get MaaS Id
         ${node_id}    Get Node Id    ${node_name}
-#        # Delete LLDP Role
-#        ${resp}  Delete Request    platina   ${add_role}${id}    headers=${headers}
-#        Log    \n Status code = ${resp.status_code}    console=yes
-#        Log    \n Response = ${resp.json()}    console=yes
-#        Should Be Equal As Strings    ${resp.status_code}    200
+        &{data}    Create Dictionary  page=0  limit=50  sortBy=name  sortDir=asc  search=
+	    ${resp}  Get Request    platina   ${get_node_list}    params=${data}  headers=${headers}
+	    @{roles_group}    get existing roles detail    ${resp.json()}    ${node_name}    ${id}
+        @{roles_group}    Delete Roles    ${roles_group}    ${id}
+        &{data}    Create Dictionary  Id=${node_id}    roles=${roles_group}
+	    Log    \nUninstalling MaaS with parameters : ${data}    console=yes
+        ${resp}  Put Request    platina    ${add_group_to_node}    json=${data}     headers=${headers}
+        Log    \n Status code = ${resp.status_code}    console=yes
+        Log    \n Response = ${resp.json()}    console=yes
+        ${status}    run keyword and return status    Should Be Equal As Strings    ${resp.status_code}    200
+        [Return]    ${status}
 
 
 Verify MaaS Role is Removed
