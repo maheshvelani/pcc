@@ -1051,7 +1051,7 @@ Create 100 node roles
         [Setup]  Verify User Login
         [Teardown]  Delete All Sessions
 
-        : FOR    ${index}    IN RANGE    1    6
+        : FOR    ${index}    IN RANGE    1    101
         \   @{app}    Create List    ${3}
         \   &{data}    Create Dictionary  Name=Test_${index}    Description=Test_${index}  owners=@{owner}  templateIDs=@{app}
         \   ${resp}  Post Request    platina   ${add_role}    json=${data}     headers=${headers}
