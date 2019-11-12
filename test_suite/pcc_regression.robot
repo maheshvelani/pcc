@@ -2746,7 +2746,7 @@ PCC_Add_Existing_Server
         ${ssh_key}    Set Variable  ${server1_ssh_keys}
 
         @{server1_bmc_users}    Create List    ${bmc_user}
-        @{server1_ssh_keys}    Create List    ${ssh_key}
+        @{server1_ssh_keys}    Create List
         &{data}    Create Dictionary  	Name=${name}  Host=${host}
         ...    console=${console}  bmc=${bmc_host}  bmcUser=${bmc_user}
         ...    bmcPassword=${bmc_pwd}  bmcUsers=@{server1_bmc_users}
