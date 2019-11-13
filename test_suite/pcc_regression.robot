@@ -2776,7 +2776,7 @@ PCC_Add_Existing_Server
 
         # Parse fetched node list and verify added Node availability from response data
         ${status}    Validate Node 2    ${resp.json()}    ${name}
-        Should Be Equal As Strings    ${status}    True    msg=Server ${name} is not present twice in node list
+        Should Be Equal As Strings    ${status}    False    msg=Server ${name} is present twice in node list
 
 
 *** keywords ***
