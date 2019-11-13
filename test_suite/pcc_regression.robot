@@ -767,7 +767,7 @@ PCC Node Role Creation Without Description
 
         # Parse fetched role list and verify geted Role availability from response data
         ${status}    ${id}    Validate Roles    ${resp.json()}    ${role3_name}
-        Should Be Equal As Strings    ${status}    False    msg=Role ${role3_name} is not present in Role list
+        Should Be Equal As Strings    ${status}    True    msg=Role ${role3_name} is not present in Role list
         Sleep    2s
 
 
