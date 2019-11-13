@@ -15,13 +15,13 @@ user_pwd = "admin"
 
 # Test Data for Invader as Node
 # Update This data as per supported Invader over PCC server
-invader1_node_name = "i58"
+invader1_node_name = "invader58"
 invader1_node_host = "172.17.2.58/23"
 
 
 # Test Data to Add Server as Node
 # Update This data as per supported Server over PCC
-server1_node_name = "sv09"
+server1_node_name = "sv9-aka102"
 server1_node_host = "172.17.2.102/23"
 server1_bmc_host = "172.17.3.102/23"
 server1_bmc_user = "ADMIN"
