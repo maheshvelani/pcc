@@ -2029,7 +2029,7 @@ PCC-Node-Tenant-Assignment
         Log    \n Status code = ${resp.status_code}    console=yes
         Log    \n Response = ${resp.json()}    console=yes
         Should Be Equal As Strings  ${resp.status_code}    200
-        ${status}    ${tenant1_id}    Get Tenant Id    ${resp.json()}    Tenant_7
+        ${status}    ${tenant1_id}    Get Tenant Id    ${resp.json()}    Tenant_007
         Set Suite Variable    ${assign_tenant_id}    ${tenant1_id}
         Log    \n tenant ID = ${tenant1_id}    console=yes
 
