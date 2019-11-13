@@ -767,7 +767,7 @@ PCC Node Role Creation Without Description
 
         # Parse fetched role list and verify geted Role availability from response data
         ${status}    ${id}    Validate Roles    ${resp.json()}    ${role3_name}
-        Should Be Equal As Strings    ${status}    True    msg=Role ${role3_name} is not present in Role list
+        Should Be Equal As Strings    ${status}    False    msg=Role ${role3_name} is not present in Role list
         Sleep    2s
 
 
@@ -795,7 +795,7 @@ Node Role Creation Without Application
 
         # Parse fetched role list and verify geted Role availability from response data
         ${status}    ${id}    Validate Roles    ${resp.json()}    ${role4_name}
-        Should Be Equal As Strings    ${status}    True    msg=Role ${role4_name} is not present in Role list
+        Should Be Equal As Strings    ${status}    False    msg=Role ${role4_name} Created successfully without Application
         Sleep    2s
 
 
@@ -824,7 +824,7 @@ Node Role Creation Without Tenant
 
         # Parse fetched role list and verify geted Role availability from response data
         ${status}    ${id}    Validate Roles    ${resp.json()}    ${role5_name}
-        Should Be Equal As Strings    ${status}    True    msg=Role ${role5_name} is not present in Role list
+        Should Be Equal As Strings    ${status}    False    msg=Role ${role5_name} Created successfully without Tenant
         Sleep    2s
 
 
